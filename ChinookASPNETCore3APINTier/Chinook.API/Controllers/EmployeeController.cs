@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using Newtonsoft.Json;
@@ -26,11 +25,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet]
         [Produces(typeof(List<EmployeeApiModel>))]
-        public async Task<ActionResult<List<EmployeeApiModel>>> Get(CancellationToken ct = default)
+        public ActionResult<List<EmployeeApiModel>> Get()
         {
             try
             {
-                return new ObjectResult(await _chinookSupervisor.GetAllEmployeeAsync(ct));
+                return new ObjectResult(_chinookSupervisor.GetAllEmployee());
             }
             catch (Exception ex)
             {
@@ -40,11 +39,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet("{id}")]
         [Produces(typeof(EmployeeApiModel))]
-        public async Task<ActionResult<EmployeeApiModel>> Get(int id, CancellationToken ct = default)
+        public ActionResult<EmployeeApiModel> Get(int id)
         {
             try
             {
-                var employee = await _chinookSupervisor.GetEmployeeByIdAsync(id, ct);
+                var employee = _chinookSupervisor.GetEmployeeById(id);
                 if ( employee == null)
                 {
                     return NotFound();
@@ -60,11 +59,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet("reportsto/{id}")]
         [Produces(typeof(List<EmployeeApiModel>))]
-        public async Task<ActionResult<List<EmployeeApiModel>>> GetReportsTo(int id, CancellationToken ct = default)
+        public ActionResult<List<EmployeeApiModel>> GetReportsTo(int id)
         {
             try
             {
-                var employee = await _chinookSupervisor.GetEmployeeByIdAsync(id, ct);
+                var employee = _chinookSupervisor.GetEmployeeById(id);
                 if ( employee == null)
                 {
                     return NotFound();
@@ -80,11 +79,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet("directreports/{id}")]
         [Produces(typeof(EmployeeApiModel))]
-        public async Task<ActionResult<EmployeeApiModel>> GetDirectReports(int id, CancellationToken ct = default)
+        public ActionResult<EmployeeApiModel> GetDirectReports(int id)
         {
             try
             {
-                var employee = await _chinookSupervisor.GetEmployeeByIdAsync(id, ct);
+                var employee = _chinookSupervisor.GetEmployeeById(id);
                 if ( employee == null)
                 {
                     return NotFound();
@@ -99,15 +98,14 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<EmployeeApiModel>> Post([FromBody] EmployeeApiModel input,
-            CancellationToken ct = default)
+        public ActionResult<EmployeeApiModel> Post([FromBody] EmployeeApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
 
-                return StatusCode(201, await _chinookSupervisor.AddEmployeeAsync(input, ct));
+                return StatusCode(201, _chinookSupervisor.AddEmployee(input));
             }
             catch (Exception ex)
             {
@@ -116,14 +114,13 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<EmployeeApiModel>> Put(int id, [FromBody] EmployeeApiModel input,
-            CancellationToken ct = default)
+        public ActionResult<EmployeeApiModel> Put(int id, [FromBody] EmployeeApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
-                if (await _chinookSupervisor.GetEmployeeByIdAsync(id, ct) == null)
+                if (_chinookSupervisor.GetEmployeeById(id) == null)
                 {
                     return NotFound();
                 }
@@ -133,7 +130,7 @@ namespace Chinook.API.Controllers
                     .Select(error => error.ErrorMessage));
                 Debug.WriteLine(errors);
 
-                if (await _chinookSupervisor.UpdateEmployeeAsync(input, ct))
+                if (_chinookSupervisor.UpdateEmployee(input))
                 {
                     return Ok(input);
                 }
@@ -147,16 +144,16 @@ namespace Chinook.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id, CancellationToken ct = default)
+        public ActionResult Delete(int id)
         {
             try
             {
-                if (await _chinookSupervisor.GetEmployeeByIdAsync(id, ct) == null)
+                if (_chinookSupervisor.GetEmployeeById(id) == null)
                 {
                     return NotFound();
                 }
 
-                if (await _chinookSupervisor.DeleteEmployeeAsync(id, ct))
+                if (_chinookSupervisor.DeleteEmployee(id))
                 {
                     return Ok();
                 }

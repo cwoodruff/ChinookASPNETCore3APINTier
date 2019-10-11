@@ -17,43 +17,43 @@ namespace Chinook.DataEFCoreCmpldQry.Repositories
             _context = context;
         }
 
-        private async Task<bool> GenreExists(int id, CancellationToken ct = default) =>
-            await _context.Genre.AnyAsync(g => g.GenreId == id, ct);
+        private bool GenreExists(int id) =>
+            _context.Genre.Any(g => g.GenreId == id);
 
         public void Dispose() => _context.Dispose();
 
-        public async Task<List<Genre>> GetAllAsync(CancellationToken ct = default) 
-            => await _context.GetAllGenresAsync();
+        public List<Genre> GetAll() 
+            => _context.GetAllGenres();
 
-        public async Task<Genre> GetByIdAsync(int id, CancellationToken ct = default)
+        public Genre GetById(int id)
         {
-            var genres = await _context.GetGenreAsync(id);
+            var genres = _context.GetGenre(id);
             return genres.FirstOrDefault();
         }
 
-        public async Task<Genre> AddAsync(Genre newGenre, CancellationToken ct = default)
+        public Genre Add(Genre newGenre)
         {
             _context.Genre.Add(newGenre);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return newGenre;
         }
 
-        public async Task<bool> UpdateAsync(Genre genre, CancellationToken ct = default)
+        public bool Update(Genre genre)
         {
-            if (!await GenreExists(genre.GenreId, ct))
+            if (!GenreExists(genre.GenreId))
                 return false;
             _context.Genre.Update(genre);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
+        public bool Delete(int id)
         {
-            if (!await GenreExists(id, ct))
+            if (!GenreExists(id))
                 return false;
             var toRemove = _context.Genre.Find(id);
             _context.Genre.Remove(toRemove);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return true;
         }
     }

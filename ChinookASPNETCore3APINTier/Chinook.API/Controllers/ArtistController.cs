@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using Newtonsoft.Json;
@@ -26,11 +25,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet]
         [Produces(typeof(List<ArtistApiModel>))]
-        public async Task<ActionResult<List<ArtistApiModel>>> Get(CancellationToken ct = default)
+        public ActionResult<List<ArtistApiModel>> Get()
         {
             try
             {
-                return new ObjectResult(await _chinookSupervisor.GetAllArtistAsync(ct));
+                return new ObjectResult(_chinookSupervisor.GetAllArtist());
             }
             catch (Exception ex)
             {
@@ -40,11 +39,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet("{id}")]
         [Produces(typeof(ArtistApiModel))]
-        public async Task<ActionResult<ArtistApiModel>> Get(int id, CancellationToken ct = default)
+        public ActionResult<ArtistApiModel> Get(int id)
         {
             try
             {
-                var artist = await _chinookSupervisor.GetArtistByIdAsync(id, ct);
+                var artist = _chinookSupervisor.GetArtistById(id);
                 if ( artist == null)
                 {
                     return NotFound();
@@ -59,15 +58,14 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ArtistApiModel>> Post([FromBody] ArtistApiModel input,
-            CancellationToken ct = default)
+        public ActionResult<ArtistApiModel> Post([FromBody] ArtistApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
 
-                return StatusCode(201, await _chinookSupervisor.AddArtistAsync(input, ct));
+                return StatusCode(201, _chinookSupervisor.AddArtist(input));
             }
             catch (Exception ex)
             {
@@ -76,14 +74,13 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<ArtistApiModel>> Put(int id, [FromBody] ArtistApiModel input,
-            CancellationToken ct = default)
+        public ActionResult<ArtistApiModel> Put(int id, [FromBody] ArtistApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
-                if (await _chinookSupervisor.GetArtistByIdAsync(id, ct) == null)
+                if (_chinookSupervisor.GetArtistById(id) == null)
                 {
                     return NotFound();
                 }
@@ -93,7 +90,7 @@ namespace Chinook.API.Controllers
                     .Select(error => error.ErrorMessage));
                 Debug.WriteLine(errors);
 
-                if (await _chinookSupervisor.UpdateArtistAsync(input, ct))
+                if (_chinookSupervisor.UpdateArtist(input))
                 {
                     return Ok(input);
                 }
@@ -107,16 +104,16 @@ namespace Chinook.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id, CancellationToken ct = default)
+        public ActionResult Delete(int id)
         {
             try
             {
-                if (await _chinookSupervisor.GetAlbumByIdAsync(id, ct) == null)
+                if (_chinookSupervisor.GetAlbumById(id) == null)
                 {
                     return NotFound();
                 }
 
-                if (await _chinookSupervisor.DeleteAlbumAsync(id, ct))
+                if (_chinookSupervisor.DeleteAlbum(id))
                 {
                     return Ok();
                 }

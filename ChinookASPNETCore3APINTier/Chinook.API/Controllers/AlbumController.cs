@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using Newtonsoft.Json;
@@ -32,11 +31,11 @@ namespace Chinook.API.Controllers
         /// <remarks>This API will get the values.</remarks>
         [HttpGet]
         [Produces(typeof(List<AlbumApiModel>))]
-        public async Task<ActionResult<List<AlbumApiModel>>> Get(CancellationToken ct = default)
+        public ActionResult<List<AlbumApiModel>> Get()
         {
             try
             {
-                return new ObjectResult(await _chinookSupervisor.GetAllAlbumAsync(ct));
+                return new ObjectResult(_chinookSupervisor.GetAllAlbum());
             }
             catch (Exception ex)
             {
@@ -46,11 +45,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet("{id}")]
         [Produces(typeof(AlbumApiModel))]
-        public async Task<ActionResult<AlbumApiModel>> Get(int id, CancellationToken ct = default)
+        public ActionResult<AlbumApiModel> Get(int id)
         {
             try
             {
-                var album = await _chinookSupervisor.GetAlbumByIdAsync(id, ct);
+                var album = _chinookSupervisor.GetAlbumById(id);
                 if (album == null)
                 {
                     return NotFound();
@@ -66,17 +65,17 @@ namespace Chinook.API.Controllers
 
         [HttpGet("artist/{id}")]
         [Produces(typeof(List<AlbumApiModel>))]
-        public async Task<ActionResult<List<AlbumApiModel>>> GetByArtistId(int id, CancellationToken ct = default)
+        public ActionResult<List<AlbumApiModel>> GetByArtistId(int id)
         {
             try
             {
-                var artist = await _chinookSupervisor.GetArtistByIdAsync(id, ct);
+                var artist = _chinookSupervisor.GetArtistById(id);
                 if ( artist == null)
                 {
                     return NotFound();
                 }
 
-                return Ok(await _chinookSupervisor.GetAlbumByArtistIdAsync(id, ct));
+                return Ok(_chinookSupervisor.GetAlbumByArtistId(id));
             }
             catch (Exception ex)
             {
@@ -85,15 +84,14 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<AlbumApiModel>> Post([FromBody] AlbumApiModel input,
-            CancellationToken ct = default)
+        public ActionResult<AlbumApiModel> Post([FromBody] AlbumApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
 
-                return StatusCode(201, await _chinookSupervisor.AddAlbumAsync(input, ct));
+                return StatusCode(201, _chinookSupervisor.AddAlbum(input));
             }
             catch (Exception ex)
             {
@@ -102,14 +100,13 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<AlbumApiModel>> Put(int id, [FromBody] AlbumApiModel input,
-            CancellationToken ct = default)
+        public ActionResult<AlbumApiModel> Put(int id, [FromBody] AlbumApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
-                if (await _chinookSupervisor.GetAlbumByIdAsync(id, ct) == null)
+                if (_chinookSupervisor.GetAlbumById(id) == null)
                 {
                     return NotFound();
                 }
@@ -119,7 +116,7 @@ namespace Chinook.API.Controllers
                     .Select(error => error.ErrorMessage));
                 Debug.WriteLine(errors);
 
-                if (await _chinookSupervisor.UpdateAlbumAsync(input, ct))
+                if (_chinookSupervisor.UpdateAlbum(input))
                 {
                     return Ok(input);
                 }
@@ -133,16 +130,16 @@ namespace Chinook.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteAsync(int id, CancellationToken ct = default)
+        public ActionResult Delete(int id)
         {
             try
             {
-                if (await _chinookSupervisor.GetAlbumByIdAsync(id, ct) == null)
+                if (_chinookSupervisor.GetAlbumById(id) == null)
                 {
                     return NotFound();
                 }
 
-                if (await _chinookSupervisor.DeleteAlbumAsync(id, ct))
+                if (_chinookSupervisor.DeleteAlbum(id))
                 {
                     return Ok();
                 }

@@ -17,47 +17,46 @@ namespace Chinook.DataEFCoreCmpldQry.Repositories
             _context = context;
         }
 
-        private async Task<bool> CustomerExists(int id, CancellationToken ct = default) =>
-            await _context.Customer.AnyAsync(c => c.CustomerId == id, ct);
+        private bool CustomerExists(int id) =>
+            _context.Customer.Any(c => c.CustomerId == id);
 
         public void Dispose() => _context.Dispose();
 
-        public async Task<List<Customer>> GetAllAsync(CancellationToken ct = default) 
-            => await _context.GetAllCustomersAsync();
+        public List<Customer> GetAll() 
+            => _context.GetAllCustomers();
 
-        public async Task<Customer> GetByIdAsync(int id, CancellationToken ct = default)
+        public Customer GetById(int id)
         {
-            var customer = await _context.GetCustomerAsync(id);
+            var customer = _context.GetCustomer(id);
             return customer.First();
         }
 
-        public async Task<Customer> AddAsync(Customer newCustomer, CancellationToken ct = default)
+        public Customer Add(Customer newCustomer)
         {
             _context.Customer.Add(newCustomer);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return newCustomer;
         }
 
-        public async Task<bool> UpdateAsync(Customer customer, CancellationToken ct = default)
+        public bool Update(Customer customer)
         {
-            if (!await CustomerExists(customer.CustomerId, ct))
+            if (!CustomerExists(customer.CustomerId))
                 return false;
             _context.Customer.Update(customer);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
+        public bool Delete(int id)
         {
-            if (!await CustomerExists(id, ct))
+            if (!CustomerExists(id))
                 return false;
             var toRemove = _context.Customer.Find(id);
             _context.Customer.Remove(toRemove);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return true;
         }
 
-        public async Task<List<Customer>> GetBySupportRepIdAsync(int id,
-            CancellationToken ct = default) => await _context.GetCustomerBySupportRepIdAsync(id);
+        public List<Customer> GetBySupportRepId(int id) => _context.GetCustomerBySupportRepId(id);
     }
 }

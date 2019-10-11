@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using Newtonsoft.Json;
@@ -28,11 +27,11 @@ namespace Chinook.API.Controllers
         [HttpGet]
         [Produces(typeof(List<MediaTypeApiModel>))]
         [ResponseCache(Duration = 604800)] // cache for a week
-        public async Task<ActionResult<List<MediaTypeApiModel>>> Get(CancellationToken ct = default)
+        public ActionResult<List<MediaTypeApiModel>> Get()
         {
             try
             {
-                return new ObjectResult(await _chinookSupervisor.GetAllMediaTypeAsync(ct));
+                return new ObjectResult(_chinookSupervisor.GetAllMediaType());
             }
             catch (Exception ex)
             {
@@ -42,11 +41,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet("{id}")]
         [Produces(typeof(MediaTypeApiModel))]
-        public async Task<ActionResult<MediaTypeApiModel>> Get(int id, CancellationToken ct = default)
+        public ActionResult<MediaTypeApiModel> Get(int id)
         {
             try
             {
-                var mediaType = await _chinookSupervisor.GetMediaTypeByIdAsync(id, ct);
+                var mediaType = _chinookSupervisor.GetMediaTypeById(id);
                 if ( mediaType == null)
                 {
                     return NotFound();
@@ -61,15 +60,14 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<MediaTypeApiModel>> Post([FromBody] MediaTypeApiModel input,
-            CancellationToken ct = default)
+        public ActionResult<MediaTypeApiModel> Post([FromBody] MediaTypeApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
 
-                return StatusCode(201, await _chinookSupervisor.AddMediaTypeAsync(input, ct));
+                return StatusCode(201, _chinookSupervisor.AddMediaType(input));
             }
             catch (Exception ex)
             {
@@ -78,14 +76,13 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<MediaTypeApiModel>> Put(int id, [FromBody] MediaTypeApiModel input,
-            CancellationToken ct = default)
+        public ActionResult<MediaTypeApiModel> Put(int id, [FromBody] MediaTypeApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
-                if (await _chinookSupervisor.GetMediaTypeByIdAsync(id, ct) == null)
+                if (_chinookSupervisor.GetMediaTypeById(id) == null)
                 {
                     return NotFound();
                 }
@@ -95,7 +92,7 @@ namespace Chinook.API.Controllers
                     .Select(error => error.ErrorMessage));
                 Debug.WriteLine(errors);
 
-                if (await _chinookSupervisor.UpdateMediaTypeAsync(input, ct))
+                if (_chinookSupervisor.UpdateMediaType(input))
                 {
                     return Ok(input);
                 }
@@ -109,16 +106,16 @@ namespace Chinook.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id, CancellationToken ct = default)
+        public ActionResult Delete(int id)
         {
             try
             {
-                if (await _chinookSupervisor.GetMediaTypeByIdAsync(id, ct) == null)
+                if (_chinookSupervisor.GetMediaTypeById(id) == null)
                 {
                     return NotFound();
                 }
 
-                if (await _chinookSupervisor.DeleteMediaTypeAsync(id, ct))
+                if (_chinookSupervisor.DeleteMediaType(id))
                 {
                     return Ok();
                 }

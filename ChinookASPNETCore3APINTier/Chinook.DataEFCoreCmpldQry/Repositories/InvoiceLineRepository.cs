@@ -17,51 +17,48 @@ namespace Chinook.DataEFCoreCmpldQry.Repositories
             _context = context;
         }
 
-        private async Task<bool> InvoiceLineExists(int id, CancellationToken ct = default) =>
-            await _context.InvoiceLine.AnyAsync(i => i.InvoiceLineId == id, ct);
+        private bool InvoiceLineExists(int id) =>
+            _context.InvoiceLine.Any(i => i.InvoiceLineId == id);
 
         public void Dispose() => _context.Dispose();
 
-        public async Task<List<InvoiceLine>> GetAllAsync(CancellationToken ct = default) 
-            => await _context.GetAllInvoiceLinesAsync();
+        public List<InvoiceLine> GetAll() 
+            => _context.GetAllInvoiceLines();
 
-        public async Task<InvoiceLine> GetByIdAsync(int id, CancellationToken ct = default)
+        public InvoiceLine GetById(int id)
         {
-            var invoiceLine = await _context.GetInvoiceLineAsync(id);
+            var invoiceLine = _context.GetInvoiceLine(id);
             return invoiceLine.First();
         }
 
-        public async Task<InvoiceLine> AddAsync(InvoiceLine newInvoiceLine,
-            CancellationToken ct = default)
+        public InvoiceLine Add(InvoiceLine newInvoiceLine)
         {
             _context.InvoiceLine.Add(newInvoiceLine);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return newInvoiceLine;
         }
 
-        public async Task<bool> UpdateAsync(InvoiceLine invoiceLine, CancellationToken ct = default)
+        public bool Update(InvoiceLine invoiceLine)
         {
-            if (!await InvoiceLineExists(invoiceLine.InvoiceLineId, ct))
+            if (!InvoiceLineExists(invoiceLine.InvoiceLineId))
                 return false;
             _context.InvoiceLine.Update(invoiceLine);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
+        public bool Delete(int id)
         {
-            if (!await InvoiceLineExists(id, ct))
+            if (!InvoiceLineExists(id))
                 return false;
             var toRemove = _context.InvoiceLine.Find(id);
             _context.InvoiceLine.Remove(toRemove);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return true;
         }
 
-        public async Task<List<InvoiceLine>> GetByInvoiceIdAsync(int id,
-            CancellationToken ct = default) => await _context.GetInvoiceLinesByInvoiceIdAsync(id);
+        public List<InvoiceLine> GetByInvoiceId(int id) => _context.GetInvoiceLinesByInvoiceId(id);
 
-        public async Task<List<InvoiceLine>> GetByTrackIdAsync(int id,
-            CancellationToken ct = default) => await _context.GetInvoiceLinesByTrackIdAsync(id);
+        public List<InvoiceLine> GetByTrackId(int id) => _context.GetInvoiceLinesByTrackId(id);
     }
 }

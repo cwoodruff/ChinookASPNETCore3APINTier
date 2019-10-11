@@ -17,47 +17,46 @@ namespace Chinook.DataEFCore.Repositories
             _context = context;
         }
 
-        private async Task<bool> EmployeeExists(int id, CancellationToken ct = default) =>
-            await _context.Employee.AnyAsync(e => e.EmployeeId == id, ct);
+        private bool EmployeeExists(int id) =>
+            _context.Employee.Any(e => e.EmployeeId == id);
 
         public void Dispose() => _context.Dispose();
 
-        public async Task<List<Employee>> GetAllAsync(CancellationToken ct = default) =>
-            await _context.Employee.AsNoTracking().ToListAsync(ct);
+        public List<Employee> GetAll() =>
+            _context.Employee.AsNoTracking().ToList();
 
-        public async Task<Employee> GetByIdAsync(int id, CancellationToken ct = default) =>
-            await _context.Employee.FindAsync(id);
+        public Employee GetById(int id) =>
+            _context.Employee.Find(id);
 
-        public async Task<Employee> AddAsync(Employee newEmployee, CancellationToken ct = default)
+        public Employee Add(Employee newEmployee)
         {
             _context.Employee.Add(newEmployee);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return newEmployee;
         }
 
-        public async Task<bool> UpdateAsync(Employee employee, CancellationToken ct = default)
+        public bool Update(Employee employee)
         {
-            if (!await EmployeeExists(employee.EmployeeId, ct))
+            if (!EmployeeExists(employee.EmployeeId))
                 return false;
             _context.Employee.Update(employee);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
+        public bool Delete(int id)
         {
-            if (!await EmployeeExists(id, ct))
+            if (!EmployeeExists(id))
                 return false;
             var toRemove = _context.Employee.Find(id);
             _context.Employee.Remove(toRemove);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return true;
         }
 
-        public async Task<Employee> GetReportsToAsync(int id, CancellationToken ct = default) =>
-            await _context.Employee.FindAsync(id);
+        public Employee GetReportsTo(int id) =>
+            _context.Employee.Find(id);
 
-        public async Task<List<Employee>> GetDirectReportsAsync(int id,
-            CancellationToken ct = default) => await _context.Employee.Where(e => e.ReportsTo == id).ToListAsync(ct);
+        public List<Employee> GetDirectReports(int id) => _context.Employee.Where(e => e.ReportsTo == id).ToList();
     }
 }

@@ -5,8 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Chinook.API.Configurations;
-using Chinook.DataEFCoreCmpldQry.Repositories;
-using Chinook.Domain.Repositories;
 using Microsoft.OpenApi.Models;
 
 namespace Chinook.API

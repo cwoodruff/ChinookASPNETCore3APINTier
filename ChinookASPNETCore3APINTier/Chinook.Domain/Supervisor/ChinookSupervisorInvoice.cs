@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Chinook.Domain.Extensions;
 using Chinook.Domain.ApiModels;
 using Chinook.Domain.Entities;
@@ -12,9 +11,9 @@ namespace Chinook.Domain.Supervisor
 {
     public partial class ChinookSupervisor
     {
-        public async Task<IEnumerable<InvoiceApiModel>> GetAllInvoiceAsync(CancellationToken ct = default)
+        public IEnumerable<InvoiceApiModel> GetAllInvoice()
         {
-            var invoices = await _invoiceRepository.GetAllAsync(ct);
+            var invoices = _invoiceRepository.GetAll();
             foreach (var invoice in invoices)
             {
                 var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
@@ -23,25 +22,24 @@ namespace Chinook.Domain.Supervisor
             return invoices.ConvertAll();
         }
         
-        public async Task<InvoiceApiModel> GetInvoiceByIdAsync(int id,
-            CancellationToken ct = default)
+        public InvoiceApiModel GetInvoiceById(int id)
         {
             var invoice = _cache.Get<Invoice>(id);
 
             if (invoice != null)
             {
                 var invoiceApiModel = invoice.Convert;
-                invoiceApiModel.Customer = await GetCustomerByIdAsync(invoiceApiModel.CustomerId, ct);
-                invoiceApiModel.InvoiceLines = (await GetInvoiceLineByInvoiceIdAsync(invoiceApiModel.InvoiceId, ct)).ToList();
+                invoiceApiModel.Customer = GetCustomerById(invoiceApiModel.CustomerId);
+                invoiceApiModel.InvoiceLines = (GetInvoiceLineByInvoiceId(invoiceApiModel.InvoiceId)).ToList();
                 invoiceApiModel.CustomerName =
                     $"{invoiceApiModel.Customer.LastName}, {invoiceApiModel.Customer.FirstName}";
                 return invoiceApiModel;
             }
             else
             {
-                var invoiceApiModel = (await _invoiceRepository.GetByIdAsync(id, ct)).Convert;
-                invoiceApiModel.Customer = await GetCustomerByIdAsync(invoiceApiModel.CustomerId, ct);
-                invoiceApiModel.InvoiceLines = (await GetInvoiceLineByInvoiceIdAsync(invoiceApiModel.InvoiceId, ct)).ToList();
+                var invoiceApiModel = (_invoiceRepository.GetById(id)).Convert;
+                invoiceApiModel.Customer = GetCustomerById(invoiceApiModel.CustomerId);
+                invoiceApiModel.InvoiceLines = (GetInvoiceLineByInvoiceId(invoiceApiModel.InvoiceId)).ToList();
                 invoiceApiModel.CustomerName =
                     $"{invoiceApiModel.Customer.LastName}, {invoiceApiModel.Customer.FirstName}";
 
@@ -53,15 +51,13 @@ namespace Chinook.Domain.Supervisor
             }
         }
 
-        public async Task<IEnumerable<InvoiceApiModel>> GetInvoiceByCustomerIdAsync(int id,
-            CancellationToken ct = default)
+        public IEnumerable<InvoiceApiModel> GetInvoiceByCustomerId(int id)
         {
-            var invoices = await _invoiceRepository.GetByCustomerIdAsync(id, ct);
+            var invoices = _invoiceRepository.GetByCustomerId(id);
             return invoices.ConvertAll();
         }
 
-        public async Task<InvoiceApiModel> AddInvoiceAsync(InvoiceApiModel newInvoiceApiModel,
-            CancellationToken ct = default)
+        public InvoiceApiModel AddInvoice(InvoiceApiModel newInvoiceApiModel)
         {
             /*var invoice = new Invoice
             {
@@ -77,15 +73,14 @@ namespace Chinook.Domain.Supervisor
 
             var invoice = newInvoiceApiModel.Convert;
 
-            invoice = await _invoiceRepository.AddAsync(invoice, ct);
+            invoice = _invoiceRepository.Add(invoice);
             newInvoiceApiModel.InvoiceId = invoice.InvoiceId;
             return newInvoiceApiModel;
         }
 
-        public async Task<bool> UpdateInvoiceAsync(InvoiceApiModel invoiceApiModel,
-            CancellationToken ct = default)
+        public bool UpdateInvoice(InvoiceApiModel invoiceApiModel)
         {
-            var invoice = await _invoiceRepository.GetByIdAsync(invoiceApiModel.InvoiceId, ct);
+            var invoice = _invoiceRepository.GetById(invoiceApiModel.InvoiceId);
 
             if (invoice == null) return false;
             invoice.InvoiceId = invoiceApiModel.InvoiceId;
@@ -98,10 +93,10 @@ namespace Chinook.Domain.Supervisor
             invoice.BillingPostalCode = invoiceApiModel.BillingPostalCode;
             invoice.Total = invoiceApiModel.Total;
 
-            return await _invoiceRepository.UpdateAsync(invoice, ct);
+            return _invoiceRepository.Update(invoice);
         }
 
-        public Task<bool> DeleteInvoiceAsync(int id, CancellationToken ct = default) 
-            => _invoiceRepository.DeleteAsync(id, ct);
+        public bool DeleteInvoice(int id) 
+            => _invoiceRepository.Delete(id);
     }
 }

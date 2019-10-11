@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using Newtonsoft.Json;
@@ -26,11 +25,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet]
         [Produces(typeof(List<InvoiceApiModel>))]
-        public async Task<ActionResult<List<InvoiceApiModel>>> Get(CancellationToken ct = default)
+        public ActionResult<List<InvoiceApiModel>> Get()
         {
             try
             {
-                return new ObjectResult(await _chinookSupervisor.GetAllInvoiceAsync(ct));
+                return new ObjectResult(_chinookSupervisor.GetAllInvoice());
             }
             catch (Exception ex)
             {
@@ -40,11 +39,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet("{id}")]
         [Produces(typeof(InvoiceApiModel))]
-        public async Task<ActionResult<InvoiceApiModel>> Get(int id, CancellationToken ct = default)
+        public ActionResult<InvoiceApiModel> Get(int id)
         {
             try
             {
-                var invoice = await _chinookSupervisor.GetInvoiceByIdAsync(id, ct);
+                var invoice = _chinookSupervisor.GetInvoiceById(id);
                 if ( invoice == null)
                 {
                     return NotFound();
@@ -60,16 +59,16 @@ namespace Chinook.API.Controllers
 
         [HttpGet("customer/{id}")]
         [Produces(typeof(List<InvoiceApiModel>))]
-        public async Task<ActionResult<InvoiceApiModel>> GetByCustomerId(int id, CancellationToken ct = default)
+        public ActionResult<InvoiceApiModel> GetByCustomerId(int id)
         {
             try
             {
-                if (await _chinookSupervisor.GetCustomerByIdAsync(id, ct) == null)
+                if (_chinookSupervisor.GetCustomerById(id) == null)
                 {
                     return NotFound();
                 }
 
-                return Ok(await _chinookSupervisor.GetInvoiceByCustomerIdAsync(id, ct));
+                return Ok(_chinookSupervisor.GetInvoiceByCustomerId(id));
             }
             catch (Exception ex)
             {
@@ -78,15 +77,14 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<InvoiceApiModel>> Post([FromBody] InvoiceApiModel input,
-            CancellationToken ct = default)
+        public ActionResult<InvoiceApiModel> Post([FromBody] InvoiceApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
 
-                return StatusCode(201, await _chinookSupervisor.AddInvoiceAsync(input, ct));
+                return StatusCode(201, _chinookSupervisor.AddInvoice(input));
             }
             catch (Exception ex)
             {
@@ -95,14 +93,13 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<InvoiceApiModel>> Put(int id, [FromBody] InvoiceApiModel input,
-            CancellationToken ct = default)
+        public ActionResult<InvoiceApiModel> Put(int id, [FromBody] InvoiceApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
-                if (await _chinookSupervisor.GetInvoiceByIdAsync(id, ct) == null)
+                if (_chinookSupervisor.GetInvoiceById(id) == null)
                 {
                     return NotFound();
                 }
@@ -112,7 +109,7 @@ namespace Chinook.API.Controllers
                     .Select(error => error.ErrorMessage));
                 Debug.WriteLine(errors);
 
-                if (await _chinookSupervisor.UpdateInvoiceAsync(input, ct))
+                if (_chinookSupervisor.UpdateInvoice(input))
                 {
                     return Ok(input);
                 }
@@ -126,16 +123,16 @@ namespace Chinook.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id, CancellationToken ct = default)
+        public ActionResult Delete(int id)
         {
             try
             {
-                if (await _chinookSupervisor.GetInvoiceByIdAsync(id, ct) == null)
+                if (_chinookSupervisor.GetInvoiceById(id) == null)
                 {
                     return NotFound();
                 }
 
-                if (await _chinookSupervisor.DeleteInvoiceAsync(id, ct))
+                if (_chinookSupervisor.DeleteInvoice(id))
                 {
                     return Ok();
                 }

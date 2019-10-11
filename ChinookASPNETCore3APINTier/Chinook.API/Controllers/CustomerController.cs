@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using Newtonsoft.Json;
@@ -26,11 +25,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet]
         [Produces(typeof(List<CustomerApiModel>))]
-        public async Task<ActionResult<List<CustomerApiModel>>> Get(CancellationToken ct = default)
+        public ActionResult<List<CustomerApiModel>> Get()
         {
             try
             {
-                return new ObjectResult(await _chinookSupervisor.GetAllCustomerAsync(ct));
+                return new ObjectResult(_chinookSupervisor.GetAllCustomer());
             }
             catch (Exception ex)
             {
@@ -40,11 +39,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet("{id}")]
         [Produces(typeof(CustomerApiModel))]
-        public async Task<ActionResult<CustomerApiModel>> Get(int id, CancellationToken ct = default)
+        public ActionResult<CustomerApiModel> Get(int id)
         {
             try
             {
-                var customer = await _chinookSupervisor.GetCustomerByIdAsync(id, ct);
+                var customer = _chinookSupervisor.GetCustomerById(id);
                 if ( customer == null)
                 {
                     return NotFound();
@@ -60,11 +59,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet("supportrep/{id}")]
         [Produces(typeof(List<CustomerApiModel>))]
-        public async Task<ActionResult<CustomerApiModel>> GetBySupportRepId(int id, CancellationToken ct = default)
+        public ActionResult<CustomerApiModel> GetBySupportRepId(int id)
         {
             try
             {
-                var rep = await _chinookSupervisor.GetEmployeeByIdAsync(id, ct);
+                var rep = _chinookSupervisor.GetEmployeeById(id);
                 if ( rep == null)
                 {
                     return NotFound();
@@ -79,15 +78,14 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CustomerApiModel>> Post([FromBody] CustomerApiModel input,
-            CancellationToken ct = default)
+        public ActionResult<CustomerApiModel> Post([FromBody] CustomerApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
 
-                return StatusCode(201, await _chinookSupervisor.AddCustomerAsync(input, ct));
+                return StatusCode(201, _chinookSupervisor.AddCustomer(input));
             }
             catch (Exception ex)
             {
@@ -96,14 +94,13 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<CustomerApiModel>> Put(int id, [FromBody] CustomerApiModel input,
-            CancellationToken ct = default)
+        public ActionResult<CustomerApiModel> Put(int id, [FromBody] CustomerApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
-                if (await _chinookSupervisor.GetCustomerByIdAsync(id, ct) == null)
+                if (_chinookSupervisor.GetCustomerById(id) == null)
                 {
                     return NotFound();
                 }
@@ -113,7 +110,7 @@ namespace Chinook.API.Controllers
                     .Select(error => error.ErrorMessage));
                 Debug.WriteLine(errors);
 
-                if (await _chinookSupervisor.UpdateCustomerAsync(input, ct))
+                if (_chinookSupervisor.UpdateCustomer(input))
                 {
                     return Ok(input);
                 }
@@ -127,16 +124,16 @@ namespace Chinook.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id, CancellationToken ct = default)
+        public ActionResult Delete(int id)
         {
             try
             {
-                if (await _chinookSupervisor.GetCustomerByIdAsync(id, ct) == null)
+                if (_chinookSupervisor.GetCustomerById(id) == null)
                 {
                     return NotFound();
                 }
 
-                if (await _chinookSupervisor.DeleteCustomerAsync(id, ct))
+                if (_chinookSupervisor.DeleteCustomer(id))
                 {
                     return Ok();
                 }

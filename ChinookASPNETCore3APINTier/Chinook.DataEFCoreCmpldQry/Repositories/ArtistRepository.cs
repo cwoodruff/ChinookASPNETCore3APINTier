@@ -17,43 +17,43 @@ namespace Chinook.DataEFCoreCmpldQry.Repositories
             _context = context;
         }
 
-        private async Task<bool> ArtistExists(int id, CancellationToken ct = default) =>
-            await _context.Artist.AnyAsync(a => a.ArtistId == id, ct);
+        private bool ArtistExists(int id) =>
+            _context.Artist.Any(a => a.ArtistId == id);
 
         public void Dispose() => _context.Dispose();
 
-        public async Task<List<Artist>> GetAllAsync(CancellationToken ct = default) 
-            => await _context.GetAllArtistsAsync();
+        public List<Artist> GetAll() 
+            => _context.GetAllArtists();
 
-        public async Task<Artist> GetByIdAsync(int id, CancellationToken ct = default)
+        public Artist GetById(int id)
         {
-            var artist = await _context.GetArtistAsync(id);
+            var artist = _context.GetArtist(id);
             return artist.First();
         }
 
-        public async Task<Artist> AddAsync(Artist newArtist, CancellationToken ct = default)
+        public Artist Add(Artist newArtist)
         {
             _context.Artist.Add(newArtist);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return newArtist;
         }
 
-        public async Task<bool> UpdateAsync(Artist artist, CancellationToken ct = default)
+        public bool Update(Artist artist)
         {
-            if (!await ArtistExists(artist.ArtistId, ct))
+            if (!ArtistExists(artist.ArtistId))
                 return false;
             _context.Artist.Update(artist);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
+        public bool Delete(int id)
         {
-            if (!await ArtistExists(id, ct))
+            if (!ArtistExists(id))
                 return false;
             var toRemove = _context.Artist.Find(id);
             _context.Artist.Remove(toRemove);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return true;
         }
     }

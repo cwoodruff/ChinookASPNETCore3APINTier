@@ -17,53 +17,53 @@ namespace Chinook.DataEFCoreCmpldQry.Repositories
             _context = context;
         }
 
-        private async Task<bool> TrackExists(int id, CancellationToken ct = default) =>
-            await _context.Track.AnyAsync(i => i.TrackId == id, ct);
+        private bool TrackExists(int id) =>
+            _context.Track.Any(i => i.TrackId == id);
 
         public void Dispose() => _context.Dispose();
 
-        public async Task<List<Track>> GetAllAsync(CancellationToken ct = default) 
-            => await _context.GetAllTracksAsync();
+        public List<Track> GetAll() 
+            => _context.GetAllTracks();
 
-        public async Task<Track> GetByIdAsync(int id, CancellationToken ct = default)
+        public Track GetById(int id)
         {
-            var track = await _context.GetTrackAsync(id);
+            var track = _context.GetTrack(id);
             return track.First();
         }
 
-        public async Task<Track> AddAsync(Track newTrack, CancellationToken ct = default)
+        public Track Add(Track newTrack)
         {
             _context.Track.Add(newTrack);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return newTrack;
         }
 
-        public async Task<bool> UpdateAsync(Track track, CancellationToken ct = default)
+        public bool Update(Track track)
         {
-            if (!await TrackExists(track.TrackId, ct))
+            if (!TrackExists(track.TrackId))
                 return false;
             _context.Track.Update(track);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
+        public bool Delete(int id)
         {
-            if (!await TrackExists(id, ct))
+            if (!TrackExists(id))
                 return false;
             var toRemove = _context.Track.Find(id);
             _context.Track.Remove(toRemove);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return true;
         }
 
-        public async Task<List<Track>> GetByAlbumIdAsync(int id, CancellationToken ct = default) 
-            => await _context.GetTracksByAlbumIdAsync(id);
+        public List<Track> GetByAlbumId(int id) 
+            => _context.GetTracksByAlbumId(id);
 
-        public async Task<List<Track>> GetByGenreIdAsync(int id, CancellationToken ct = default) 
-            => await _context.GetTracksByGenreIdAsync(id);
+        public List<Track> GetByGenreId(int id) 
+            => _context.GetTracksByGenreId(id);
 
-        public async Task<List<Track>> GetByMediaTypeIdAsync(int id, CancellationToken ct = default) 
-            => await _context.GetTracksByMediaTypeIdAsync(id);
+        public List<Track> GetByMediaTypeId(int id) 
+            => _context.GetTracksByMediaTypeId(id);
     }
 }

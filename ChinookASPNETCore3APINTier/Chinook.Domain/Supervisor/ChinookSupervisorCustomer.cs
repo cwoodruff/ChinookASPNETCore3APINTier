@@ -3,7 +3,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
-    using System.Threading.Tasks;
     using Chinook.Domain.Extensions;
     using Chinook.Domain.ApiModels;
     using Chinook.Domain.Entities;
@@ -13,10 +12,9 @@
     {
         public partial class ChinookSupervisor
         {
-            public async Task<IEnumerable<CustomerApiModel>> GetAllCustomerAsync(
-                CancellationToken ct = default)
+            public IEnumerable<CustomerApiModel> GetAllCustomer()
             {
-                var customers = await _customerRepository.GetAllAsync(ct);
+                var customers = _customerRepository.GetAll();
                 foreach (var customer in customers)
                 {
                     var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
@@ -25,27 +23,26 @@
                 return customers.ConvertAll();
             }
 
-            public async Task<CustomerApiModel> GetCustomerByIdAsync(int id,
-                CancellationToken ct = default)
+            public CustomerApiModel GetCustomerById(int id)
             {
                 var customer = _cache.Get<Customer>(id);
 
                 if (customer != null)
                 {
                     var customerApiModel = customer.Convert;
-                    customerApiModel.Invoices = (await GetInvoiceByCustomerIdAsync(customerApiModel.CustomerId, ct)).ToList();
+                    customerApiModel.Invoices = (GetInvoiceByCustomerId(customerApiModel.CustomerId)).ToList();
                     customerApiModel.SupportRep =
-                        await GetEmployeeByIdAsync(customerApiModel.SupportRepId.GetValueOrDefault(), ct);
+                        GetEmployeeById(customerApiModel.SupportRepId.GetValueOrDefault());
                     customerApiModel.SupportRepName =
                         $"{customerApiModel.SupportRep.LastName}, {customerApiModel.SupportRep.FirstName}";
                     return customerApiModel;
                 }
                 else
                 {
-                    var customerApiModel = (await _customerRepository.GetByIdAsync(id, ct)).Convert;
-                    customerApiModel.Invoices = (await GetInvoiceByCustomerIdAsync(customerApiModel.CustomerId, ct)).ToList();
+                    var customerApiModel = (_customerRepository.GetById(id)).Convert;
+                    customerApiModel.Invoices = (GetInvoiceByCustomerId(customerApiModel.CustomerId)).ToList();
                     customerApiModel.SupportRep =
-                        await GetEmployeeByIdAsync(customerApiModel.SupportRepId.GetValueOrDefault(), ct);
+                        GetEmployeeById(customerApiModel.SupportRepId.GetValueOrDefault());
                     customerApiModel.SupportRepName =
                         $"{customerApiModel.SupportRep.LastName}, {customerApiModel.SupportRep.FirstName}";
 
@@ -57,15 +54,13 @@
                 }
             }
 
-            public async Task<IEnumerable<CustomerApiModel>> GetCustomerBySupportRepIdAsync(int id,
-                CancellationToken ct = default)
+            public IEnumerable<CustomerApiModel> GetCustomerBySupportRepId(int id)
             {
-                var customers = await _customerRepository.GetBySupportRepIdAsync(id, ct);
+                var customers = _customerRepository.GetBySupportRepId(id);
                 return customers.ConvertAll();
             }
 
-            public async Task<CustomerApiModel> AddCustomerAsync(CustomerApiModel newCustomerApiModel,
-                CancellationToken ct = default)
+            public CustomerApiModel AddCustomer(CustomerApiModel newCustomerApiModel)
             {
                 /*var customer = new Customer
                 {
@@ -85,15 +80,14 @@
 
                 var customer = newCustomerApiModel.Convert;
 
-                customer = await _customerRepository.AddAsync(customer, ct);
+                customer = _customerRepository.Add(customer);
                 newCustomerApiModel.CustomerId = customer.CustomerId;
                 return newCustomerApiModel;
             }
 
-            public async Task<bool> UpdateCustomerAsync(CustomerApiModel customerApiModel,
-                CancellationToken ct = default)
+            public bool UpdateCustomer(CustomerApiModel customerApiModel)
             {
-                var customer = await _customerRepository.GetByIdAsync(customerApiModel.CustomerId, ct);
+                var customer = _customerRepository.GetById(customerApiModel.CustomerId);
 
                 if (customer == null) return false;
                 customer.FirstName = customerApiModel.FirstName;
@@ -109,10 +103,10 @@
                 customer.Email = customerApiModel.Email;
                 customer.SupportRepId = customerApiModel.SupportRepId;
 
-                return await _customerRepository.UpdateAsync(customer, ct);
+                return _customerRepository.Update(customer);
             }
 
-            public Task<bool> DeleteCustomerAsync(int id, CancellationToken ct = default) 
-                => _customerRepository.DeleteAsync(id, ct);
+            public bool DeleteCustomer(int id) 
+                => _customerRepository.Delete(id);
         }
     }

@@ -17,57 +17,56 @@ namespace Chinook.DataEFCoreCmpldQry.Repositories
             _context = context;
         }
 
-        private async Task<bool> PlaylistExists(int id, CancellationToken ct = default) =>
-            await _context.Playlist.AnyAsync(i => i.PlaylistId == id, ct);
+        private bool PlaylistExists(int id) =>
+            _context.Playlist.Any(i => i.PlaylistId == id);
 
         public void Dispose() => _context.Dispose();
 
-        public async Task<List<Playlist>> GetAllAsync(CancellationToken ct = default) 
-            => await _context.GetAllPlaylistsAsync();
+        public List<Playlist> GetAll() 
+            => _context.GetAllPlaylists();
 
-        public async Task<Playlist> GetByIdAsync(int id, CancellationToken ct = default)
+        public Playlist GetById(int id)
         {
-            var playlist = await _context.GetPlaylistAsync(id);
+            var playlist = _context.GetPlaylist(id);
             return playlist.First();
         }
 
-        public async Task<List<Track>> GetTrackByPlaylistIdAsync(int id,
-            CancellationToken ct = default)
+        public List<Track> GetTrackByPlaylistId(int id)
         {
             IList<Track> list = new List<Track>();
             var playlistTracks = _context.PlaylistTrack.Where(p => p.PlaylistId == id);
             foreach (var playlistTrack in playlistTracks)
             {
-                var track = await _context.Track.FindAsync(playlistTrack.TrackId);
+                var track = _context.Track.Find(playlistTrack.TrackId);
                 list.Add(track);
             }
 
             return list.ToList();
         }
 
-        public async Task<Playlist> AddAsync(Playlist newPlaylist, CancellationToken ct = default)
+        public Playlist Add(Playlist newPlaylist)
         {
             _context.Playlist.Add(newPlaylist);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return newPlaylist;
         }
 
-        public async Task<bool> UpdateAsync(Playlist playlist, CancellationToken ct = default)
+        public bool Update(Playlist playlist)
         {
-            if (!await PlaylistExists(playlist.PlaylistId, ct))
+            if (!PlaylistExists(playlist.PlaylistId))
                 return false;
             _context.Playlist.Update(playlist);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
+        public bool Delete(int id)
         {
-            if (!await PlaylistExists(id, ct))
+            if (!PlaylistExists(id))
                 return false;
             var toRemove = _context.Playlist.Find(id);
             _context.Playlist.Remove(toRemove);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return true;
         }
     }

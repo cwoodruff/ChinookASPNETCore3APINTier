@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using Newtonsoft.Json;
@@ -26,11 +25,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet]
         [Produces(typeof(List<PlaylistApiModel>))]
-        public async Task<ActionResult<List<PlaylistApiModel>>> Get(CancellationToken ct = default)
+        public ActionResult<List<PlaylistApiModel>> Get()
         {
             try
             {
-                return new ObjectResult(await _chinookSupervisor.GetAllPlaylistAsync(ct));
+                return new ObjectResult(_chinookSupervisor.GetAllPlaylist());
             }
             catch (Exception ex)
             {
@@ -40,11 +39,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet("{id}")]
         [Produces(typeof(PlaylistApiModel))]
-        public async Task<ActionResult<PlaylistApiModel>> Get(int id, CancellationToken ct = default)
+        public ActionResult<PlaylistApiModel> Get(int id)
         {
             try
             {
-                var playList = await _chinookSupervisor.GetPlaylistByIdAsync(id, ct);
+                var playList = _chinookSupervisor.GetPlaylistById(id);
                 if ( playList == null)
                 {
                     return NotFound();
@@ -59,15 +58,14 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<PlaylistApiModel>> Post([FromBody] PlaylistApiModel input,
-            CancellationToken ct = default)
+        public ActionResult<PlaylistApiModel> Post([FromBody] PlaylistApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
 
-                return StatusCode(201, await _chinookSupervisor.AddPlaylistAsync(input, ct));
+                return StatusCode(201, _chinookSupervisor.AddPlaylist(input));
             }
             catch (Exception ex)
             {
@@ -76,14 +74,13 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<PlaylistApiModel>> Put(int id, [FromBody] PlaylistApiModel input,
-            CancellationToken ct = default)
+        public ActionResult<PlaylistApiModel> Put(int id, [FromBody] PlaylistApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
-                if (await _chinookSupervisor.GetPlaylistByIdAsync(id, ct) == null)
+                if (_chinookSupervisor.GetPlaylistById(id) == null)
                 {
                     return NotFound();
                 }
@@ -93,7 +90,7 @@ namespace Chinook.API.Controllers
                     .Select(error => error.ErrorMessage));
                 Debug.WriteLine(errors);
 
-                if (await _chinookSupervisor.UpdatePlaylistAsync(input, ct))
+                if (_chinookSupervisor.UpdatePlaylist(input))
                 {
                     return Ok(input);
                 }
@@ -107,16 +104,16 @@ namespace Chinook.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id, CancellationToken ct = default)
+        public ActionResult Delete(int id)
         {
             try
             {
-                if (await _chinookSupervisor.GetPlaylistByIdAsync(id, ct) == null)
+                if (_chinookSupervisor.GetPlaylistById(id) == null)
                 {
                     return NotFound();
                 }
 
-                if (await _chinookSupervisor.DeletePlaylistAsync(id, ct))
+                if (_chinookSupervisor.DeletePlaylist(id))
                 {
                     return Ok();
                 }

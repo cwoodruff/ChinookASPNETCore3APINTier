@@ -23,44 +23,44 @@ namespace Chinook.DataEFCore.Repositories
             _context = context;
         }
 
-        private async Task<bool> InvoiceExists(int id, CancellationToken ct = default) =>
-            await _context.Invoice.AnyAsync(i => i.InvoiceId == id, ct);
+        private bool InvoiceExists(int id) =>
+            _context.Invoice.Any(i => i.InvoiceId == id);
 
         public void Dispose() => _context.Dispose();
 
-        public async Task<List<Invoice>> GetAllAsync(CancellationToken ct = default) =>
-            await _context.Invoice.AsNoTracking().ToListAsync(ct);
+        public List<Invoice> GetAll() =>
+            _context.Invoice.AsNoTracking().ToList();
 
-        public async Task<Invoice> GetByIdAsync(int id, CancellationToken ct = default) =>
-            await _context.Invoice.FindAsync(id);
+        public Invoice GetById(int id) =>
+            _context.Invoice.Find(id);
 
-        public async Task<Invoice> AddAsync(Invoice newInvoice, CancellationToken ct = default)
+        public Invoice Add(Invoice newInvoice)
         {
             _context.Invoice.Add(newInvoice);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return newInvoice;
         }
 
-        public async Task<bool> UpdateAsync(Invoice invoice, CancellationToken ct = default)
+        public bool Update(Invoice invoice)
         {
-            if (!await InvoiceExists(invoice.InvoiceId, ct))
+            if (!InvoiceExists(invoice.InvoiceId))
                 return false;
             _context.Invoice.Update(invoice);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
+        public bool Delete(int id)
         {
-            if (!await InvoiceExists(id, ct))
+            if (!InvoiceExists(id))
                 return false;
             var toRemove = _context.Invoice.Find(id);
             _context.Invoice.Remove(toRemove);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return true;
         }
 
-        public async Task<List<Invoice>> GetByCustomerIdAsync(int id, CancellationToken ct = default) =>
-            await _context.Invoice.Where(a => a.InvoiceId == id).ToListAsync(ct);
+        public List<Invoice> GetByCustomerId(int id) =>
+            _context.Invoice.Where(a => a.InvoiceId == id).ToList();
     }
 }

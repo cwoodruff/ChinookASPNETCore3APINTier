@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Chinook.Domain.Extensions;
 using Chinook.Domain.ApiModels;
 using Chinook.Domain.Entities;
@@ -11,9 +9,9 @@ namespace Chinook.Domain.Supervisor
 {
     public partial class ChinookSupervisor
     {
-        public async Task<IEnumerable<TrackApiModel>> GetAllTrackAsync(CancellationToken ct = default)
+        public IEnumerable<TrackApiModel> GetAllTrack()
         {
-            var tracks = await _trackRepository.GetAllAsync(ct);
+            var tracks = _trackRepository.GetAll();
             foreach (var track in tracks)
             {
                 var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
@@ -22,16 +20,16 @@ namespace Chinook.Domain.Supervisor
             return tracks.ConvertAll();
         }
 
-        public async Task<TrackApiModel> GetTrackByIdAsync(int id, CancellationToken ct = default)
+        public TrackApiModel GetTrackById(int id)
         {
             var track = _cache.Get<Track>(id);
 
             if (track != null)
             {
                 var trackApiModel = track.Convert;
-                trackApiModel.Genre = await GetGenreByIdAsync(trackApiModel.GenreId.GetValueOrDefault(), ct);
-                trackApiModel.Album = await GetAlbumByIdAsync(trackApiModel.TrackId, ct);
-                trackApiModel.MediaType = await GetMediaTypeByIdAsync(trackApiModel.MediaTypeId, ct);
+                trackApiModel.Genre = GetGenreById(trackApiModel.GenreId.GetValueOrDefault());
+                trackApiModel.Album = GetAlbumById(trackApiModel.TrackId);
+                trackApiModel.MediaType = GetMediaTypeById(trackApiModel.MediaTypeId);
                 trackApiModel.AlbumName = trackApiModel.Album.Title;
                 trackApiModel.MediaTypeName = trackApiModel.MediaType.Name;
                 trackApiModel.GenreName = trackApiModel.Genre.Name;
@@ -39,10 +37,10 @@ namespace Chinook.Domain.Supervisor
             }
             else
             {
-                var trackApiModel = (await _trackRepository.GetByIdAsync(id, ct)).Convert;
-                trackApiModel.Genre = await GetGenreByIdAsync(trackApiModel.GenreId.GetValueOrDefault(), ct);
-                trackApiModel.Album = await GetAlbumByIdAsync(trackApiModel.TrackId, ct);
-                trackApiModel.MediaType = await GetMediaTypeByIdAsync(trackApiModel.MediaTypeId, ct);
+                var trackApiModel = (_trackRepository.GetById(id)).Convert;
+                trackApiModel.Genre = GetGenreById(trackApiModel.GenreId.GetValueOrDefault());
+                trackApiModel.Album = GetAlbumById(trackApiModel.TrackId);
+                trackApiModel.MediaType = GetMediaTypeById(trackApiModel.MediaTypeId);
                 trackApiModel.AlbumName = trackApiModel.Album.Title;
                 trackApiModel.MediaTypeName = trackApiModel.MediaType.Name;
                 trackApiModel.GenreName = trackApiModel.Genre.Name;
@@ -55,36 +53,31 @@ namespace Chinook.Domain.Supervisor
             }
         }
 
-        public async Task<IEnumerable<TrackApiModel>> GetTrackByAlbumIdAsync(int id,
-            CancellationToken ct = default)
+        public IEnumerable<TrackApiModel> GetTrackByAlbumId(int id)
         {
-            var tracks = await _trackRepository.GetByAlbumIdAsync(id, ct);
+            var tracks = _trackRepository.GetByAlbumId(id);
             return tracks.ConvertAll();
         }
 
-        public async Task<IEnumerable<TrackApiModel>> GetTrackByGenreIdAsync(int id,
-            CancellationToken ct = default)
+        public IEnumerable<TrackApiModel> GetTrackByGenreId(int id)
         {
-            var tracks = await _trackRepository.GetByGenreIdAsync(id, ct);
+            var tracks = _trackRepository.GetByGenreId(id);
             return tracks.ConvertAll();
         }
 
-        public async Task<IEnumerable<TrackApiModel>> GetTrackByMediaTypeIdAsync(int id,
-            CancellationToken ct = default)
+        public IEnumerable<TrackApiModel> GetTrackByMediaTypeId(int id)
         {
-            var tracks = await _trackRepository.GetByMediaTypeIdAsync(id, ct);
+            var tracks = _trackRepository.GetByMediaTypeId(id);
             return tracks.ConvertAll();
         }
 
-        public async Task<IEnumerable<TrackApiModel>> GetTrackByPlaylistIdIdAsync(int id,
-            CancellationToken ct = default)
+        public IEnumerable<TrackApiModel> GetTrackByPlaylistIdId(int id)
         {
-            var tracks = await _playlistRepository.GetTrackByPlaylistIdAsync(id, ct);
+            var tracks = _playlistRepository.GetTrackByPlaylistId(id);
             return tracks.ConvertAll();
         }
 
-        public async Task<TrackApiModel> AddTrackAsync(TrackApiModel newTrackApiModel,
-            CancellationToken ct = default)
+        public TrackApiModel AddTrack(TrackApiModel newTrackApiModel)
         {
             /*var track = new Track
             {
@@ -101,15 +94,14 @@ namespace Chinook.Domain.Supervisor
 
             var track = newTrackApiModel.Convert;
 
-            await _trackRepository.AddAsync(track, ct);
+            _trackRepository.Add(track);
             newTrackApiModel.TrackId = track.TrackId;
             return newTrackApiModel;
         }
 
-        public async Task<bool> UpdateTrackAsync(TrackApiModel trackApiModel,
-            CancellationToken ct = default)
+        public bool UpdateTrack(TrackApiModel trackApiModel)
         {
-            var track = await _trackRepository.GetByIdAsync(trackApiModel.TrackId, ct);
+            var track = _trackRepository.GetById(trackApiModel.TrackId);
 
             if (track == null) return false;
             track.TrackId = trackApiModel.TrackId;
@@ -122,10 +114,10 @@ namespace Chinook.Domain.Supervisor
             track.Bytes = trackApiModel.Bytes;
             track.UnitPrice = trackApiModel.UnitPrice;
 
-            return await _trackRepository.UpdateAsync(track, ct);
+            return _trackRepository.Update(track);
         }
 
-        public Task<bool> DeleteTrackAsync(int id, CancellationToken ct = default) 
-            => _trackRepository.DeleteAsync(id, ct);
+        public bool DeleteTrack(int id) 
+            => _trackRepository.Delete(id);
     }
 }

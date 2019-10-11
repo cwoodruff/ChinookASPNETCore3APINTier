@@ -17,49 +17,49 @@ namespace Chinook.DataEFCoreCmpldQry.Repositories
             _context = context;
         }
 
-        private async Task<bool> AlbumExists(int id, CancellationToken ct = default) =>
-            await _context.Album.AnyAsync(a => a.AlbumId == id, ct);
+        private bool AlbumExists(int id) =>
+            _context.Album.Any(a => a.AlbumId == id);
 
         public void Dispose() => _context.Dispose();
 
-        public async Task<List<Album>> GetAllAsync(CancellationToken ct = default) 
-            => await _context.GetAllAlbumsAsync();
+        public List<Album> GetAll() 
+            => _context.GetAllAlbums();
 
-        public async Task<Album> GetByIdAsync(int id, CancellationToken ct = default)
+        public Album GetById(int id)
         {
-            var album = await _context.GetAlbumAsync(id);
+            var album = _context.GetAlbum(id);
             return album.First();
         }
 
-        public async Task<Album> AddAsync(Album newAlbum, CancellationToken ct = default)
+        public Album Add(Album newAlbum)
         {
             _context.Album.Add(newAlbum);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return newAlbum;
         }
 
-        public async Task<bool> UpdateAsync(Album album, CancellationToken ct = default)
+        public bool Update(Album album)
         {
-            if (!await AlbumExists(album.AlbumId, ct))
+            if (!AlbumExists(album.AlbumId))
                 return false;
             _context.Album.Update(album);
 
             _context.Update(album);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
+        public bool Delete(int id)
         {
-            if (!await AlbumExists(id, ct))
+            if (!AlbumExists(id))
                 return false;
             var toRemove = _context.Album.Find(id);
             _context.Album.Remove(toRemove);
-            await _context.SaveChangesAsync(ct);
+            _context.SaveChanges();
             return true;
         }
 
-        public async Task<List<Album>> GetByArtistIdAsync(int id, CancellationToken ct = default) 
-            => await _context.GetAlbumsByArtistIdAsync(id);
+        public List<Album> GetByArtistId(int id) 
+            => _context.GetAlbumsByArtistId(id);
     }
 }

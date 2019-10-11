@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Chinook.DataEFCoreCmpldQry.Configurations;
 using Chinook.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -13,143 +12,137 @@ namespace Chinook.DataEFCoreCmpldQry
     {
         public static long InstanceCount;
 
-        private static readonly Func<ChinookContext, Task<List<Album>>> _queryGetAllAlbums =
-            EF.CompileAsyncQuery((ChinookContext db) =>
-                db.Album.AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, List<Album>> _queryGetAllAlbums =
+            EF.CompileQuery((ChinookContext db) =>
+                db.Album.AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<Album>>> _queryGetAlbum =
-            EF.CompileAsyncQuery((ChinookContext db, int id) =>
-                db.Album.Where(a => a.AlbumId == id).AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, int, List<Album>> _queryGetAlbum =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.Album.Where(a => a.AlbumId == id).AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<Album>>> _queryGetAlbumsByArtistId =
-            EF.CompileAsyncQuery((ChinookContext db, int id) => db.Album.Where(a => a.ArtistId == id).AsNoTracking()
-                .ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, int, List<Album>> _queryGetAlbumsByArtistId =
+            EF.CompileQuery((ChinookContext db, int id) => db.Album.Where(a => a.ArtistId == id).AsNoTracking()
+                .ToList());
 
-        private static readonly Func<ChinookContext, Task<List<Artist>>> _queryGetAllArtists =
-            EF.CompileAsyncQuery((ChinookContext db) =>
-                db.Artist.AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, List<Artist>> _queryGetAllArtists =
+            EF.CompileQuery((ChinookContext db) =>
+                db.Artist.AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<Artist>>> _queryGetArtist =
-            EF.CompileAsyncQuery((ChinookContext db, int id) =>
-                db.Artist.Where(a => a.ArtistId == id).AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, int, List<Artist>> _queryGetArtist =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.Artist.Where(a => a.ArtistId == id).AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, Task<List<Customer>>> _queryGetAllCustomers =
-            EF.CompileAsyncQuery((ChinookContext db) =>
-                db.Customer.AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, List<Customer>> _queryGetAllCustomers =
+            EF.CompileQuery((ChinookContext db) =>
+                db.Customer.AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<Customer>>> _queryGetCustomer =
-            EF.CompileAsyncQuery((ChinookContext db, int id) =>
-                db.Customer.Where(c => c.CustomerId == id).AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, int, List<Customer>> _queryGetCustomer =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.Customer.Where(c => c.CustomerId == id).AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<Customer>>> _queryGetCustomerBySupportRepId =
-            EF.CompileAsyncQuery((ChinookContext db, int id) =>
-                db.Customer.Where(a => a.SupportRepId == id).AsNoTracking().ToListAsync(new CancellationToken())
-                    .Result);
+        private static readonly Func<ChinookContext, int, List<Customer>> _queryGetCustomerBySupportRepId =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.Customer.Where(a => a.SupportRepId == id).AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, Task<List<Employee>>> _queryGetAllEmployees =
-            EF.CompileAsyncQuery((ChinookContext db) =>
-                db.Employee.AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, List<Employee>> _queryGetAllEmployees =
+            EF.CompileQuery((ChinookContext db) =>
+                db.Employee.AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<Employee>>> _queryGetEmployee =
-            EF.CompileAsyncQuery((ChinookContext db, int id) =>
-                db.Employee.Where(e => e.EmployeeId == id).AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, int, List<Employee>> _queryGetEmployee =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.Employee.Where(e => e.EmployeeId == id).AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<Employee>>> _queryGetDirectReports =
-            EF.CompileAsyncQuery((ChinookContext db, int id) =>
-                db.Employee.Where(e => e.ReportsTo == id).AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, int, List<Employee>> _queryGetDirectReports =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.Employee.Where(e => e.ReportsTo == id).AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<Employee>>> _queryGetReportsTo =
-            EF.CompileAsyncQuery((ChinookContext db, int id) =>
-                db.Employee.Where(e => e.ReportsTo == id).AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, int, List<Employee>> _queryGetReportsTo =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.Employee.Where(e => e.ReportsTo == id).AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, Task<List<Genre>>> _queryGetAllGenres =
-            EF.CompileAsyncQuery((ChinookContext db) =>
-                db.Genre.AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, List<Genre>> _queryGetAllGenres =
+            EF.CompileQuery((ChinookContext db) =>
+                db.Genre.AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<Genre>>> _queryGetGenre =
-            EF.CompileAsyncQuery((ChinookContext db, int id) =>
-                db.Genre.Where(g => g.GenreId == id).AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, int, List<Genre>> _queryGetGenre =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.Genre.Where(g => g.GenreId == id).AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, Task<List<InvoiceLine>>> _queryGetAllInvoiceLines =
-            EF.CompileAsyncQuery((ChinookContext db) =>
-                db.InvoiceLine.AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, List<InvoiceLine>> _queryGetAllInvoiceLines =
+            EF.CompileQuery((ChinookContext db) =>
+                db.InvoiceLine.AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<InvoiceLine>>> _queryGetInvoiceLine =
-            EF.CompileAsyncQuery((ChinookContext db, int id) =>
-                db.InvoiceLine.Where(i => i.InvoiceLineId == id).AsNoTracking().ToListAsync(new CancellationToken())
-                    .Result);
+        private static readonly Func<ChinookContext, int, List<InvoiceLine>> _queryGetInvoiceLine =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.InvoiceLine.Where(i => i.InvoiceLineId == id).AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<InvoiceLine>>> _queryGetInvoiceLinesByInvoiceId
-            = EF.CompileAsyncQuery((ChinookContext db, int id) =>
-                db.InvoiceLine.Where(a => a.InvoiceId == id).AsNoTracking().ToListAsync(new CancellationToken())
-                    .Result);
+        private static readonly Func<ChinookContext, int, List<InvoiceLine>> _queryGetInvoiceLinesByInvoiceId
+            = EF.CompileQuery((ChinookContext db, int id) =>
+                db.InvoiceLine.Where(a => a.InvoiceId == id).AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<InvoiceLine>>> _queryGetInvoiceLinesByTrackId =
-            EF.CompileAsyncQuery((ChinookContext db, int id) =>
-                db.InvoiceLine.Where(a => a.TrackId == id).AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, int, List<InvoiceLine>> _queryGetInvoiceLinesByTrackId =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.InvoiceLine.Where(a => a.TrackId == id).AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, Task<List<Invoice>>> _queryGetAllInvoices =
-            EF.CompileAsyncQuery((ChinookContext db) =>
-                db.Invoice.AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, List<Invoice>> _queryGetAllInvoices =
+            EF.CompileQuery((ChinookContext db) =>
+                db.Invoice.AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<Invoice>>> _queryGetInvoice =
-            EF.CompileAsyncQuery((ChinookContext db, int id) =>
-                db.Invoice.Where(i => i.InvoiceId == id).AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, int, List<Invoice>> _queryGetInvoice =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.Invoice.Where(i => i.InvoiceId == id).AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<Invoice>>> _queryGetInvoicesByCustomerId =
-            EF.CompileAsyncQuery((ChinookContext db, int id) =>
-                db.Invoice.Where(a => a.CustomerId == id).AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, int, List<Invoice>> _queryGetInvoicesByCustomerId =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.Invoice.Where(a => a.CustomerId == id).AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, Task<List<MediaType>>> _queryGetAllMediaTypes =
-            EF.CompileAsyncQuery((ChinookContext db) =>
-                db.MediaType.AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, List<MediaType>> _queryGetAllMediaTypes =
+            EF.CompileQuery((ChinookContext db) =>
+                db.MediaType.AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<MediaType>>> _queryGetMediaType =
-            EF.CompileAsyncQuery((ChinookContext db, int id) =>
-                db.MediaType.Where(m => m.MediaTypeId == id).AsNoTracking().ToListAsync(new CancellationToken())
-                    .Result);
+        private static readonly Func<ChinookContext, int, List<MediaType>> _queryGetMediaType =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.MediaType.Where(m => m.MediaTypeId == id).AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, Task<List<Playlist>>> _queryGetAllPlaylists =
-            EF.CompileAsyncQuery((ChinookContext db) =>
-                db.Playlist.AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, List<Playlist>> _queryGetAllPlaylists =
+            EF.CompileQuery((ChinookContext db) =>
+                db.Playlist.AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<Playlist>>> _queryGetPlaylist =
-            EF.CompileAsyncQuery((ChinookContext db, int id) =>
-                db.Playlist.Where(p => p.PlaylistId == id).AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, int, List<Playlist>> _queryGetPlaylist =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.Playlist.Where(p => p.PlaylistId == id).AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, Task<List<PlaylistTrack>>> _queryGetAllPlaylistTracks =
-            EF.CompileAsyncQuery((ChinookContext db) =>
-                db.PlaylistTrack.AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, List<PlaylistTrack>> _queryGetAllPlaylistTracks =
+            EF.CompileQuery((ChinookContext db) =>
+                db.PlaylistTrack.AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<PlaylistTrack>>> _queryGetPlaylistTrackByPlaylistId
-            = EF.CompileAsyncQuery((ChinookContext db, int id) =>
-                db.PlaylistTrack.Where(a => a.PlaylistId == id).AsNoTracking().ToListAsync(new CancellationToken())
-                    .Result);
+        private static readonly Func<ChinookContext, int, List<PlaylistTrack>> _queryGetPlaylistTrackByPlaylistId
+            = EF.CompileQuery((ChinookContext db, int id) =>
+                db.PlaylistTrack.Where(a => a.PlaylistId == id).AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<PlaylistTrack>>> _queryGetPlaylistTracksByTrackId =
-            EF.CompileAsyncQuery((ChinookContext db, int id) =>
-                db.PlaylistTrack.Where(a => a.TrackId == id).AsNoTracking().ToListAsync(new CancellationToken())
-                    .Result);
+        private static readonly Func<ChinookContext, int, List<PlaylistTrack>> _queryGetPlaylistTracksByTrackId =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.PlaylistTrack.Where(a => a.TrackId == id).AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, Task<List<Track>>> _queryGetAllTracks =
-            EF.CompileAsyncQuery((ChinookContext db) =>
-                db.Track.AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, List<Track>> _queryGetAllTracks =
+            EF.CompileQuery((ChinookContext db) =>
+                db.Track.AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<Track>>> _queryGetTrack =
-            EF.CompileAsyncQuery((ChinookContext db, int id) =>
-                db.Track.Where(t => t.TrackId == id).AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, int, List<Track>> _queryGetTrack =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.Track.Where(t => t.TrackId == id).AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<Track>>> _queryGetTracksByAlbumId =
-            EF.CompileAsyncQuery((ChinookContext db, int id) =>
-                db.Track.Where(a => a.AlbumId == id).AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, int, List<Track>> _queryGetTracksByAlbumId =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.Track.Where(a => a.AlbumId == id).AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<Track>>> _queryGetTracksByGenreId =
-            EF.CompileAsyncQuery((ChinookContext db, int id) =>
-                db.Track.Where(a => a.GenreId == id).AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, int, List<Track>> _queryGetTracksByGenreId =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.Track.Where(a => a.GenreId == id).AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, Task<List<Track>>> _queryGetTracksByMediaTypeId =
-            EF.CompileAsyncQuery((ChinookContext db, int id) =>
-                db.Track.Where(a => a.MediaTypeId == id).AsNoTracking().ToListAsync(new CancellationToken()).Result);
+        private static readonly Func<ChinookContext, int, List<Track>> _queryGetTracksByMediaTypeId =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.Track.Where(a => a.MediaTypeId == id).AsNoTracking().ToList());
 
         public ChinookContext(DbContextOptions options) : base(options)
         {
@@ -183,86 +176,86 @@ namespace Chinook.DataEFCoreCmpldQry
             new TrackConfiguration(modelBuilder.Entity<Track>());
         }
 
-        public Task<List<Album>> GetAllAlbumsAsync() => _queryGetAllAlbums(this);
+        public List<Album> GetAllAlbums() => _queryGetAllAlbums(this);
 
-        public async Task<List<Album>> GetAlbumAsync(int id) => await _queryGetAlbum(this, id);
+        public List<Album> GetAlbum(int id) => _queryGetAlbum(this, id);
 
-        public async Task<List<Album>> GetAlbumsByArtistIdAsync(int id) =>
-            await _queryGetAlbumsByArtistId(this, id);
+        public List<Album> GetAlbumsByArtistId(int id) =>
+            _queryGetAlbumsByArtistId(this, id);
 
-        public async Task<List<Artist>> GetAllArtistsAsync() => await _queryGetAllArtists(this);
+        public List<Artist> GetAllArtists() => _queryGetAllArtists(this);
 
-        public async Task<List<Artist>> GetArtistAsync(int id) => await _queryGetArtist(this, id);
+        public List<Artist> GetArtist(int id) => _queryGetArtist(this, id);
 
-        public async Task<List<Customer>> GetAllCustomersAsync() => await _queryGetAllCustomers(this);
+        public List<Customer> GetAllCustomers() => _queryGetAllCustomers(this);
 
-        public async Task<List<Customer>> GetCustomerAsync(int id) => await _queryGetCustomer(this, id);
+        public List<Customer> GetCustomer(int id) => _queryGetCustomer(this, id);
 
-        public async Task<List<Customer>> GetCustomerBySupportRepIdAsync(int id) =>
-            await _queryGetCustomerBySupportRepId(this, id);
+        public List<Customer> GetCustomerBySupportRepId(int id) =>
+            _queryGetCustomerBySupportRepId(this, id);
 
-        public async Task<List<Employee>> GetAllEmployeesAsync() => await _queryGetAllEmployees(this);
+        public List<Employee> GetAllEmployees() => _queryGetAllEmployees(this);
 
-        public async Task<List<Employee>> GetEmployeeAsync(int id) => await _queryGetEmployee(this, id);
+        public List<Employee> GetEmployee(int id) => _queryGetEmployee(this, id);
 
-        public async Task<List<Employee>> GetEmployeeDirectReportsAsync(int id) =>
-            await _queryGetDirectReports(this, id);
+        public List<Employee> GetEmployeeDirectReports(int id) =>
+            _queryGetDirectReports(this, id);
 
-        public async Task<List<Employee>> GetEmployeeGetReportsToAsync(int id) =>
-            await _queryGetReportsTo(this, id);
+        public List<Employee> GetEmployeeGetReportsTo(int id) =>
+            _queryGetReportsTo(this, id);
 
-        public async Task<List<Genre>> GetAllGenresAsync() => await _queryGetAllGenres(this);
+        public List<Genre> GetAllGenres() => _queryGetAllGenres(this);
 
-        public async Task<List<Genre>> GetGenreAsync(int id) => await _queryGetGenre(this, id);
+        public List<Genre> GetGenre(int id) => _queryGetGenre(this, id);
 
-        public async Task<List<InvoiceLine>> GetAllInvoiceLinesAsync() =>
-            await _queryGetAllInvoiceLines(this);
+        public List<InvoiceLine> GetAllInvoiceLines() =>
+            _queryGetAllInvoiceLines(this);
 
-        public async Task<List<InvoiceLine>> GetInvoiceLineAsync(int id) =>
-            await _queryGetInvoiceLine(this, id);
+        public List<InvoiceLine> GetInvoiceLine(int id) =>
+            _queryGetInvoiceLine(this, id);
 
-        public async Task<List<InvoiceLine>> GetInvoiceLinesByInvoiceIdAsync(int id) =>
-            await _queryGetInvoiceLinesByInvoiceId(this, id);
+        public List<InvoiceLine> GetInvoiceLinesByInvoiceId(int id) =>
+            _queryGetInvoiceLinesByInvoiceId(this, id);
 
-        public async Task<List<InvoiceLine>> GetInvoiceLinesByTrackIdAsync(int id) =>
-            await _queryGetInvoiceLinesByTrackId(this, id);
+        public List<InvoiceLine> GetInvoiceLinesByTrackId(int id) =>
+            _queryGetInvoiceLinesByTrackId(this, id);
 
-        public async Task<List<Invoice>> GetAllInvoicesAsync() => await _queryGetAllInvoices(this);
+        public List<Invoice> GetAllInvoices() => _queryGetAllInvoices(this);
 
-        public async Task<List<Invoice>> GetInvoiceAsync(int id) => await _queryGetInvoice(this, id);
+        public List<Invoice> GetInvoice(int id) => _queryGetInvoice(this, id);
 
-        public async Task<List<Invoice>> GetInvoicesByCustomerIdAsync(int id) =>
-            await _queryGetInvoicesByCustomerId(this, id);
+        public List<Invoice> GetInvoicesByCustomerId(int id) =>
+            _queryGetInvoicesByCustomerId(this, id);
 
-        public async Task<List<MediaType>> GetAllMediaTypesAsync() => await _queryGetAllMediaTypes(this);
+        public List<MediaType> GetAllMediaTypes() => _queryGetAllMediaTypes(this);
 
-        public async Task<List<MediaType>> GetMediaTypeAsync(int id) =>
-            await _queryGetMediaType(this, id);
+        public List<MediaType> GetMediaType(int id) =>
+            _queryGetMediaType(this, id);
 
-        public async Task<List<Playlist>> GetAllPlaylistsAsync() => await _queryGetAllPlaylists(this);
+        public List<Playlist> GetAllPlaylists() => _queryGetAllPlaylists(this);
 
-        public async Task<List<Playlist>> GetPlaylistAsync(int id) => await _queryGetPlaylist(this, id);
+        public List<Playlist> GetPlaylist(int id) => _queryGetPlaylist(this, id);
 
-        public async Task<List<PlaylistTrack>> GetAllPlaylistTracksAsync() =>
-            await _queryGetAllPlaylistTracks(this);
+        public List<PlaylistTrack> GetAllPlaylistTracks() =>
+            _queryGetAllPlaylistTracks(this);
 
-        public async Task<List<PlaylistTrack>> GetPlaylistTrackByPlaylistId(int id) =>
-            await _queryGetPlaylistTrackByPlaylistId(this, id);
+        public List<PlaylistTrack> GetPlaylistTrackByPlaylistId(int id) =>
+            _queryGetPlaylistTrackByPlaylistId(this, id);
 
-        public async Task<List<PlaylistTrack>> GetPlaylistTracksByTrackIdAsync(int id) =>
-            await _queryGetPlaylistTracksByTrackId(this, id);
+        public List<PlaylistTrack> GetPlaylistTracksByTrackId(int id) =>
+            _queryGetPlaylistTracksByTrackId(this, id);
 
-        public async Task<List<Track>> GetAllTracksAsync() => await _queryGetAllTracks(this);
+        public List<Track> GetAllTracks() => _queryGetAllTracks(this);
 
-        public async Task<List<Track>> GetTrackAsync(int id) => await _queryGetTrack(this, id);
+        public List<Track> GetTrack(int id) => _queryGetTrack(this, id);
 
-        public async Task<List<Track>> GetTracksByAlbumIdAsync(int id) =>
-            await _queryGetTracksByAlbumId(this, id);
+        public List<Track> GetTracksByAlbumId(int id) =>
+            _queryGetTracksByAlbumId(this, id);
 
-        public async Task<List<Track>> GetTracksByGenreIdAsync(int id) =>
-            await _queryGetTracksByGenreId(this, id);
+        public List<Track> GetTracksByGenreId(int id) =>
+            _queryGetTracksByGenreId(this, id);
 
-        public async Task<List<Track>> GetTracksByMediaTypeIdAsync(int id) =>
-            await _queryGetTracksByMediaTypeId(this, id);
+        public List<Track> GetTracksByMediaTypeId(int id) =>
+            _queryGetTracksByMediaTypeId(this, id);
     }
 }

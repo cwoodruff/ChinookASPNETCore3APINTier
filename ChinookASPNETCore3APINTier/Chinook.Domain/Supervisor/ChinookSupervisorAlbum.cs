@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Chinook.Domain.Extensions;
 using Chinook.Domain.ApiModels;
 using Chinook.Domain.Entities;
@@ -11,31 +9,33 @@ namespace Chinook.Domain.Supervisor
 {
     public partial class ChinookSupervisor
     {
-        public async Task<IEnumerable<AlbumApiModel>> GetAllAlbumAsync(CancellationToken ct = default)
+        public IEnumerable<AlbumApiModel> GetAllAlbum()
         {
-            var albums = await _albumRepository.GetAllAsync(ct);
+            var albums = _albumRepository.GetAll();
             foreach (var album in albums)
             {
-                var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
+                var cacheEntryOptions =
+                    new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
                 _cache.Set(album.AlbumId, album, cacheEntryOptions);
             }
+
             return albums.ConvertAll();
         }
 
-        public async Task<AlbumApiModel> GetAlbumByIdAsync(int id, CancellationToken ct = default)
+        public AlbumApiModel GetAlbumById(int id)
         {
             var album = _cache.Get<Album>(id);
 
             if (album != null)
             {
                 var albumApiModel = album.Convert;
-                albumApiModel.ArtistName = (await _artistRepository.GetByIdAsync(albumApiModel.ArtistId, ct)).Name;
+                albumApiModel.ArtistName = (_artistRepository.GetById(albumApiModel.ArtistId)).Name;
                 return albumApiModel;
             }
             else
             {
-                var albumApiModel = (await _albumRepository.GetByIdAsync(id, ct)).Convert;
-                albumApiModel.ArtistName = (await _artistRepository.GetByIdAsync(albumApiModel.ArtistId, ct)).Name;
+                var albumApiModel = (_albumRepository.GetById(id)).Convert;
+                albumApiModel.ArtistName = (_artistRepository.GetById(albumApiModel.ArtistId)).Name;
 
                 var cacheEntryOptions =
                     new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
@@ -45,37 +45,34 @@ namespace Chinook.Domain.Supervisor
             }
         }
 
-        public async Task<IEnumerable<AlbumApiModel>> GetAlbumByArtistIdAsync(int id,
-            CancellationToken ct = default)
+        public IEnumerable<AlbumApiModel> GetAlbumByArtistId(int id)
         {
-            var albums = await _albumRepository.GetByArtistIdAsync(id, ct);
+            var albums = _albumRepository.GetByArtistId(id);
             return albums.ConvertAll();
         }
 
-        public async Task<AlbumApiModel> AddAlbumAsync(AlbumApiModel newAlbumApiModel,
-            CancellationToken ct = default)
+        public AlbumApiModel AddAlbum(AlbumApiModel newAlbumApiModel)
         {
             var album = newAlbumApiModel.Convert;
 
-            album = await _albumRepository.AddAsync(album, ct);
+            album = _albumRepository.Add(album);
             newAlbumApiModel.AlbumId = album.AlbumId;
             return newAlbumApiModel;
         }
 
-        public async Task<bool> UpdateAlbumAsync(AlbumApiModel albumApiModel,
-            CancellationToken ct = default)
+        public bool UpdateAlbum(AlbumApiModel albumApiModel)
         {
-            var album = await _albumRepository.GetByIdAsync(albumApiModel.AlbumId, ct);
+            var album = _albumRepository.GetById(albumApiModel.AlbumId);
 
             if (album is null) return false;
             album.AlbumId = albumApiModel.AlbumId;
             album.Title = albumApiModel.Title;
             album.ArtistId = albumApiModel.ArtistId;
 
-            return await _albumRepository.UpdateAsync(album, ct);
+            return _albumRepository.Update(album);
         }
 
-        public Task<bool> DeleteAlbumAsync(int id, CancellationToken ct = default)
-            => _albumRepository.DeleteAsync(id, ct);
+        public bool DeleteAlbum(int id)
+            => _albumRepository.Delete(id);
     }
 }

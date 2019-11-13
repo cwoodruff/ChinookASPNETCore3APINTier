@@ -38,20 +38,19 @@ namespace Chinook.Domain.Entities
             set => _customer = value;
         }
 
-        [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
-        public InvoiceApiModel Convert => new InvoiceApiModel
-        {
-            InvoiceId = InvoiceId,
-            CustomerId = CustomerId,
-            InvoiceDate = InvoiceDate,
-            BillingAddress = BillingAddress,
-            BillingCity = BillingCity,
-            BillingState = BillingState,
-            BillingCountry = BillingCountry,
-            BillingPostalCode = BillingPostalCode,
-            Total = Total,
-            CustomerName = $"{Customer.FirstName} {Customer.LastName}"
-        };
+        public InvoiceApiModel Convert() =>
+            new InvoiceApiModel
+            {
+                InvoiceId = InvoiceId,
+                CustomerId = CustomerId,
+                InvoiceDate = InvoiceDate,
+                BillingAddress = BillingAddress,
+                BillingCity = BillingCity,
+                BillingState = BillingState,
+                BillingCountry = BillingCountry,
+                BillingPostalCode = BillingPostalCode,
+                Total = Total,
+                CustomerName = $"{Customer.FirstName} {Customer.LastName}"
+            };
     }
 }

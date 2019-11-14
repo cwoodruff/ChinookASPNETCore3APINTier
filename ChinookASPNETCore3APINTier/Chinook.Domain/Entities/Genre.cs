@@ -16,15 +16,13 @@ namespace Chinook.Domain.Entities
         public string Name { get; set; }
 
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public ICollection<Track> Tracks { get; set; } = new HashSet<Track>();
 
-        [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
-        public GenreApiModel Convert => new GenreApiModel
-        {
-            GenreId = GenreId,
-            Name = Name
-        };
+        public GenreApiModel Convert() =>
+            new GenreApiModel
+            {
+                GenreId = GenreId,
+                Name = Name
+            };
     }
 }

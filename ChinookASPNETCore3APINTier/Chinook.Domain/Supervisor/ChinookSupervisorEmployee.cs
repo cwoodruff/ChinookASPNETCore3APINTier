@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Chinook.Domain.Extensions;
 using Chinook.Domain.ApiModels;
-using Chinook.Domain.Entities;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Chinook.Domain.Supervisor
@@ -13,36 +11,26 @@ namespace Chinook.Domain.Supervisor
     {
         public IEnumerable<EmployeeApiModel> GetAllEmployee()
         {
-            var employees = _employeeRepository.GetAll();
+            var employees = _employeeRepository.GetAll().ConvertAll();
             foreach (var employee in employees)
             {
                 var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
-                _cache.Set(employee.EmployeeId, employee, cacheEntryOptions);
+                _cache.Set(string.Concat("Employee-", employee.EmployeeId), employee, cacheEntryOptions);
             }
-            return employees.ConvertAll();
+            return employees;
         }
 
         public EmployeeApiModel GetEmployeeById(int id)
         {
-            var employee = _cache.Get<Employee>(id);
+            var employeeApiModelCached = _cache.Get<EmployeeApiModel>(string.Concat("Employee-", id));
 
-            if (employee != null)
+            if (employeeApiModelCached != null)
             {
-                var employeeApiModel = employee.Convert;
-                employeeApiModel.Customers = (GetCustomerBySupportRepId(employeeApiModel.EmployeeId)).ToList();
-                employeeApiModel.DirectReports = (GetEmployeeDirectReports(employeeApiModel.EmployeeId)).ToList();
-                employeeApiModel.Manager = employeeApiModel.ReportsTo.HasValue
-                    ? GetEmployeeReportsTo(employeeApiModel.ReportsTo.GetValueOrDefault())
-                    : null;
-                if (employeeApiModel.Manager != null)
-                    employeeApiModel.ReportsToName = employeeApiModel.ReportsTo.HasValue
-                        ? $"{employeeApiModel.Manager.LastName}, {employeeApiModel.Manager.FirstName}"
-                        : string.Empty;
-                return employeeApiModel;
+                return employeeApiModelCached;
             }
             else
             {
-                var employeeApiModel = (_employeeRepository.GetById(id)).Convert;
+                var employeeApiModel = (_employeeRepository.GetById(id)).Convert();
                 employeeApiModel.Customers = (GetCustomerBySupportRepId(employeeApiModel.EmployeeId)).ToList();
                 employeeApiModel.DirectReports = (GetEmployeeDirectReports(employeeApiModel.EmployeeId)).ToList();
                 employeeApiModel.Manager = employeeApiModel.ReportsTo.HasValue
@@ -55,7 +43,7 @@ namespace Chinook.Domain.Supervisor
 
                 var cacheEntryOptions =
                     new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
-                _cache.Set(employeeApiModel.EmployeeId, employeeApiModel, cacheEntryOptions);
+                _cache.Set(string.Concat("Employee-", employeeApiModel.EmployeeId), employeeApiModel, cacheEntryOptions);
 
                 return employeeApiModel;
             }
@@ -64,30 +52,12 @@ namespace Chinook.Domain.Supervisor
         public EmployeeApiModel GetEmployeeReportsTo(int id)
         {
             var employee = _employeeRepository.GetReportsTo(id);
-            return employee.Convert;
+            return employee.Convert();
         }
 
         public EmployeeApiModel AddEmployee(EmployeeApiModel newEmployeeApiModel)
         {
-            /*var employee = new Employee
-            {
-                LastName = newEmployeeApiModel.LastName,
-                FirstName = newEmployeeApiModel.FirstName,
-                Title = newEmployeeApiModel.Title,
-                ReportsTo = newEmployeeApiModel.ReportsTo,
-                BirthDate = newEmployeeApiModel.BirthDate,
-                HireDate = newEmployeeApiModel.HireDate,
-                Address = newEmployeeApiModel.Address,
-                City = newEmployeeApiModel.City,
-                State = newEmployeeApiModel.State,
-                Country = newEmployeeApiModel.Country,
-                PostalCode = newEmployeeApiModel.PostalCode,
-                Phone = newEmployeeApiModel.Phone,
-                Fax = newEmployeeApiModel.Fax,
-                Email = newEmployeeApiModel.Email
-            };*/
-
-            var employee = newEmployeeApiModel.Convert;
+            var employee = newEmployeeApiModel.Convert();
 
             employee = _employeeRepository.Add(employee);
             newEmployeeApiModel.EmployeeId = employee.EmployeeId;

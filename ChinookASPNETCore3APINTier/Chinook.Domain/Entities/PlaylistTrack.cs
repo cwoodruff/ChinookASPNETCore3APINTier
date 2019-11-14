@@ -10,18 +10,15 @@ namespace Chinook.Domain.Entities
         public int TrackId { get; set; }
 
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public Playlist Playlist { get; set; }
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public Track Track { get; set; }
 
-        [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
-        public PlaylistTrackApiModel Convert => new PlaylistTrackApiModel
-        {
-            PlaylistId = PlaylistId,
-            TrackId = TrackId
-        };
+        public PlaylistTrackApiModel Convert() =>
+            new PlaylistTrackApiModel
+            {
+                PlaylistId = PlaylistId,
+                TrackId = TrackId
+            };
     }
 }

@@ -15,18 +15,15 @@ namespace Chinook.Domain.ApiModels
 
         public string Name { get; set; }
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public IList<TrackApiModel> Tracks { get; set; }
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public IList<PlaylistTrackApiModel> PlaylistTracks { get; set; }
-        
-        [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
-        public Playlist Convert => new Playlist
-        {
-            PlaylistId = PlaylistId,
-            Name = Name
-        };
+
+        public Playlist Convert() =>
+            new Playlist
+            {
+                PlaylistId = PlaylistId,
+                Name = Name
+            };
     }
 }

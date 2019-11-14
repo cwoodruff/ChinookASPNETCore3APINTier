@@ -27,11 +27,9 @@ namespace Chinook.Domain.Entities
         public decimal Total { get; set; }
 
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public ICollection<InvoiceLine> InvoiceLines { get; set; } = new HashSet<InvoiceLine>();
 
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public Customer Customer
         {
             get => _customer;
@@ -49,8 +47,7 @@ namespace Chinook.Domain.Entities
                 BillingState = BillingState,
                 BillingCountry = BillingCountry,
                 BillingPostalCode = BillingPostalCode,
-                Total = Total,
-                CustomerName = $"{Customer.FirstName} {Customer.LastName}"
+                Total = Total
             };
     }
 }

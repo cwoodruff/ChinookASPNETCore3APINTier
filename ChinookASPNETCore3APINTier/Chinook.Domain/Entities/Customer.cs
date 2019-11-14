@@ -28,29 +28,27 @@ namespace Chinook.Domain.Entities
         public int? SupportRepId { get; set; }
 
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public ICollection<Invoice> Invoices { get; set; } = new HashSet<Invoice>();
+        
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public Employee SupportRep { get; set; }
 
-        [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
-        public CustomerApiModel Convert => new CustomerApiModel
-        {
-            CustomerId = CustomerId,
-            FirstName = FirstName,
-            LastName = LastName,
-            Company = Company,
-            Address = Address,
-            City = City,
-            State = State,
-            Country = Country,
-            PostalCode = PostalCode,
-            Phone = Phone,
-            Fax = Fax,
-            Email = Email,
-            SupportRepId = SupportRepId
-        };
+        public CustomerApiModel Convert() =>
+            new CustomerApiModel
+            {
+                CustomerId = CustomerId,
+                FirstName = FirstName,
+                LastName = LastName,
+                Company = Company,
+                Address = Address,
+                City = City,
+                State = State,
+                Country = Country,
+                PostalCode = PostalCode,
+                Phone = Phone,
+                Fax = Fax,
+                Email = Email,
+                SupportRepId = SupportRepId
+            };
     }
 }

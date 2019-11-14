@@ -23,34 +23,28 @@ namespace Chinook.Domain.Entities
         public decimal UnitPrice { get; set; }
 
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public ICollection<InvoiceLine> InvoiceLines { get; set; } = new HashSet<InvoiceLine>();
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public ICollection<PlaylistTrack> PlaylistTracks { get; set; } = new HashSet<PlaylistTrack>();
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public Album Album { get; set; }
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public Genre Genre { get; set; }
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public MediaType MediaType { get; set; }
 
-        [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
-        public TrackApiModel Convert => new TrackApiModel
-        {
-            TrackId = TrackId,
-            Name = Name,
-            AlbumId = AlbumId,
-            MediaTypeId = MediaTypeId,
-            GenreId = GenreId,
-            Composer = Composer,
-            Milliseconds = Milliseconds,
-            Bytes = Bytes,
-            UnitPrice = UnitPrice
-        };
+        public TrackApiModel Convert() =>
+            new TrackApiModel
+            {
+                TrackId = TrackId,
+                Name = Name,
+                AlbumId = AlbumId,
+                MediaTypeId = MediaTypeId,
+                GenreId = GenreId,
+                Composer = Composer,
+                Milliseconds = Milliseconds,
+                Bytes = Bytes,
+                UnitPrice = UnitPrice
+            };
     }
 }

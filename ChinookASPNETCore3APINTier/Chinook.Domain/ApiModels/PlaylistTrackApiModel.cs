@@ -12,18 +12,15 @@ namespace Chinook.Domain.ApiModels
         public int TrackId { get; set; }
 
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public PlaylistApiModel Playlist { get; set; }
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public TrackApiModel Track { get; set; }
-        
-        [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
-        public PlaylistTrack Convert => new PlaylistTrack
-        {
-            PlaylistId = PlaylistId,
-            TrackId = TrackId
-        };
+
+        public PlaylistTrack Convert() =>
+            new PlaylistTrack
+            {
+                PlaylistId = PlaylistId,
+                TrackId = TrackId
+            };
     }
 }

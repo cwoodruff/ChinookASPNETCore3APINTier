@@ -2,10 +2,8 @@
     
     using System.Collections.Generic;
     using System.Linq;
-    using System.Threading;
     using Chinook.Domain.Extensions;
     using Chinook.Domain.ApiModels;
-    using Chinook.Domain.Entities;
     using Microsoft.Extensions.Caching.Memory;
 
     namespace Chinook.Domain.Supervisor
@@ -14,32 +12,26 @@
         {
             public IEnumerable<CustomerApiModel> GetAllCustomer()
             {
-                var customers = _customerRepository.GetAll();
+                var customers = _customerRepository.GetAll().ConvertAll();
                 foreach (var customer in customers)
                 {
                     var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
-                    _cache.Set(customer.CustomerId, customer, cacheEntryOptions);
+                    _cache.Set(string.Concat("Customer-", customer.CustomerId), customer, cacheEntryOptions);
                 }
-                return customers.ConvertAll();
+                return customers;
             }
 
             public CustomerApiModel GetCustomerById(int id)
             {
-                var customer = _cache.Get<Customer>(id);
+                var customerApiModelCached = _cache.Get<CustomerApiModel>(string.Concat("Customer-", id));
 
-                if (customer != null)
+                if (customerApiModelCached != null)
                 {
-                    var customerApiModel = customer.Convert;
-                    customerApiModel.Invoices = (GetInvoiceByCustomerId(customerApiModel.CustomerId)).ToList();
-                    customerApiModel.SupportRep =
-                        GetEmployeeById(customerApiModel.SupportRepId.GetValueOrDefault());
-                    customerApiModel.SupportRepName =
-                        $"{customerApiModel.SupportRep.LastName}, {customerApiModel.SupportRep.FirstName}";
-                    return customerApiModel;
+                    return customerApiModelCached;
                 }
                 else
                 {
-                    var customerApiModel = (_customerRepository.GetById(id)).Convert;
+                    var customerApiModel = (_customerRepository.GetById(id)).Convert();
                     customerApiModel.Invoices = (GetInvoiceByCustomerId(customerApiModel.CustomerId)).ToList();
                     customerApiModel.SupportRep =
                         GetEmployeeById(customerApiModel.SupportRepId.GetValueOrDefault());
@@ -48,7 +40,7 @@
 
                     var cacheEntryOptions =
                         new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
-                    _cache.Set(customerApiModel.CustomerId, customerApiModel, cacheEntryOptions);
+                    _cache.Set(string.Concat("Customer-", customerApiModel.CustomerId), customerApiModel, cacheEntryOptions);
 
                     return customerApiModel;
                 }
@@ -78,7 +70,7 @@
                     SupportRepId = newCustomerApiModel.SupportRepId
                 };*/
 
-                var customer = newCustomerApiModel.Convert;
+                var customer = newCustomerApiModel.Convert();
 
                 customer = _customerRepository.Add(customer);
                 newCustomerApiModel.CustomerId = customer.CustomerId;

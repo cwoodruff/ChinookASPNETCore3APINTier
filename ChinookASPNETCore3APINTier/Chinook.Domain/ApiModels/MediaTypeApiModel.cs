@@ -16,15 +16,13 @@ namespace Chinook.Domain.ApiModels
         public string Name { get; set; }
 
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public IList<TrackApiModel> Tracks { get; set; }
-        
-        [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
-        public MediaType Convert => new MediaType
-        {
-            MediaTypeId = MediaTypeId,
-            Name = Name
-        };
+
+        public MediaType Convert() =>
+            new MediaType
+            {
+                MediaTypeId = MediaTypeId,
+                Name = Name
+            };
     }
 }

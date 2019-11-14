@@ -27,38 +27,32 @@ namespace Chinook.Domain.ApiModels
         public decimal UnitPrice { get; set; }
 
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public IList<InvoiceLineApiModel> InvoiceLines { get; set; }
         
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public IList<PlaylistTrackApiModel> PlaylistTracks { get; set; }
         
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public AlbumApiModel Album { get; set; }
         
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public GenreApiModel Genre { get; set; }
         
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public MediaTypeApiModel MediaType { get; set; }
-        
-        [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
-        public Track Convert => new Track
-        {
-            TrackId = TrackId,
-            Name = Name,
-            AlbumId = AlbumId,
-            MediaTypeId = MediaTypeId,
-            GenreId = GenreId,
-            Composer = Composer,
-            Milliseconds = Milliseconds,
-            Bytes = Bytes,
-            UnitPrice = UnitPrice
-        };
+
+        public Track Convert() =>
+            new Track
+            {
+                TrackId = TrackId,
+                Name = Name,
+                AlbumId = AlbumId,
+                MediaTypeId = MediaTypeId,
+                GenreId = GenreId,
+                Composer = Composer,
+                Milliseconds = Milliseconds,
+                Bytes = Bytes,
+                UnitPrice = UnitPrice
+            };
     }
 }

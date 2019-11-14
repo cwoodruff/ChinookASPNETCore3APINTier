@@ -27,25 +27,22 @@ namespace Chinook.Domain.ApiModels
         public decimal Total { get; set; }
 
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public IList<InvoiceLineApiModel> InvoiceLines { get; set; }
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public CustomerApiModel Customer { get; set; }
-        
-        [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
-        public Invoice Convert => new Invoice
-        {
-            InvoiceId = InvoiceId,
-            CustomerId = CustomerId,
-            InvoiceDate = InvoiceDate,
-            BillingAddress = BillingAddress,
-            BillingCity = BillingCity,
-            BillingState = BillingState,
-            BillingCountry = BillingCountry,
-            BillingPostalCode = BillingPostalCode,
-            Total = Total
-        };
+
+        public Invoice Convert() =>
+            new Invoice
+            {
+                InvoiceId = InvoiceId,
+                CustomerId = CustomerId,
+                InvoiceDate = InvoiceDate,
+                BillingAddress = BillingAddress,
+                BillingCity = BillingCity,
+                BillingState = BillingState,
+                BillingCountry = BillingCountry,
+                BillingPostalCode = BillingPostalCode,
+                Total = Total
+            };
     }
 }

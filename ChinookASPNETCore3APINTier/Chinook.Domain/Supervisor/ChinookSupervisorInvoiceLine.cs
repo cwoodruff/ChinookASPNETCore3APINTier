@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using Chinook.Domain.Extensions;
 using Chinook.Domain.ApiModels;
-using Chinook.Domain.Entities;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Chinook.Domain.Supervisor
@@ -12,37 +10,33 @@ namespace Chinook.Domain.Supervisor
     {
         public IEnumerable<InvoiceLineApiModel> GetAllInvoiceLine()
         {
-            var invoiceLines = _invoiceLineRepository.GetAll();
+            var invoiceLines = _invoiceLineRepository.GetAll().ConvertAll();
             foreach (var invoiceLine in invoiceLines)
             {
                 var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
-                _cache.Set(invoiceLine.InvoiceLineId, invoiceLine, cacheEntryOptions);
+                _cache.Set(string.Concat("InvoiceLine-", invoiceLine.InvoiceLineId), invoiceLine, cacheEntryOptions);
             }
-            return invoiceLines.ConvertAll();
+            return invoiceLines;
         }
 
         public InvoiceLineApiModel GetInvoiceLineById(int id)
         {
-            var invoiceLine = _cache.Get<InvoiceLine>(id);
+            var invoiceLineApiModelCached = _cache.Get<InvoiceLineApiModel>(string.Concat("InvoiceLine-", id));
 
-            if (invoiceLine != null)
+            if (invoiceLineApiModelCached != null)
             {
-                var invoiceLineApiModel = invoiceLine.Convert;
-                invoiceLineApiModel.Track = GetTrackById(invoiceLineApiModel.TrackId);
-                invoiceLineApiModel.Invoice = GetInvoiceById(invoiceLineApiModel.InvoiceId);
-                invoiceLineApiModel.TrackName = invoiceLineApiModel.Track.Name;
-                return invoiceLineApiModel;
+                return invoiceLineApiModelCached;
             }
             else
             {
-                var invoiceLineApiModel = (_invoiceLineRepository.GetById(id)).Convert;
+                var invoiceLineApiModel = (_invoiceLineRepository.GetById(id)).Convert();
                 invoiceLineApiModel.Track = GetTrackById(invoiceLineApiModel.TrackId);
                 invoiceLineApiModel.Invoice = GetInvoiceById(invoiceLineApiModel.InvoiceId);
                 invoiceLineApiModel.TrackName = invoiceLineApiModel.Track.Name;
 
                 var cacheEntryOptions =
                     new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
-                _cache.Set(invoiceLineApiModel.InvoiceLineId, invoiceLineApiModel, cacheEntryOptions);
+                _cache.Set(string.Concat("InvoiceLine-", invoiceLineApiModel.InvoiceLineId), invoiceLineApiModel, cacheEntryOptions);
 
                 return invoiceLineApiModel;
             }
@@ -62,15 +56,7 @@ namespace Chinook.Domain.Supervisor
 
         public InvoiceLineApiModel AddInvoiceLine(InvoiceLineApiModel newInvoiceLineApiModel)
         {
-            /*var invoiceLine = new InvoiceLine
-            {
-                InvoiceId = newInvoiceLineApiModel.InvoiceId,
-                TrackId = newInvoiceLineApiModel.TrackId,
-                UnitPrice = newInvoiceLineApiModel.UnitPrice,
-                Quantity = newInvoiceLineApiModel.Quantity
-            };*/
-
-            var invoiceLine = newInvoiceLineApiModel.Convert;
+            var invoiceLine = newInvoiceLineApiModel.Convert();
 
             invoiceLine = _invoiceLineRepository.Add(invoiceLine);
             newInvoiceLineApiModel.InvoiceLineId = invoiceLine.InvoiceLineId;

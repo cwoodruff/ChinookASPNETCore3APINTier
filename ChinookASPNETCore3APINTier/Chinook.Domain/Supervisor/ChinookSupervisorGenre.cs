@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using Chinook.Domain.Extensions;
 using Chinook.Domain.ApiModels;
 using System.Linq;
-using Chinook.Domain.Entities;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Chinook.Domain.Supervisor
@@ -13,34 +11,32 @@ namespace Chinook.Domain.Supervisor
     {
         public IEnumerable<GenreApiModel> GetAllGenre()
         {
-            var genres = _genreRepository.GetAll();
+            var genres = _genreRepository.GetAll().ConvertAll();
 
             foreach (var genre in genres)
             {
                 var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
-                _cache.Set(genre.GenreId, genre, cacheEntryOptions);
+                _cache.Set(string.Concat("Genre-", genre.GenreId), genre, cacheEntryOptions);
             }
             
-            return genres.ConvertAll();
+            return genres;
         }
 
         public GenreApiModel GetGenreById(int id)
         {
-            var genre = _cache.Get<Genre>(id);
+            var genreApiModelCached = _cache.Get<GenreApiModel>(string.Concat("Genre-", id));
 
-            if (genre != null)
+            if (genreApiModelCached != null)
             {
-                var genreApiModel = genre.Convert;
-                genreApiModel.Tracks = (GetTrackByGenreId(genreApiModel.GenreId)).ToList();
-                return genreApiModel;
+                return genreApiModelCached;
             }
             else
             {
-                var genreApiModel = (_genreRepository.GetById(id)).Convert;
+                var genreApiModel = (_genreRepository.GetById(id)).Convert();
                 genreApiModel.Tracks = (GetTrackByGenreId(genreApiModel.GenreId)).ToList();
                 
                 var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
-                _cache.Set(genreApiModel.GenreId, genreApiModel, cacheEntryOptions);
+                _cache.Set(string.Concat("Genre-", genreApiModel.GenreId), genreApiModel, cacheEntryOptions);
                 
                 return genreApiModel;
             }
@@ -48,7 +44,7 @@ namespace Chinook.Domain.Supervisor
 
         public GenreApiModel AddGenre(GenreApiModel newGenreApiModel)
         {
-            var genre = newGenreApiModel.Convert;
+            var genre = newGenreApiModel.Convert();
 
             genre = _genreRepository.Add(genre);
             newGenreApiModel.GenreId = genre.GenreId;

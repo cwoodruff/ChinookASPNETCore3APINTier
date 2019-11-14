@@ -15,15 +15,13 @@ namespace Chinook.Domain.Entities
         public string Name { get; set; }
 
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public ICollection<Track> Tracks { get; set; } = new HashSet<Track>();
 
-        [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
-        public MediaTypeApiModel Convert => new MediaTypeApiModel
-        {
-            MediaTypeId = MediaTypeId,
-            Name = Name
-        };
+        public MediaTypeApiModel Convert() =>
+            new MediaTypeApiModel
+            {
+                MediaTypeId = MediaTypeId,
+                Name = Name
+            };
     }
 }

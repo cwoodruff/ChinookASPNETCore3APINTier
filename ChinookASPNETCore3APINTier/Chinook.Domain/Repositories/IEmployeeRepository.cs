@@ -1,7 +1,6 @@
 ﻿using Chinook.Domain.Entities;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace Chinook.Domain.Repositories
 {

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Chinook.Domain.Extensions;
 using Chinook.Domain.ApiModels;
-using Chinook.Domain.Entities;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Chinook.Domain.Supervisor
@@ -11,35 +10,33 @@ namespace Chinook.Domain.Supervisor
     {
         public IEnumerable<AlbumApiModel> GetAllAlbum()
         {
-            var albums = _albumRepository.GetAll();
+            var albums = _albumRepository.GetAll().ConvertAll();
             foreach (var album in albums)
             {
                 var cacheEntryOptions =
                     new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
-                _cache.Set(album.AlbumId, album, cacheEntryOptions);
+                _cache.Set(string.Concat("Album-", album.AlbumId), album, cacheEntryOptions);
             }
 
-            return albums.ConvertAll();
+            return albums;
         }
 
         public AlbumApiModel GetAlbumById(int id)
         {
-            var album = _cache.Get<Album>(id);
+            var albumApiModelCached = _cache.Get<AlbumApiModel>(string.Concat("Album-", id));
 
-            if (album != null)
+            if (albumApiModelCached != null)
             {
-                var albumApiModel = album.Convert;
-                albumApiModel.ArtistName = (_artistRepository.GetById(albumApiModel.ArtistId)).Name;
-                return albumApiModel;
+                return albumApiModelCached;
             }
             else
             {
-                var albumApiModel = (_albumRepository.GetById(id)).Convert;
+                var albumApiModel = (_albumRepository.GetById(id)).Convert();
                 albumApiModel.ArtistName = (_artistRepository.GetById(albumApiModel.ArtistId)).Name;
 
                 var cacheEntryOptions =
                     new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
-                _cache.Set(albumApiModel.AlbumId, albumApiModel, cacheEntryOptions);
+                _cache.Set(string.Concat("Album-", albumApiModel.AlbumId), albumApiModel, cacheEntryOptions);
 
                 return albumApiModel;
             }
@@ -53,7 +50,7 @@ namespace Chinook.Domain.Supervisor
 
         public AlbumApiModel AddAlbum(AlbumApiModel newAlbumApiModel)
         {
-            var album = newAlbumApiModel.Convert;
+            var album = newAlbumApiModel.Convert();
 
             album = _albumRepository.Add(album);
             newAlbumApiModel.AlbumId = album.AlbumId;

@@ -32,34 +32,30 @@ namespace Chinook.Domain.ApiModels
         public string Email { get; set; }
 
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public List<CustomerApiModel> Customers { get; set; }
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public EmployeeApiModel Manager { get; set; }
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public ICollection<EmployeeApiModel> DirectReports { get; set; }
-        
-        [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
-        public Employee Convert => new Employee
-        {
-            EmployeeId = EmployeeId,
-            LastName = LastName,
-            FirstName = FirstName,
-            Title = Title,
-            ReportsTo = ReportsTo,
-            BirthDate = BirthDate,
-            HireDate = HireDate,
-            Address = Address,
-            City = City,
-            State = State,
-            Country = Country,
-            PostalCode = PostalCode,
-            Phone = Phone,
-            Fax = Fax,
-            Email = Email
-        };
+
+        public Employee Convert() =>
+            new Employee
+            {
+                EmployeeId = EmployeeId,
+                LastName = LastName,
+                FirstName = FirstName,
+                Title = Title,
+                ReportsTo = ReportsTo,
+                BirthDate = BirthDate,
+                HireDate = HireDate,
+                Address = Address,
+                City = City,
+                State = State,
+                Country = Country,
+                PostalCode = PostalCode,
+                Phone = Phone,
+                Fax = Fax,
+                Email = Email
+            };
     }
 }

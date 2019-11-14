@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Chinook.Domain.Extensions;
 using Chinook.Domain.ApiModels;
-using Chinook.Domain.Entities;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Chinook.Domain.Supervisor
@@ -11,33 +10,26 @@ namespace Chinook.Domain.Supervisor
     {
         public IEnumerable<TrackApiModel> GetAllTrack()
         {
-            var tracks = _trackRepository.GetAll();
+            var tracks = _trackRepository.GetAll().ConvertAll();
             foreach (var track in tracks)
             {
                 var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
-                _cache.Set(track.TrackId, track, cacheEntryOptions);
+                _cache.Set(string.Concat("Track-", track.TrackId), track, cacheEntryOptions);
             }
-            return tracks.ConvertAll();
+            return tracks;
         }
 
         public TrackApiModel GetTrackById(int id)
         {
-            var track = _cache.Get<Track>(id);
+            var trackApiModelCached = _cache.Get<TrackApiModel>(string.Concat("Track-", id));
 
-            if (track != null)
+            if (trackApiModelCached != null)
             {
-                var trackApiModel = track.Convert;
-                trackApiModel.Genre = GetGenreById(trackApiModel.GenreId.GetValueOrDefault());
-                trackApiModel.Album = GetAlbumById(trackApiModel.TrackId);
-                trackApiModel.MediaType = GetMediaTypeById(trackApiModel.MediaTypeId);
-                trackApiModel.AlbumName = trackApiModel.Album.Title;
-                trackApiModel.MediaTypeName = trackApiModel.MediaType.Name;
-                trackApiModel.GenreName = trackApiModel.Genre.Name;
-                return trackApiModel;
+                return trackApiModelCached;
             }
             else
             {
-                var trackApiModel = (_trackRepository.GetById(id)).Convert;
+                var trackApiModel = (_trackRepository.GetById(id)).Convert();
                 trackApiModel.Genre = GetGenreById(trackApiModel.GenreId.GetValueOrDefault());
                 trackApiModel.Album = GetAlbumById(trackApiModel.TrackId);
                 trackApiModel.MediaType = GetMediaTypeById(trackApiModel.MediaTypeId);
@@ -47,7 +39,7 @@ namespace Chinook.Domain.Supervisor
 
                 var cacheEntryOptions =
                     new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
-                _cache.Set(trackApiModel.TrackId, trackApiModel, cacheEntryOptions);
+                _cache.Set(string.Concat("Track-", trackApiModel.TrackId), trackApiModel, cacheEntryOptions);
 
                 return trackApiModel;
             }
@@ -79,20 +71,7 @@ namespace Chinook.Domain.Supervisor
 
         public TrackApiModel AddTrack(TrackApiModel newTrackApiModel)
         {
-            /*var track = new Track
-            {
-                TrackId = newTrackApiModel.TrackId,
-                Name = newTrackApiModel.Name,
-                AlbumId = newTrackApiModel.AlbumId,
-                MediaTypeId = newTrackApiModel.MediaTypeId,
-                GenreId = newTrackApiModel.GenreId,
-                Composer = newTrackApiModel.Composer,
-                Milliseconds = newTrackApiModel.Milliseconds,
-                Bytes = newTrackApiModel.Bytes,
-                UnitPrice = newTrackApiModel.UnitPrice
-            };*/
-
-            var track = newTrackApiModel.Convert;
+            var track = newTrackApiModel.Convert();
 
             _trackRepository.Add(track);
             newTrackApiModel.TrackId = track.TrackId;

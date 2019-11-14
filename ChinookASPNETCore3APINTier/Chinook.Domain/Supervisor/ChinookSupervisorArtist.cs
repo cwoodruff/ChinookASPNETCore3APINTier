@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Chinook.Domain.Extensions;
 using Chinook.Domain.ApiModels;
-using Chinook.Domain.Entities;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Chinook.Domain.Supervisor
@@ -12,33 +11,31 @@ namespace Chinook.Domain.Supervisor
     {
         public IEnumerable<ArtistApiModel> GetAllArtist()
         {
-            var artists = _artistRepository.GetAll();
+            var artists = _artistRepository.GetAll().ConvertAll();
             foreach (var artist in artists)
             {
                 var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
-                _cache.Set(artist.ArtistId, artist, cacheEntryOptions);
+                _cache.Set(string.Concat("Artist-", artist.ArtistId), artist, cacheEntryOptions);
             }
-            return artists.ConvertAll();
+            return artists;
         }
 
         public ArtistApiModel GetArtistById(int id)
         {
-            var artist = _cache.Get<Artist>(id);
+            var artistApiModelCached = _cache.Get<ArtistApiModel>(string.Concat("Artist-", id));
 
-            if (artist != null)
+            if (artistApiModelCached != null)
             {
-                var artistApiModel = artist.Convert;
-                artistApiModel.Albums = (GetAlbumByArtistId(artistApiModel.ArtistId)).ToList();
-                return artistApiModel;
+                return artistApiModelCached;
             }
             else
             {
-                var artistApiModel = (_artistRepository.GetById(id)).Convert;
+                var artistApiModel = (_artistRepository.GetById(id)).Convert();
                 artistApiModel.Albums = (GetAlbumByArtistId(artistApiModel.ArtistId)).ToList();
 
                 var cacheEntryOptions =
                     new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
-                _cache.Set(artistApiModel.ArtistId, artistApiModel, cacheEntryOptions);
+                _cache.Set(string.Concat("Artist-", artistApiModel.ArtistId), artistApiModel, cacheEntryOptions);
 
                 return artistApiModel;
             }
@@ -46,7 +43,7 @@ namespace Chinook.Domain.Supervisor
 
         public ArtistApiModel AddArtist(ArtistApiModel newArtistApiModel)
         {
-            var artist = newArtistApiModel.Convert;
+            var artist = newArtistApiModel.Convert();
 
             artist = _artistRepository.Add(artist);
             newArtistApiModel.ArtistId = artist.ArtistId;

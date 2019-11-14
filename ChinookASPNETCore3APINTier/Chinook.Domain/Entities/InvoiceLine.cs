@@ -20,21 +20,18 @@ namespace Chinook.Domain.Entities
         public int Quantity { get; set; }
 
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public Invoice Invoice { get; set; }
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public Track Track { get; set; }
 
-        [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
-        public InvoiceLineApiModel Convert => new InvoiceLineApiModel
-        {
-            InvoiceLineId = InvoiceLineId,
-            InvoiceId = InvoiceId,
-            TrackId = TrackId,
-            UnitPrice = UnitPrice,
-            Quantity = Quantity
-        };
+        public InvoiceLineApiModel Convert() =>
+            new InvoiceLineApiModel
+            {
+                InvoiceLineId = InvoiceLineId,
+                InvoiceId = InvoiceId,
+                TrackId = TrackId,
+                UnitPrice = UnitPrice,
+                Quantity = Quantity
+            };
     }
 }

@@ -21,24 +21,21 @@ namespace Chinook.Domain.Entities
         public int ArtistId { get; set; }
 
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public ICollection<Track> Tracks { get; set; } = new HashSet<Track>();
 
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public Artist Artist
         {
             get => _artist;
             set => _artist = value;
         }
 
-        [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
-        public AlbumApiModel Convert => new AlbumApiModel
-        {
-            AlbumId = AlbumId,
-            ArtistId = ArtistId,
-            Title = Title
-        };
+        public AlbumApiModel Convert() =>
+            new AlbumApiModel
+            {
+                AlbumId = AlbumId,
+                ArtistId = ArtistId,
+                Title = Title
+            };
     }
 }

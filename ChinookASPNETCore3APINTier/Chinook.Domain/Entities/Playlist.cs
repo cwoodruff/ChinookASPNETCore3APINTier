@@ -14,15 +14,13 @@ namespace Chinook.Domain.Entities
         public string Name { get; set; }
 
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public ICollection<PlaylistTrack> PlaylistTracks { get; set; } = new HashSet<PlaylistTrack>();
 
-        [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
-        public PlaylistApiModel Convert => new PlaylistApiModel
-        {
-            PlaylistId = PlaylistId,
-            Name = Name
-        };
+        public PlaylistApiModel Convert() =>
+            new PlaylistApiModel
+            {
+                PlaylistId = PlaylistId,
+                Name = Name
+            };
     }
 }

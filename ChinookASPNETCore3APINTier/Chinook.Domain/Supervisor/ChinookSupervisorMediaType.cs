@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using Chinook.Domain.Extensions;
 using Chinook.Domain.ApiModels;
 using System.Linq;
-using Chinook.Domain.Entities;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Chinook.Domain.Supervisor
@@ -13,33 +11,31 @@ namespace Chinook.Domain.Supervisor
     {
         public IEnumerable<MediaTypeApiModel> GetAllMediaType()
         {
-            var mediaTypes = _mediaTypeRepository.GetAll();
+            var mediaTypes = _mediaTypeRepository.GetAll().ConvertAll();
             foreach (var mediaType in mediaTypes)
             {
                 var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
-                _cache.Set(mediaType.MediaTypeId, mediaType, cacheEntryOptions);
+                _cache.Set(string.Concat("MediaType-", mediaType.MediaTypeId), mediaType, cacheEntryOptions);
             }
-            return mediaTypes.ConvertAll();
+            return mediaTypes;
         }
 
         public MediaTypeApiModel GetMediaTypeById(int id)
         {
-            var mediaType = _cache.Get<MediaType>(id);
+            var mediaTypeApiModelCached = _cache.Get<MediaTypeApiModel>(string.Concat("MediaType-", id));
 
-            if (mediaType != null)
+            if (mediaTypeApiModelCached != null)
             {
-                var mediaTypeApiModel = mediaType.Convert;
-                mediaTypeApiModel.Tracks = (GetTrackByMediaTypeId(mediaTypeApiModel.MediaTypeId)).ToList();
-                return mediaTypeApiModel;
+                return mediaTypeApiModelCached;
             }
             else
             {
-                var mediaTypeApiModel = (_mediaTypeRepository.GetById(id)).Convert;
+                var mediaTypeApiModel = (_mediaTypeRepository.GetById(id)).Convert();
                 mediaTypeApiModel.Tracks = (GetTrackByMediaTypeId(mediaTypeApiModel.MediaTypeId)).ToList();
 
                 var cacheEntryOptions =
                     new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
-                _cache.Set(mediaTypeApiModel.MediaTypeId, mediaTypeApiModel, cacheEntryOptions);
+                _cache.Set(string.Concat("MediaType-", mediaTypeApiModel.MediaTypeId), mediaTypeApiModel, cacheEntryOptions);
 
                 return mediaTypeApiModel;
             }
@@ -52,7 +48,7 @@ namespace Chinook.Domain.Supervisor
                 Name = newMediaTypeApiModel.Name
             };*/
 
-            var mediaType = newMediaTypeApiModel.Convert;
+            var mediaType = newMediaTypeApiModel.Convert();
 
             mediaType = _mediaTypeRepository.Add(mediaType);
             newMediaTypeApiModel.MediaTypeId = mediaType.MediaTypeId;

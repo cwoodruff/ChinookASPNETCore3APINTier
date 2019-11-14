@@ -18,24 +18,20 @@ namespace Chinook.Domain.ApiModels
         public int ArtistId { get; set; }
         
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public string ArtistName { get; set; }
 
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public ArtistApiModel Artist { get; set; }
         
         [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
         public IList<TrackApiModel> Tracks { get; set; }
-        
-        [NotMapped]
-        [Newtonsoft.Json.JsonIgnore]
-        public Album Convert => new Album
-        {
-            AlbumId = AlbumId,
-            ArtistId = ArtistId,
-            Title = Title
-        };
+
+        public Album Convert() =>
+            new Album
+            {
+                AlbumId = AlbumId,
+                ArtistId = ArtistId,
+                Title = Title
+            };
     }
 }

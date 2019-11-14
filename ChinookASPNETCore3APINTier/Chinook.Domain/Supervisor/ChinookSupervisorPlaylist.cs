@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using Chinook.Domain.Extensions;
 using Chinook.Domain.ApiModels;
 using System.Linq;
-using Chinook.Domain.Entities;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Chinook.Domain.Supervisor
@@ -13,33 +11,31 @@ namespace Chinook.Domain.Supervisor
     {
         public IEnumerable<PlaylistApiModel> GetAllPlaylist()
         {
-            var playlists = _playlistRepository.GetAll();
+            var playlists = _playlistRepository.GetAll().ConvertAll();
             foreach (var playlist in playlists)
             {
                 var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
-                _cache.Set(playlist.PlaylistId, playlist, cacheEntryOptions);
+                _cache.Set(string.Concat("Playlist-", playlist.PlaylistId), playlist, cacheEntryOptions);
             }
-            return playlists.ConvertAll();
+            return playlists;
         }
 
         public PlaylistApiModel GetPlaylistById(int id)
         {
-            var playlist = _cache.Get<Playlist>(id);
+            var playlistApiModelCached = _cache.Get<PlaylistApiModel>(string.Concat("Playlist-", id));
 
-            if (playlist != null)
+            if (playlistApiModelCached != null)
             {
-                var playlistApiModel = playlist.Convert;
-                playlistApiModel.Tracks = (GetTrackByPlaylistIdId(playlistApiModel.PlaylistId)).ToList();
-                return playlistApiModel;
+                return playlistApiModelCached;
             }
             else
             {
-                var playlistApiModel = (_playlistRepository.GetById(id)).Convert;
+                var playlistApiModel = (_playlistRepository.GetById(id)).Convert();
                 playlistApiModel.Tracks = (GetTrackByPlaylistIdId(playlistApiModel.PlaylistId)).ToList();
 
                 var cacheEntryOptions =
                     new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
-                _cache.Set(playlistApiModel.PlaylistId, playlistApiModel, cacheEntryOptions);
+                _cache.Set(string.Concat("Playlist-", playlistApiModel.PlaylistId), playlistApiModel, cacheEntryOptions);
 
                 return playlistApiModel;
             }
@@ -47,12 +43,7 @@ namespace Chinook.Domain.Supervisor
 
         public PlaylistApiModel AddPlaylist(PlaylistApiModel newPlaylistApiModel)
         {
-            /*var playlist = new Playlist
-            {
-                Name = newPlaylistApiModel.Name
-            };*/
-
-            var playlist = newPlaylistApiModel.Convert;
+            var playlist = newPlaylistApiModel.Convert();
 
             playlist = _playlistRepository.Add(playlist);
             newPlaylistApiModel.PlaylistId = playlist.PlaylistId;

@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Chinook.DataEFCore;
+using Chinook.DataEFCoreCmpldQry;
 
 namespace Chinook.API.Configurations
 {

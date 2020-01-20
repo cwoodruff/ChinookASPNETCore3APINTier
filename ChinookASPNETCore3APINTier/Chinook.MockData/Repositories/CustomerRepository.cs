@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Chinook.Domain.Repositories;
 using Chinook.Domain.Entities;
 
@@ -12,30 +12,32 @@ namespace Chinook.MockData.Repositories
         {
         }
 
-        public List<Customer> GetAll()
-            => new List<Customer>
+        public bool CustomerExists(int id) => true;
+
+        public async Task<IAsyncEnumerable<Customer>> GetAll()
+            => (new List<Customer>
             {new Customer
             {
                 CustomerId = 1
-            }};
+            }}).ToAsyncEnumerable();
 
-        public Customer GetById(int id)
+        public async Task<Customer> GetById(int id)
             => new Customer
             {
                 CustomerId = id
             };
 
-        public Customer Add(Customer newCustomer) => newCustomer;
+        public async Task<Customer> Add(Customer newCustomer) => newCustomer;
 
-        public bool Update(Customer customer) => true;
+        public async Task<bool> Update(Customer customer) => true;
 
-        public bool Delete(int id) => true;
+        public async Task<bool> Delete(int id) => true;
 
-        public List<Customer> GetBySupportRepId(int id)
-            => new List<Customer>
+        public async Task<IAsyncEnumerable<Customer>> GetBySupportRepId(int id)
+            => (new List<Customer>
             {new Customer
             {
                 CustomerId = id
-            }};
+            }}).ToAsyncEnumerable();
     }
 }

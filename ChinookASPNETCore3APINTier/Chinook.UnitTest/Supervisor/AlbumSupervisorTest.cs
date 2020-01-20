@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Chinook.Domain.Supervisor;
 using JetBrains.dotMemoryUnit;
@@ -16,12 +17,12 @@ namespace Chinook.UnitTest.Supervisor
 
         [DotMemoryUnit(FailIfRunWithoutSupport = false)]
         [Fact]
-        public void AlbumGetAll()
+        public async Task AlbumGetAll()
         {
             // Arrange
 
             // Act
-            var albums = _super.GetAllAlbum();
+            var albums = await (await _super.GetAllAlbum()).ToListAsync();
 
             // Assert
             Assert.Single(albums);
@@ -29,13 +30,13 @@ namespace Chinook.UnitTest.Supervisor
         
         [DotMemoryUnit(FailIfRunWithoutSupport = false)]
         [Fact]
-        public void AlbumGetOne()
+        public async Task AlbumGetOne()
         {
             // Arrange
             var id = 1;
 
             // Act
-            var album = _super.GetAlbumById(id);
+            var album = await _super.GetAlbumById(id);
 
             // Assert
             Assert.Equal(id, album.AlbumId);

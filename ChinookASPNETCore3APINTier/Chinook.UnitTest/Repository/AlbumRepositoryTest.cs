@@ -1,6 +1,8 @@
 ﻿using System;
-using Chinook.MockData.Repositories;
+using System.Collections;
+using System.Linq;
 using System.Threading.Tasks;
+using Chinook.MockData.Repositories;
 using Chinook.Domain.Entities;
 using JetBrains.dotMemoryUnit;
 using Xunit;
@@ -18,26 +20,26 @@ namespace Chinook.UnitTest.Repository
 
         [DotMemoryUnit(FailIfRunWithoutSupport = false)]
         [Fact]
-        public void AlbumGetAll()
+        public async Task AlbumGetAll()
         {
             // Arrange
 
             // Act
-            var albums = _repo.GetAll();
-
+            var albums= await (await _repo.GetAll()).ToListAsync();
+            
             // Assert
             Assert.Single(albums);
         }
 
         [DotMemoryUnit(FailIfRunWithoutSupport = false)]
         [Fact]
-        public void AlbumGetOne()
+        public async Task AlbumGetOne()
         {
             // Arrange
             var id = 1;
 
             // Act
-            var album = _repo.GetById(id);
+            var album = await _repo.GetById(id);
 
             // Assert
             Assert.Equal(id, album.AlbumId);

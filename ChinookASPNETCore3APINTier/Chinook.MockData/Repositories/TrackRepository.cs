@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Chinook.Domain.Repositories;
 using Chinook.Domain.Entities;
 
@@ -12,45 +12,47 @@ namespace Chinook.MockData.Repositories
         {
         }
 
-        public List<Track> GetAll()
-            => new List<Track>
+        public bool TrackExists(int id) => true;
+
+        public async Task<IAsyncEnumerable<Track>> GetAll()
+            => (new List<Track>
             {new Track
             {
                 TrackId = 1,
                 Name = "Foo"
-            }};
+            }}).ToAsyncEnumerable();
 
-        public Track GetById(int id)
+        public async Task<Track> GetById(int id)
             => new Track
             {
                 TrackId = id
             };
 
-        public Track Add(Track newTrack) => newTrack;
+        public async Task<Track> Add(Track newTrack) => newTrack;
 
-        public bool Update(Track track) => true;
+        public async Task<bool> Update(Track track) => true;
 
-        public bool Delete(int id) => true;
+        public async Task<bool> Delete(int id) => true;
 
-        public List<Track> GetByAlbumId(int id)
-            => new List<Track>
+        public async Task<IAsyncEnumerable<Track>> GetByAlbumId(int id)
+            => (new List<Track>
             {new Track
             {
                 TrackId = id
-            }};
+            }}).ToAsyncEnumerable();
 
-        public List<Track> GetByGenreId(int id)
-            => new List<Track>
+        public async Task<IAsyncEnumerable<Track>> GetByGenreId(int id)
+            => (new List<Track>
             {new Track
             {
                 TrackId = id
-            }};
+            }}).ToAsyncEnumerable();
 
-        public List<Track> GetByMediaTypeId(int id)
-            => new List<Track>
+        public async Task<IAsyncEnumerable<Track>> GetByMediaTypeId(int id)
+            => (new List<Track>
             {new Track
             {
                 TrackId = id
-            }};
+            }}).ToAsyncEnumerable();
     }
 }

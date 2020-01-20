@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Chinook.Data\Chinook.Data.csproj" />
       <ProjectReference Include="..\Chinook.Domain\Chinook.Domain.csproj" />
       <ProjectReference Include="..\Chinook.MockData\Chinook.MockData.csproj" />
     </ItemGroup>

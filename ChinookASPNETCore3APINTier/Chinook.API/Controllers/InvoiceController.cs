@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Chinook.Domain.Supervisor;
 using Chinook.Domain.ApiModels;
 using Microsoft.AspNetCore.Cors;
@@ -93,13 +93,13 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<InvoiceApiModel> Put(int id, [FromBody] InvoiceApiModel input)
+        public async Task<ActionResult<InvoiceApiModel>> Put(int id, [FromBody] InvoiceApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
-                if (_chinookSupervisor.GetInvoiceById(id) == null)
+                if (!_chinookSupervisor.InvoiceExists(id))
                 {
                     return NotFound();
                 }
@@ -109,7 +109,7 @@ namespace Chinook.API.Controllers
                     .Select(error => error.ErrorMessage));
                 Debug.WriteLine(errors);
 
-                if (_chinookSupervisor.UpdateInvoice(input))
+                if (await _chinookSupervisor.UpdateInvoice(input))
                 {
                     return Ok(input);
                 }
@@ -123,16 +123,16 @@ namespace Chinook.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
             try
             {
-                if (_chinookSupervisor.GetInvoiceById(id) == null)
+                if (!_chinookSupervisor.InvoiceExists(id))
                 {
                     return NotFound();
                 }
 
-                if (_chinookSupervisor.DeleteInvoice(id))
+                if (await _chinookSupervisor.DeleteInvoice(id))
                 {
                     return Ok();
                 }

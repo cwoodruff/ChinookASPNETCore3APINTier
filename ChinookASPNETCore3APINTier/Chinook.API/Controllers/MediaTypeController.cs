@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Chinook.Domain.Supervisor;
 using Chinook.Domain.ApiModels;
 using Microsoft.AspNetCore.Cors;
@@ -27,11 +27,11 @@ namespace Chinook.API.Controllers
         [HttpGet]
         [Produces(typeof(List<MediaTypeApiModel>))]
         [ResponseCache(Duration = 604800)] // cache for a week
-        public ActionResult<List<MediaTypeApiModel>> Get()
+        public async Task<ActionResult<List<MediaTypeApiModel>>> Get()
         {
             try
             {
-                return new ObjectResult(_chinookSupervisor.GetAllMediaType());
+                return new ObjectResult(await _chinookSupervisor.GetAllMediaType());
             }
             catch (Exception ex)
             {
@@ -41,11 +41,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet("{id}")]
         [Produces(typeof(MediaTypeApiModel))]
-        public ActionResult<MediaTypeApiModel> Get(int id)
+        public async Task<ActionResult<MediaTypeApiModel>> Get(int id)
         {
             try
             {
-                var mediaType = _chinookSupervisor.GetMediaTypeById(id);
+                var mediaType = await _chinookSupervisor.GetMediaTypeById(id);
                 if ( mediaType == null)
                 {
                     return NotFound();
@@ -60,14 +60,14 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<MediaTypeApiModel> Post([FromBody] MediaTypeApiModel input)
+        public async Task<ActionResult<MediaTypeApiModel>> Post([FromBody] MediaTypeApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
 
-                return StatusCode(201, _chinookSupervisor.AddMediaType(input));
+                return StatusCode(201, await _chinookSupervisor.AddMediaType(input));
             }
             catch (Exception ex)
             {
@@ -76,13 +76,13 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<MediaTypeApiModel> Put(int id, [FromBody] MediaTypeApiModel input)
+        public async Task<ActionResult<MediaTypeApiModel>> Put(int id, [FromBody] MediaTypeApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
-                if (_chinookSupervisor.GetMediaTypeById(id) == null)
+                if (!_chinookSupervisor.MediaTypeExists(id))
                 {
                     return NotFound();
                 }
@@ -92,7 +92,7 @@ namespace Chinook.API.Controllers
                     .Select(error => error.ErrorMessage));
                 Debug.WriteLine(errors);
 
-                if (_chinookSupervisor.UpdateMediaType(input))
+                if (await _chinookSupervisor.UpdateMediaType(input))
                 {
                     return Ok(input);
                 }
@@ -106,16 +106,16 @@ namespace Chinook.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
             try
             {
-                if (_chinookSupervisor.GetMediaTypeById(id) == null)
+                if (!_chinookSupervisor.MediaTypeExists(id))
                 {
                     return NotFound();
                 }
 
-                if (_chinookSupervisor.DeleteMediaType(id))
+                if (await _chinookSupervisor.DeleteMediaType(id))
                 {
                     return Ok();
                 }

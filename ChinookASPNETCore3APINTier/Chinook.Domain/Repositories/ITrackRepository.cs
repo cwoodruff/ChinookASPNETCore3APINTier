@@ -1,18 +1,20 @@
 ﻿using Chinook.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Chinook.Domain.Repositories
 {
     public interface ITrackRepository : IDisposable
     {
-        List<Track> GetAll();
-        Track GetById(int id);
-        List<Track> GetByAlbumId(int id);
-        List<Track> GetByGenreId(int id);
-        List<Track> GetByMediaTypeId(int id);
-        Track Add(Track newTrack);
-        bool Update(Track track);
-        bool Delete(int id);
+        public bool TrackExists(int id);
+        Task<IAsyncEnumerable<Track>> GetAll();
+        Task<Track> GetById(int id);
+        Task<IAsyncEnumerable<Track>> GetByAlbumId(int id);
+        Task<IAsyncEnumerable<Track>> GetByGenreId(int id);
+        Task<IAsyncEnumerable<Track>> GetByMediaTypeId(int id);
+        Task<Track> Add(Track newTrack);
+        Task<bool> Update(Track track);
+        Task<bool> Delete(int id);
     }
 }

@@ -2,9 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.API", "Chinook.API\Chinook.API.csproj", "{3B30A8B7-91BA-4549-9253-548304AE5F37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.DataEFCore", "Chinook.DataEFCore\Chinook.DataEFCore.csproj", "{67636B86-8C4B-44C4-801D-872E9B1E20A2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.DataEFCoreCmpldQry", "Chinook.DataEFCoreCmpldQry\Chinook.DataEFCoreCmpldQry.csproj", "{E362BBFE-E3D5-44D7-A2BE-39C64AB926AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.Data", "Chinook.Data\Chinook.Data.csproj", "{E362BBFE-E3D5-44D7-A2BE-39C64AB926AE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.Domain", "Chinook.Domain\Chinook.Domain.csproj", "{920E772F-A81B-49FB-846F-32D4B192FBCB}"
 EndProject
@@ -24,10 +22,6 @@ Global
 		{3B30A8B7-91BA-4549-9253-548304AE5F37}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B30A8B7-91BA-4549-9253-548304AE5F37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B30A8B7-91BA-4549-9253-548304AE5F37}.Release|Any CPU.Build.0 = Release|Any CPU
-		{67636B86-8C4B-44C4-801D-872E9B1E20A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{67636B86-8C4B-44C4-801D-872E9B1E20A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{67636B86-8C4B-44C4-801D-872E9B1E20A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{67636B86-8C4B-44C4-801D-872E9B1E20A2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E362BBFE-E3D5-44D7-A2BE-39C64AB926AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E362BBFE-E3D5-44D7-A2BE-39C64AB926AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E362BBFE-E3D5-44D7-A2BE-39C64AB926AE}.Release|Any CPU.ActiveCfg = Release|Any CPU

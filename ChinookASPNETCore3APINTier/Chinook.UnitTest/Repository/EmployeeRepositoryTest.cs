@@ -1,6 +1,8 @@
 ﻿using System;
-using Chinook.MockData.Repositories;
+using System.Collections;
+using System.Linq;
 using System.Threading.Tasks;
+using Chinook.MockData.Repositories;
 using Chinook.Domain.Entities;
 using JetBrains.dotMemoryUnit;
 using Xunit;
@@ -18,10 +20,10 @@ namespace Chinook.UnitTest.Repository
 
         [DotMemoryUnit(FailIfRunWithoutSupport = false)]
         [Fact]
-        public void EmployeeGetAll()
+        public async Task EmployeeGetAll()
         {
             // Act
-            var employees = _repo.GetAll();
+            var employees = await (await _repo.GetAll()).ToListAsync();
 
             // Assert
             Assert.Single(employees);

@@ -1,18 +1,20 @@
 using System;
 using System.Collections.Generic;
-using Chinook.Domain.Extensions;
 using Chinook.Domain.ApiModels;
 using System.Linq;
+using System.Threading.Tasks;
+using Chinook.Domain.Extensions;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Chinook.Domain.Supervisor
 {
     public partial class ChinookSupervisor
     {
-        public IEnumerable<PlaylistApiModel> GetAllPlaylist()
+        public bool PlaylistExists(int id) => _playlistRepository.PlaylistExists(id);
+        public async Task<IAsyncEnumerable<PlaylistApiModel>> GetAllPlaylist()
         {
-            var playlists = _playlistRepository.GetAll().ConvertAll();
-            foreach (var playlist in playlists)
+            var playlists = (await _playlistRepository.GetAll()).ConvertAll();
+            await foreach (var playlist in playlists)
             {
                 var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
                 _cache.Set(string.Concat("Playlist-", playlist.PlaylistId), playlist, cacheEntryOptions);
@@ -20,7 +22,7 @@ namespace Chinook.Domain.Supervisor
             return playlists;
         }
 
-        public PlaylistApiModel GetPlaylistById(int id)
+        public async Task<PlaylistApiModel> GetPlaylistById(int id)
         {
             var playlistApiModelCached = _cache.Get<PlaylistApiModel>(string.Concat("Playlist-", id));
 
@@ -30,9 +32,7 @@ namespace Chinook.Domain.Supervisor
             }
             else
             {
-                var playlistApiModel = (_playlistRepository.GetById(id)).Convert();
-                playlistApiModel.Tracks = (GetTrackByPlaylistIdId(playlistApiModel.PlaylistId)).ToList();
-
+                var playlistApiModel = (await _playlistRepository.GetById(id)).Convert();
                 var cacheEntryOptions =
                     new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
                 _cache.Set(string.Concat("Playlist-", playlistApiModel.PlaylistId), playlistApiModel, cacheEntryOptions);
@@ -41,27 +41,16 @@ namespace Chinook.Domain.Supervisor
             }
         }
 
-        public PlaylistApiModel AddPlaylist(PlaylistApiModel newPlaylistApiModel)
+        public async Task<PlaylistApiModel> AddPlaylist(PlaylistApiModel newPlaylistApiModel)
         {
             var playlist = newPlaylistApiModel.Convert();
-
-            playlist = _playlistRepository.Add(playlist);
-            newPlaylistApiModel.PlaylistId = playlist.PlaylistId;
-            return newPlaylistApiModel;
+            playlist = await  _playlistRepository.Add(playlist);
+            return playlist.Convert();
         }
 
-        public bool UpdatePlaylist(PlaylistApiModel playlistApiModel)
-        {
-            var playlist = _playlistRepository.GetById(playlistApiModel.PlaylistId);
+        public async Task<bool> UpdatePlaylist(PlaylistApiModel playlistApiModel) => 
+            await _playlistRepository.Update(playlistApiModel.Convert());
 
-            if (playlist == null) return false;
-            playlist.PlaylistId = playlistApiModel.PlaylistId;
-            playlist.Name = playlistApiModel.Name;
-
-            return _playlistRepository.Update(playlist);
-        }
-
-        public bool DeletePlaylist(int id) 
-            => _playlistRepository.Delete(id);
+        public async Task<bool> DeletePlaylist(int id) => await _playlistRepository.Delete(id);
     }
 }

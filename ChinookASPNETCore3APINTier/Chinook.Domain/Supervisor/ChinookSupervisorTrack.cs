@@ -1,17 +1,19 @@
 using System;
 using System.Collections.Generic;
-using Chinook.Domain.Extensions;
+using System.Threading.Tasks;
 using Chinook.Domain.ApiModels;
+using Chinook.Domain.Extensions;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Chinook.Domain.Supervisor
 {
     public partial class ChinookSupervisor
     {
-        public IEnumerable<TrackApiModel> GetAllTrack()
+        public bool TrackExists(int id) => _trackRepository.TrackExists(id);
+        public async Task<IAsyncEnumerable<TrackApiModel>> GetAllTrack()
         {
-            var tracks = _trackRepository.GetAll().ConvertAll();
-            foreach (var track in tracks)
+            var tracks = (await _trackRepository.GetAll()).ConvertAll();
+            await foreach (var track in tracks)
             {
                 var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
                 _cache.Set(string.Concat("Track-", track.TrackId), track, cacheEntryOptions);
@@ -19,7 +21,7 @@ namespace Chinook.Domain.Supervisor
             return tracks;
         }
 
-        public TrackApiModel GetTrackById(int id)
+        public async Task<TrackApiModel> GetTrackById(int id)
         {
             var trackApiModelCached = _cache.Get<TrackApiModel>(string.Concat("Track-", id));
 
@@ -29,14 +31,7 @@ namespace Chinook.Domain.Supervisor
             }
             else
             {
-                var trackApiModel = (_trackRepository.GetById(id)).Convert();
-                trackApiModel.Genre = GetGenreById(trackApiModel.GenreId.GetValueOrDefault());
-                trackApiModel.Album = GetAlbumById(trackApiModel.TrackId);
-                trackApiModel.MediaType = GetMediaTypeById(trackApiModel.MediaTypeId);
-                trackApiModel.AlbumName = trackApiModel.Album.Title;
-                trackApiModel.MediaTypeName = trackApiModel.MediaType.Name;
-                trackApiModel.GenreName = trackApiModel.Genre.Name;
-
+                var trackApiModel = (await _trackRepository.GetById(id)).Convert();
                 var cacheEntryOptions =
                     new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
                 _cache.Set(string.Concat("Track-", trackApiModel.TrackId), trackApiModel, cacheEntryOptions);
@@ -45,58 +40,25 @@ namespace Chinook.Domain.Supervisor
             }
         }
 
-        public IEnumerable<TrackApiModel> GetTrackByAlbumId(int id)
-        {
-            var tracks = _trackRepository.GetByAlbumId(id);
-            return tracks.ConvertAll();
-        }
+        public async Task<IAsyncEnumerable<TrackApiModel>> GetTrackByAlbumId(int id) => (await _trackRepository.GetByAlbumId(id)).ConvertAll();
 
-        public IEnumerable<TrackApiModel> GetTrackByGenreId(int id)
-        {
-            var tracks = _trackRepository.GetByGenreId(id);
-            return tracks.ConvertAll();
-        }
+        public async Task<IAsyncEnumerable<TrackApiModel>> GetTrackByGenreId(int id) => (await _trackRepository.GetByGenreId(id)).ConvertAll();
 
-        public IEnumerable<TrackApiModel> GetTrackByMediaTypeId(int id)
-        {
-            var tracks = _trackRepository.GetByMediaTypeId(id);
-            return tracks.ConvertAll();
-        }
+        public async Task<IAsyncEnumerable<TrackApiModel>> GetTrackByMediaTypeId(int id) => (await _trackRepository.GetByMediaTypeId(id)).ConvertAll();
 
-        public IEnumerable<TrackApiModel> GetTrackByPlaylistIdId(int id)
-        {
-            var tracks = _playlistRepository.GetTrackByPlaylistId(id);
-            return tracks.ConvertAll();
-        }
+        public IAsyncEnumerable<TrackApiModel> GetTrackByPlaylistIdId(int id) => _playlistRepository.GetTrackByPlaylistId(id).ConvertAll();
 
-        public TrackApiModel AddTrack(TrackApiModel newTrackApiModel)
+        public async Task<TrackApiModel> AddTrack(TrackApiModel newTrackApiModel)
         {
             var track = newTrackApiModel.Convert();
 
-            _trackRepository.Add(track);
+            await _trackRepository.Add(track);
             newTrackApiModel.TrackId = track.TrackId;
             return newTrackApiModel;
         }
 
-        public bool UpdateTrack(TrackApiModel trackApiModel)
-        {
-            var track = _trackRepository.GetById(trackApiModel.TrackId);
+        public async Task<bool> UpdateTrack(TrackApiModel trackApiModel) => await _trackRepository.Update(trackApiModel.Convert());
 
-            if (track == null) return false;
-            track.TrackId = trackApiModel.TrackId;
-            track.Name = trackApiModel.Name;
-            track.AlbumId = trackApiModel.AlbumId;
-            track.MediaTypeId = trackApiModel.MediaTypeId;
-            track.GenreId = trackApiModel.GenreId;
-            track.Composer = trackApiModel.Composer;
-            track.Milliseconds = trackApiModel.Milliseconds;
-            track.Bytes = trackApiModel.Bytes;
-            track.UnitPrice = trackApiModel.UnitPrice;
-
-            return _trackRepository.Update(track);
-        }
-
-        public bool DeleteTrack(int id) 
-            => _trackRepository.Delete(id);
+        public async Task<bool> DeleteTrack(int id) => await _trackRepository.Delete(id);
     }
 }

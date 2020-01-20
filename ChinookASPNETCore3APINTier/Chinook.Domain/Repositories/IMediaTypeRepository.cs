@@ -1,15 +1,17 @@
 ﻿using Chinook.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Chinook.Domain.Repositories
 {
     public interface IMediaTypeRepository : IDisposable
     {
-        List<MediaType> GetAll();
-        MediaType GetById(int id);
-        MediaType Add(MediaType newMediaType);
-        bool Update(MediaType mediaType);
-        bool Delete(int id);
+        public bool MediaTypeExists(int id);
+        Task<IAsyncEnumerable<MediaType>> GetAll();
+        Task<MediaType> GetById(int id);
+        Task<MediaType> Add(MediaType newMediaType);
+        Task<bool> Update(MediaType mediaType);
+        Task<bool> Delete(int id);
     }
 }

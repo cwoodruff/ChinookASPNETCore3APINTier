@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Chinook.Domain.Repositories;
 using Chinook.Domain.Entities;
 
@@ -12,25 +12,27 @@ namespace Chinook.MockData.Repositories
         {
         }
 
-        public List<Genre> GetAll()
-            => new List<Genre>
+        public bool GenreExists(int id) => true;
+
+        public async Task<IAsyncEnumerable<Genre>> GetAll()
+            => (new List<Genre>
             {new Genre
             {
                 GenreId = 1,
                 Name = "Foo"
-            }};
+            }}).ToAsyncEnumerable();
 
-        public Genre GetById(int id)
+        public async Task<Genre> GetById(int id)
             => new Genre
             {
                 GenreId = id,
                 Name = "Foo"
             };
 
-        public Genre Add(Genre newGenre) => newGenre;
+        public async Task<Genre> Add(Genre newGenre) => newGenre;
 
-        public bool Update(Genre genre) => true;
+        public async Task<bool> Update(Genre genre) => true;
 
-        public bool Delete(int id) => true;
+        public async Task<bool> Delete(int id) => true;
     }
 }

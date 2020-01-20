@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Chinook.DataEFCore;
+using Chinook.Data;
 
 namespace Chinook.API.Configurations
 {
@@ -17,7 +17,7 @@ namespace Chinook.API.Configurations
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 connection = configuration.GetConnectionString("ChinookDbWindows") ??
-                                 "Server=.;Database=Chinook;Trusted_Connection=True;Application Name=ChinookASPNETCoreAPINTier";
+                                 "Server=.;Database=Chinook;Trusted_Connection=True;Application Name=ChinookASPNETCore3APINTier";
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {

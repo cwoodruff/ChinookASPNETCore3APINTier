@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Chinook.Domain.Repositories;
 using Chinook.Domain.Entities;
 
@@ -12,36 +12,38 @@ namespace Chinook.MockData.Repositories
         {
         }
 
-        public List<Employee> GetAll()
-            => new List<Employee>
+        public bool EmployeeExists(int id) => true;
+
+        public async Task<IAsyncEnumerable<Employee>> GetAll()
+            => (new List<Employee>
             {new Employee
             {
                 EmployeeId = 1
-            }};
+            }}).ToAsyncEnumerable();
 
-        public Employee GetById(int id)
+        public async Task<Employee> GetById(int id)
             => new Employee
             {
                 EmployeeId = id
             };
 
-        public Employee Add(Employee newEmployee) => newEmployee;
+        public async Task<Employee> Add(Employee newEmployee) => newEmployee;
 
-        public bool Update(Employee employee) => true;
+        public async Task<bool> Update(Employee employee) => true;
 
-        public bool Delete(int id) => true;
+        public async Task<bool> Delete(int id) => true;
 
-        public Employee GetReportsTo(int id)
+        public async Task<Employee> GetReportsTo(int id)
             => new Employee
             {
                 EmployeeId = id
             };
 
-        public List<Employee> GetDirectReports(int id)
-            => new List<Employee>
+        public async Task<IAsyncEnumerable<Employee>> GetDirectReports(int id)
+            => (new List<Employee>
             {new Employee
             {
                 EmployeeId = id
-            }};
+            }}).ToAsyncEnumerable();
     }
 }

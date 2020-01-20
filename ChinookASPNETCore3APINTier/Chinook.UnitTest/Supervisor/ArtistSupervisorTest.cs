@@ -1,6 +1,8 @@
 using System;
-using Chinook.MockData.Repositories;
+using System.Collections;
+using System.Linq;
 using System.Threading.Tasks;
+using Chinook.MockData.Repositories;
 using Chinook.Domain.Entities;
 using Chinook.Domain.Supervisor;
 using JetBrains.dotMemoryUnit;
@@ -19,10 +21,10 @@ namespace Chinook.UnitTest.Supervisor
 
         [DotMemoryUnitAttribute(FailIfRunWithoutSupport = false)]
         [Fact]
-        public void ArtistGetAll()
+        public async Task ArtistGetAll()
         {
             // Act
-            var artists = _super.GetAllArtist();
+            var artists = await (await _super.GetAllArtist()).ToListAsync();
 
             // Assert
             Assert.Single(artists);

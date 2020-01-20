@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Chinook.Domain.Supervisor;
 using Chinook.Domain.ApiModels;
 using Microsoft.AspNetCore.Cors;
@@ -25,11 +25,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet]
         [Produces(typeof(List<TrackApiModel>))]
-        public ActionResult<List<TrackApiModel>> Get()
+        public async Task<ActionResult<List<TrackApiModel>>> Get()
         {
             try
             {
-                return new ObjectResult(_chinookSupervisor.GetAllTrack());
+                return new ObjectResult(await _chinookSupervisor.GetAllTrack());
             }
             catch (Exception ex)
             {
@@ -39,11 +39,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet("{id}")]
         [Produces(typeof(TrackApiModel))]
-        public ActionResult<TrackApiModel> Get(int id)
+        public async Task<ActionResult<TrackApiModel>> Get(int id)
         {
             try
             {
-                var track = _chinookSupervisor.GetTrackById(id);
+                var track = await _chinookSupervisor.GetTrackById(id);
                 if ( track == null)
                 {
                     return NotFound();
@@ -59,11 +59,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet("album/{id}")]
         [Produces(typeof(List<TrackApiModel>))]
-        public ActionResult<TrackApiModel> GetByAlbumId(int id)
+        public async Task<ActionResult<TrackApiModel>> GetByAlbumId(int id)
         {
             try
             {
-                var album = _chinookSupervisor.GetAlbumById(id);
+                var album = await _chinookSupervisor.GetAlbumById(id);
                 if ( album == null)
                 {
                     return NotFound();
@@ -79,11 +79,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet("mediatype/{id}")]
         [Produces(typeof(List<TrackApiModel>))]
-        public ActionResult<TrackApiModel> GetByMediaTypeId(int id)
+        public async Task<ActionResult<TrackApiModel>> GetByMediaTypeId(int id)
         {
             try
             {
-                var mediaType = _chinookSupervisor.GetMediaTypeById(id);
+                var mediaType = await _chinookSupervisor.GetMediaTypeById(id);
                 if ( mediaType == null)
                 {
                     return NotFound();
@@ -99,11 +99,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet("genre/{id}")]
         [Produces(typeof(List<TrackApiModel>))]
-        public ActionResult<TrackApiModel> GetByGenreId(int id)
+        public async Task<ActionResult<TrackApiModel>> GetByGenreId(int id)
         {
             try
             {
-                var genre = _chinookSupervisor.GetGenreById(id);
+                var genre = await _chinookSupervisor.GetGenreById(id);
                 if (genre == null)
                 {
                     return NotFound();
@@ -118,14 +118,14 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<TrackApiModel> Post([FromBody] TrackApiModel input)
+        public async Task<ActionResult<TrackApiModel>> Post([FromBody] TrackApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
 
-                return StatusCode(201, _chinookSupervisor.AddTrack(input));
+                return StatusCode(201, await _chinookSupervisor.AddTrack(input));
             }
             catch (Exception ex)
             {
@@ -134,13 +134,13 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<TrackApiModel> Put(int id, [FromBody] TrackApiModel input)
+        public async Task<ActionResult<TrackApiModel>> Put(int id, [FromBody] TrackApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
-                if (_chinookSupervisor.GetTrackById(id) == null)
+                if (!_chinookSupervisor.TrackExists(id))
                 {
                     return NotFound();
                 }
@@ -150,7 +150,7 @@ namespace Chinook.API.Controllers
                     .Select(error => error.ErrorMessage));
                 Debug.WriteLine(errors);
 
-                if (_chinookSupervisor.UpdateTrack(input))
+                if (await _chinookSupervisor.UpdateTrack(input))
                 {
                     return Ok(input);
                 }
@@ -164,16 +164,16 @@ namespace Chinook.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
             try
             {
-                if (_chinookSupervisor.GetTrackById(id) == null)
+                if (!_chinookSupervisor.TrackExists(id))
                 {
                     return NotFound();
                 }
 
-                if (_chinookSupervisor.DeleteTrack(id))
+                if (await _chinookSupervisor.DeleteTrack(id))
                 {
                     return Ok();
                 }

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Chinook.Domain.Supervisor;
 using Chinook.Domain.ApiModels;
 using Microsoft.AspNetCore.Cors;
@@ -94,13 +94,13 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<CustomerApiModel> Put(int id, [FromBody] CustomerApiModel input)
+        public async Task<ActionResult<CustomerApiModel>> Put(int id, [FromBody] CustomerApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
-                if (_chinookSupervisor.GetCustomerById(id) == null)
+                if (!_chinookSupervisor.CustomerExists(id))
                 {
                     return NotFound();
                 }
@@ -110,7 +110,7 @@ namespace Chinook.API.Controllers
                     .Select(error => error.ErrorMessage));
                 Debug.WriteLine(errors);
 
-                if (_chinookSupervisor.UpdateCustomer(input))
+                if (await _chinookSupervisor.UpdateCustomer(input))
                 {
                     return Ok(input);
                 }
@@ -124,16 +124,16 @@ namespace Chinook.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
             try
             {
-                if (_chinookSupervisor.GetCustomerById(id) == null)
+                if (!_chinookSupervisor.CustomerExists(id))
                 {
                     return NotFound();
                 }
 
-                if (_chinookSupervisor.DeleteCustomer(id))
+                if (await _chinookSupervisor.DeleteCustomer(id))
                 {
                     return Ok();
                 }

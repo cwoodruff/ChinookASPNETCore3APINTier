@@ -14,8 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Chinook.DataEFCoreCmpldQry\Chinook.DataEFCoreCmpldQry.csproj" />
-      <ProjectReference Include="..\Chinook.DataEFCore\Chinook.DataEFCore.csproj" />
+      <ProjectReference Include="..\Chinook.Data\Chinook.Data.csproj" />
       <ProjectReference Include="..\Chinook.Domain\Chinook.Domain.csproj" />
     </ItemGroup>
 

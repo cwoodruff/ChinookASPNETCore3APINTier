@@ -1,18 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Chinook.Domain.Extensions;
+using System.Threading.Tasks;
 using Chinook.Domain.ApiModels;
+using Chinook.Domain.Extensions;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Chinook.Domain.Supervisor
 {
     public partial class ChinookSupervisor
     {
-        public IEnumerable<ArtistApiModel> GetAllArtist()
+        public bool ArtistExists(int id) => _artistRepository.ArtistExists(id);
+        
+        public async Task<IAsyncEnumerable<ArtistApiModel>> GetAllArtist()
         {
-            var artists = _artistRepository.GetAll().ConvertAll();
-            foreach (var artist in artists)
+            var artists = (await _artistRepository.GetAll()).ConvertAll();
+            await foreach (var artist in artists)
             {
                 var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
                 _cache.Set(string.Concat("Artist-", artist.ArtistId), artist, cacheEntryOptions);
@@ -20,7 +23,7 @@ namespace Chinook.Domain.Supervisor
             return artists;
         }
 
-        public ArtistApiModel GetArtistById(int id)
+        public async Task<ArtistApiModel> GetArtistById(int id)
         {
             var artistApiModelCached = _cache.Get<ArtistApiModel>(string.Concat("Artist-", id));
 
@@ -30,9 +33,7 @@ namespace Chinook.Domain.Supervisor
             }
             else
             {
-                var artistApiModel = (_artistRepository.GetById(id)).Convert();
-                artistApiModel.Albums = (GetAlbumByArtistId(artistApiModel.ArtistId)).ToList();
-
+                var artistApiModel = (await _artistRepository.GetById(id)).Convert();
                 var cacheEntryOptions =
                     new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));
                 _cache.Set(string.Concat("Artist-", artistApiModel.ArtistId), artistApiModel, cacheEntryOptions);
@@ -41,27 +42,15 @@ namespace Chinook.Domain.Supervisor
             }
         }
 
-        public ArtistApiModel AddArtist(ArtistApiModel newArtistApiModel)
+        public async Task<ArtistApiModel> AddArtist(ArtistApiModel newArtistApiModel)
         {
             var artist = newArtistApiModel.Convert();
-
-            artist = _artistRepository.Add(artist);
-            newArtistApiModel.ArtistId = artist.ArtistId;
-            return newArtistApiModel;
+            artist = await _artistRepository.Add(artist);
+            return artist.Convert();
         }
 
-        public bool UpdateArtist(ArtistApiModel artistApiModel)
-        {
-            var artist = _artistRepository.GetById(artistApiModel.ArtistId);
+        public async Task<bool> UpdateArtist(ArtistApiModel artistApiModel) => await _artistRepository.Update(artistApiModel.Convert());
 
-            if (artist == null) return false;
-            artist.ArtistId = artistApiModel.ArtistId;
-            artist.Name = artistApiModel.Name;
-
-            return _artistRepository.Update(artist);
-        }
-
-        public bool DeleteArtist(int id) 
-            => _artistRepository.Delete(id);
+        public async Task<bool> DeleteArtist(int id) => await _artistRepository.Delete(id);
     }
 }

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Chinook.Domain.Supervisor;
 using Chinook.Domain.ApiModels;
 using Microsoft.AspNetCore.Cors;
@@ -26,11 +26,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet]
         [Produces(typeof(List<GenreApiModel>))]
-        public ActionResult<List<GenreApiModel>> Get()
+        public async Task<ActionResult<List<GenreApiModel>>> Get()
         {
             try
             {
-                return new ObjectResult(_chinookSupervisor.GetAllGenre());
+                return new ObjectResult(await _chinookSupervisor.GetAllGenre());
             }
             catch (Exception ex)
             {
@@ -40,11 +40,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet("{id}")]
         [Produces(typeof(GenreApiModel))]
-        public ActionResult<GenreApiModel> Get(int id)
+        public async Task<ActionResult<GenreApiModel>> Get(int id)
         {
             try
             {
-                var genre = _chinookSupervisor.GetGenreById(id);
+                var genre = await _chinookSupervisor.GetGenreById(id);
                 if ( genre == null)
                 {
                     return NotFound();
@@ -59,14 +59,14 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<GenreApiModel> Post([FromBody] GenreApiModel input)
+        public async Task<ActionResult<GenreApiModel>> Post([FromBody] GenreApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
 
-                return StatusCode(201, _chinookSupervisor.AddGenre(input));
+                return StatusCode(201, await _chinookSupervisor.AddGenre(input));
             }
             catch (Exception ex)
             {
@@ -75,13 +75,13 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<GenreApiModel> Put(int id, [FromBody] GenreApiModel input)
+        public async Task<ActionResult<GenreApiModel>> Put(int id, [FromBody] GenreApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
-                if (_chinookSupervisor.GetGenreById(id) == null)
+                if (!_chinookSupervisor.GenreExists(id))
                 {
                     return NotFound();
                 }
@@ -91,7 +91,7 @@ namespace Chinook.API.Controllers
                     .Select(error => error.ErrorMessage));
                 Debug.WriteLine(errors);
 
-                if (_chinookSupervisor.UpdateGenre(input))
+                if (await _chinookSupervisor.UpdateGenre(input))
                 {
                     return Ok(input);
                 }
@@ -105,16 +105,16 @@ namespace Chinook.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
             try
             {
-                if (_chinookSupervisor.GetGenreById(id) == null)
+                if (!_chinookSupervisor.GenreExists(id))
                 {
                     return NotFound();
                 }
 
-                if (_chinookSupervisor.DeleteGenre(id))
+                if (await _chinookSupervisor.DeleteGenre(id))
                 {
                     return Ok();
                 }

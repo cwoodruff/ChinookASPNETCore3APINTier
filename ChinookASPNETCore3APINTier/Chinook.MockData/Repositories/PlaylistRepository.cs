@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Chinook.Domain.Repositories;
 using Chinook.Domain.Entities;
 
@@ -12,25 +12,27 @@ namespace Chinook.MockData.Repositories
         {
         }
 
-        public List<Playlist> GetAll()
-            => new List<Playlist>
+        public bool PlaylistExists(int id) => true;
+
+        public async Task<IAsyncEnumerable<Playlist>> GetAll()
+            => (new List<Playlist>
             {new Playlist
             {
                 PlaylistId = 1,
                 Name = "Foo"
-            }};
+            }}).ToAsyncEnumerable();
 
-        public Playlist GetById(int id)
+        public async Task<Playlist> GetById(int id)
             => new Playlist
             {
                 PlaylistId = id,
                 Name = "Foo"
             };
 
-        public Playlist Add(Playlist newPlaylist) => newPlaylist;
+        public async Task<Playlist> Add(Playlist newPlaylist) => newPlaylist;
 
-        public List<Track> GetTrackByPlaylistId(int id)
-            => new List<Track>
+        public IAsyncEnumerable<Track> GetTrackByPlaylistId(int id)
+            => (new List<Track>
             {new Track
             {
                 TrackId = 1,
@@ -42,10 +44,10 @@ namespace Chinook.MockData.Repositories
                 Milliseconds = 1,
                 Bytes = 1,
                 UnitPrice = 1
-            }};
+            }}).ToAsyncEnumerable();
 
-        public bool Update(Playlist playlist) => true;
+        public async Task<bool> Update(Playlist playlist) => true;
 
-        public bool Delete(int id) => true;
+        public async Task<bool> Delete(int id) => true;
     }
 }

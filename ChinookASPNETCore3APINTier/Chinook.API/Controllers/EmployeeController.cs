@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Chinook.Domain.Supervisor;
 using Chinook.Domain.ApiModels;
 using Microsoft.AspNetCore.Cors;
@@ -25,11 +25,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet]
         [Produces(typeof(List<EmployeeApiModel>))]
-        public ActionResult<List<EmployeeApiModel>> Get()
+        public async Task<ActionResult<List<EmployeeApiModel>>> Get()
         {
             try
             {
-                return new ObjectResult(_chinookSupervisor.GetAllEmployee());
+                return new ObjectResult(await _chinookSupervisor.GetAllEmployee());
             }
             catch (Exception ex)
             {
@@ -39,11 +39,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet("{id}")]
         [Produces(typeof(EmployeeApiModel))]
-        public ActionResult<EmployeeApiModel> Get(int id)
+        public async Task<ActionResult<EmployeeApiModel>> Get(int id)
         {
             try
             {
-                var employee = _chinookSupervisor.GetEmployeeById(id);
+                var employee = await _chinookSupervisor.GetEmployeeById(id);
                 if ( employee == null)
                 {
                     return NotFound();
@@ -59,11 +59,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet("reportsto/{id}")]
         [Produces(typeof(List<EmployeeApiModel>))]
-        public ActionResult<List<EmployeeApiModel>> GetReportsTo(int id)
+        public async Task<ActionResult<List<EmployeeApiModel>>> GetReportsTo(int id)
         {
             try
             {
-                var employee = _chinookSupervisor.GetEmployeeById(id);
+                var employee = await _chinookSupervisor.GetEmployeeById(id);
                 if ( employee == null)
                 {
                     return NotFound();
@@ -79,11 +79,11 @@ namespace Chinook.API.Controllers
 
         [HttpGet("directreports/{id}")]
         [Produces(typeof(EmployeeApiModel))]
-        public ActionResult<EmployeeApiModel> GetDirectReports(int id)
+        public async Task<ActionResult<EmployeeApiModel>> GetDirectReports(int id)
         {
             try
             {
-                var employee = _chinookSupervisor.GetEmployeeById(id);
+                var employee = await _chinookSupervisor.GetEmployeeById(id);
                 if ( employee == null)
                 {
                     return NotFound();
@@ -98,14 +98,14 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<EmployeeApiModel> Post([FromBody] EmployeeApiModel input)
+        public async Task<ActionResult<EmployeeApiModel>> Post([FromBody] EmployeeApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
 
-                return StatusCode(201, _chinookSupervisor.AddEmployee(input));
+                return StatusCode(201, await _chinookSupervisor.AddEmployee(input));
             }
             catch (Exception ex)
             {
@@ -114,13 +114,13 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<EmployeeApiModel> Put(int id, [FromBody] EmployeeApiModel input)
+        public async Task<ActionResult<EmployeeApiModel>> Put(int id, [FromBody] EmployeeApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
-                if (_chinookSupervisor.GetEmployeeById(id) == null)
+                if (!_chinookSupervisor.EmployeeExists(id))
                 {
                     return NotFound();
                 }
@@ -130,7 +130,7 @@ namespace Chinook.API.Controllers
                     .Select(error => error.ErrorMessage));
                 Debug.WriteLine(errors);
 
-                if (_chinookSupervisor.UpdateEmployee(input))
+                if (await _chinookSupervisor.UpdateEmployee(input))
                 {
                     return Ok(input);
                 }
@@ -144,16 +144,16 @@ namespace Chinook.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
             try
             {
-                if (_chinookSupervisor.GetEmployeeById(id) == null)
+                if (!_chinookSupervisor.EmployeeExists(id))
                 {
                     return NotFound();
                 }
 
-                if (_chinookSupervisor.DeleteEmployee(id))
+                if (await _chinookSupervisor.DeleteEmployee(id))
                 {
                     return Ok();
                 }

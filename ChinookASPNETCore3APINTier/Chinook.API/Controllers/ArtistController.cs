@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Chinook.Domain.Supervisor;
 using Chinook.Domain.ApiModels;
 using Microsoft.AspNetCore.Cors;
@@ -74,13 +74,13 @@ namespace Chinook.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<ArtistApiModel> Put(int id, [FromBody] ArtistApiModel input)
+        public async Task<ActionResult<ArtistApiModel>> Put(int id, [FromBody] ArtistApiModel input)
         {
             try
             {
                 if (input == null)
                     return BadRequest();
-                if (_chinookSupervisor.GetArtistById(id) == null)
+                if (!_chinookSupervisor.ArtistExists(id))
                 {
                     return NotFound();
                 }
@@ -90,7 +90,7 @@ namespace Chinook.API.Controllers
                     .Select(error => error.ErrorMessage));
                 Debug.WriteLine(errors);
 
-                if (_chinookSupervisor.UpdateArtist(input))
+                if (await _chinookSupervisor.UpdateArtist(input))
                 {
                     return Ok(input);
                 }
@@ -104,16 +104,16 @@ namespace Chinook.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
             try
             {
-                if (_chinookSupervisor.GetAlbumById(id) == null)
+                if (!_chinookSupervisor.ArtistExists(id))
                 {
                     return NotFound();
                 }
 
-                if (_chinookSupervisor.DeleteAlbum(id))
+                if (await _chinookSupervisor.DeleteAlbum(id))
                 {
                     return Ok();
                 }

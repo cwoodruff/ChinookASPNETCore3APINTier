@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Chinook.Domain.Repositories;
 using Chinook.Domain.Entities;
 
@@ -12,34 +12,36 @@ namespace Chinook.MockData.Repositories
         {
         }
 
-        public List<PlaylistTrack> GetAll()
-            => new List<PlaylistTrack>
+        public bool PlaylistTrackExists(int id) => true;
+
+        public async Task<IAsyncEnumerable<PlaylistTrack>> GetAll()
+            => (new List<PlaylistTrack>
             {new PlaylistTrack
             {
                 PlaylistId = 1,
                 TrackId = 1
-            }};
+            }}).ToAsyncEnumerable();
 
-        public List<PlaylistTrack> GetByPlaylistId(int id)
-            => new List<PlaylistTrack>
+        public async Task<IAsyncEnumerable<PlaylistTrack>> GetByPlaylistId(int id)
+            => (new List<PlaylistTrack>
             {new PlaylistTrack
             {
                 PlaylistId = id,
                 TrackId = 1
-            }};
+            }}).ToAsyncEnumerable();
 
-        public List<PlaylistTrack> GetByTrackId(int id)
-            => new List<PlaylistTrack>
+        public async Task<IAsyncEnumerable<PlaylistTrack>> GetByTrackId(int id)
+            => (new List<PlaylistTrack>
             {new PlaylistTrack
             {
                 PlaylistId = 1,
                 TrackId = id
-            }};
+            }}).ToAsyncEnumerable();
 
-        public PlaylistTrack Add(PlaylistTrack newPlaylistTrack) => newPlaylistTrack;
+        public async Task<PlaylistTrack> Add(PlaylistTrack newPlaylistTrack) => newPlaylistTrack;
 
-        public bool Update(PlaylistTrack playlistTrack) => true;
+        public async Task<bool> Update(PlaylistTrack playlistTrack) => true;
 
-        public bool Delete(int id) => true;
+        public async Task<bool> Delete(int id) => true;
     }
 }

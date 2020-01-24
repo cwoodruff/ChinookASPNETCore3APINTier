@@ -3,6 +3,7 @@ using Chinook.Domain.ApiModels;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Chinook.Domain.Entities
 {
@@ -28,9 +29,11 @@ namespace Chinook.Domain.Entities
         public int? SupportRepId { get; set; }
 
         [NotMapped]
+        [JsonIgnore]
         public ICollection<Invoice> Invoices { get; set; } = new HashSet<Invoice>();
         
         [NotMapped]
+        [JsonIgnore]
         public Employee SupportRep { get; set; }
 
         public CustomerApiModel Convert() =>

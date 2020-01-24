@@ -3,6 +3,7 @@ using Chinook.Domain.ApiModels;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Chinook.Domain.Entities
 {
@@ -14,6 +15,7 @@ namespace Chinook.Domain.Entities
         public string Name { get; set; }
 
         [NotMapped]
+        [JsonIgnore]
         public ICollection<PlaylistTrack> PlaylistTracks { get; set; } = new HashSet<PlaylistTrack>();
 
         public PlaylistApiModel Convert() =>

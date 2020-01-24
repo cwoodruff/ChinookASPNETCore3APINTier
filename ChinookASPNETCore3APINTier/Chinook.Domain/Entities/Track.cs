@@ -3,6 +3,7 @@ using Chinook.Domain.ApiModels;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Chinook.Domain.Entities
 {
@@ -23,14 +24,19 @@ namespace Chinook.Domain.Entities
         public decimal UnitPrice { get; set; }
 
         [NotMapped]
+        [JsonIgnore]
         public ICollection<InvoiceLine> InvoiceLines { get; set; } = new HashSet<InvoiceLine>();
         [NotMapped]
+        [JsonIgnore]
         public ICollection<PlaylistTrack> PlaylistTracks { get; set; } = new HashSet<PlaylistTrack>();
         [NotMapped]
+        [JsonIgnore]
         public Album Album { get; set; }
         [NotMapped]
+        [JsonIgnore]
         public Genre Genre { get; set; }
         [NotMapped]
+        [JsonIgnore]
         public MediaType MediaType { get; set; }
 
         public TrackApiModel Convert() =>

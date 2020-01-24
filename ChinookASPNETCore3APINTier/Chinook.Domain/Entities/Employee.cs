@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Chinook.Domain.Entities
 {
@@ -30,10 +31,13 @@ namespace Chinook.Domain.Entities
         public string Email { get; set; }
 
         [NotMapped]
+        [JsonIgnore]
         public ICollection<Customer> Customers { get; set; } = new HashSet<Customer>();
         [NotMapped]
+        [JsonIgnore]
         public Employee Manager { get; set; }
         [NotMapped]
+        [JsonIgnore]
         public ICollection<Employee> DirectReports { get; set; } = new HashSet<Employee>();
 
         public EmployeeApiModel Convert() =>

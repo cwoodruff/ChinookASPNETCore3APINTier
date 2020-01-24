@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
-using Newtonsoft.Json;
 using System.Diagnostics;
 using Chinook.Domain.Supervisor;
 using Chinook.Domain.ApiModels;
@@ -85,10 +83,10 @@ namespace Chinook.API.Controllers
                     return NotFound();
                 }
 
-                var errors = JsonConvert.SerializeObject(ModelState.Values
-                    .SelectMany(state => state.Errors)
-                    .Select(error => error.ErrorMessage));
-                Debug.WriteLine(errors);
+                // var errors = JsonConvert.SerializeObject(ModelState.Values
+                //     .SelectMany(state => state.Errors)
+                //     .Select(error => error.ErrorMessage));
+                // Debug.WriteLine(errors);
 
                 if (_chinookSupervisor.UpdatePlaylist(input))
                 {

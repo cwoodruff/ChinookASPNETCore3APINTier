@@ -3,6 +3,7 @@ using Chinook.Domain.ApiModels;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Chinook.Domain.Entities
 {
@@ -21,9 +22,11 @@ namespace Chinook.Domain.Entities
         public int ArtistId { get; set; }
 
         [NotMapped]
+        [JsonIgnore]
         public ICollection<Track> Tracks { get; set; } = new HashSet<Track>();
 
         [NotMapped]
+        [JsonIgnore]
         public Artist Artist
         {
             get => _artist;

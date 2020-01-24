@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Chinook.Domain.Converters;
 using Chinook.Domain.ApiModels;
 
@@ -20,8 +21,10 @@ namespace Chinook.Domain.Entities
         public int Quantity { get; set; }
 
         [NotMapped]
+        [JsonIgnore]
         public Invoice Invoice { get; set; }
         [NotMapped]
+        [JsonIgnore]
         public Track Track { get; set; }
 
         public InvoiceLineApiModel Convert() =>

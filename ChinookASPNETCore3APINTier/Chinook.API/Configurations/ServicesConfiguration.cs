@@ -3,7 +3,6 @@ using Chinook.Domain.Repositories;
 using Chinook.Domain.Supervisor;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace Chinook.API.Configurations
 {
@@ -30,10 +29,10 @@ namespace Chinook.API.Configurations
 
         public static void AddMiddleware(this IServiceCollection services)
         {
-            services.AddMvc().AddNewtonsoftJson(options =>
-            {
-                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-            });
+            // services.AddMvc().AddNewtonsoftJson(options =>
+            // {
+            //     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            // });
         }
 
         public static void AddLogging(this IServiceCollection services)

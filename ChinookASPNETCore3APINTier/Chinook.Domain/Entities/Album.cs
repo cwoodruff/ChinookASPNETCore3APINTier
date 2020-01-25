@@ -7,31 +7,21 @@ using System.Text.Json.Serialization;
 
 namespace Chinook.Domain.Entities
 {
-    public sealed class Album : IConvertModel<Album, AlbumApiModel>
+    public class Album : IConvertModel<Album, AlbumApiModel>
     {
-        private Artist _artist;
+        public Album()
+        {
+            Tracks = new HashSet<Track>();
+        }
 
-
-        [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int AlbumId { get; set; }
-
-
         public string Title { get; set; }
-
         public int ArtistId { get; set; }
 
-        [NotMapped]
         [JsonIgnore]
-        public ICollection<Track> Tracks { get; set; } = new HashSet<Track>();
-
-        [NotMapped]
+        public virtual Artist Artist { get; set; }
         [JsonIgnore]
-        public Artist Artist
-        {
-            get => _artist;
-            set => _artist = value;
-        }
+        public virtual ICollection<Track> Tracks { get; set; }
 
         public AlbumApiModel Convert() =>
             new AlbumApiModel

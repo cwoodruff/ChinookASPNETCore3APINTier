@@ -8,7 +8,7 @@ namespace Chinook.DataEFCore.Configurations
     {
         public PlaylistTrackConfiguration(EntityTypeBuilder<PlaylistTrack> entity)
         {
-            entity.HasKey(e => new {e.PlaylistId, e.TrackId})
+            entity.HasKey(e => new { e.PlaylistId, e.TrackId })
                 .HasName("PK__Playlist__A4A6282E25869641");
 
             entity.HasIndex(e => e.PlaylistId)
@@ -20,13 +20,13 @@ namespace Chinook.DataEFCore.Configurations
             entity.HasOne(d => d.Playlist)
                 .WithMany(p => p.PlaylistTracks)
                 .HasForeignKey(d => d.PlaylistId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__PlaylistT__Playl__30F848ED");
 
             entity.HasOne(d => d.Track)
                 .WithMany(p => p.PlaylistTracks)
                 .HasForeignKey(d => d.TrackId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__PlaylistT__Track__300424B4");
         }
     }

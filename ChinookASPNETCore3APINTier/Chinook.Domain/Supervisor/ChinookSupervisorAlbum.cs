@@ -31,7 +31,9 @@ namespace Chinook.Domain.Supervisor
             }
             else
             {
-                var albumApiModel = (_albumRepository.GetById(id)).Convert();
+                var album = _albumRepository.GetById(id);
+                if (album == null) return null;
+                var albumApiModel = album.Convert();
                 albumApiModel.ArtistName = (_artistRepository.GetById(albumApiModel.ArtistId)).Name;
 
                 var cacheEntryOptions =

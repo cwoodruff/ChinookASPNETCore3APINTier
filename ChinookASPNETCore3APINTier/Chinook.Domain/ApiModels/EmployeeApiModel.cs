@@ -9,13 +9,8 @@ namespace Chinook.Domain.ApiModels
 {
     public class EmployeeApiModel : IConvertModel<EmployeeApiModel, Employee>
     {
-
-        [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int EmployeeId { get; set; }
-
         public string LastName { get; set; }
-
         public string FirstName { get; set; }
         public string Title { get; set; }
         public int? ReportsTo { get; set; }
@@ -30,12 +25,8 @@ namespace Chinook.Domain.ApiModels
         public string Phone { get; set; }
         public string Fax { get; set; }
         public string Email { get; set; }
-
-        [NotMapped]
         public List<CustomerApiModel> Customers { get; set; }
-        [NotMapped]
         public EmployeeApiModel Manager { get; set; }
-        [NotMapped]
         public ICollection<EmployeeApiModel> DirectReports { get; set; }
 
         public Employee Convert() =>

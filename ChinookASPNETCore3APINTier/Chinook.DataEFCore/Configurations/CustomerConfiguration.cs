@@ -8,6 +8,9 @@ namespace Chinook.DataEFCore.Configurations
     {
         public CustomerConfiguration(EntityTypeBuilder<Customer> entity)
         {
+            entity.HasIndex(e => e.CustomerId)
+                .HasName("IPK_Customer");
+
             entity.HasIndex(e => e.SupportRepId)
                 .HasName("IFK_Employee_Customer");
 

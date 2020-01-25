@@ -8,6 +8,9 @@ namespace Chinook.DataEFCoreCmpldQry.Configurations
     {
         public EmployeeConfiguration(EntityTypeBuilder<Employee> entity)
         {
+            entity.HasIndex(e => e.EmployeeId)
+                .HasName("IPK_Employee");
+
             entity.HasIndex(e => e.ReportsTo)
                 .HasName("IFK_Employee_ReportsTo");
 
@@ -41,8 +44,8 @@ namespace Chinook.DataEFCoreCmpldQry.Configurations
 
             entity.Property(e => e.Title).HasMaxLength(30);
 
-            entity.HasOne(d => d.Manager)
-                .WithMany(p => p.DirectReports)
+            entity.HasOne(d => d.ReportsToNavigation)
+                .WithMany(p => p.InverseReportsToNavigation)
                 .HasForeignKey(d => d.ReportsTo)
                 .HasConstraintName("FK__Employee__Report__2B3F6F97");
         }

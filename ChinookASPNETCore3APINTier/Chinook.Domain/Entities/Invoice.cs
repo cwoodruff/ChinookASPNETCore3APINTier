@@ -10,34 +10,25 @@ namespace Chinook.Domain.Entities
 {
     public class Invoice : IConvertModel<Invoice, InvoiceApiModel>
     {
-        private Customer _customer;
-        
-        [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+        public Invoice()
+        {
+            InvoiceLines = new HashSet<InvoiceLine>();
+        }
+
         public int InvoiceId { get; set; }
-
         public int CustomerId { get; set; }
-
         public DateTime InvoiceDate { get; set; }
         public string BillingAddress { get; set; }
         public string BillingCity { get; set; }
         public string BillingState { get; set; }
         public string BillingCountry { get; set; }
         public string BillingPostalCode { get; set; }
-
         public decimal Total { get; set; }
 
-        [NotMapped]
         [JsonIgnore]
-        public ICollection<InvoiceLine> InvoiceLines { get; set; } = new HashSet<InvoiceLine>();
-
-        [NotMapped]
+        public virtual Customer Customer { get; set; }
         [JsonIgnore]
-        public Customer Customer
-        {
-            get => _customer;
-            set => _customer = value;
-        }
+        public virtual ICollection<InvoiceLine> InvoiceLines { get; set; }
 
         public InvoiceApiModel Convert() =>
             new InvoiceApiModel

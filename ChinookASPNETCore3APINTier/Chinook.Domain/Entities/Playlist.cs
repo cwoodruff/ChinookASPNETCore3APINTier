@@ -9,15 +9,17 @@ namespace Chinook.Domain.Entities
 {
     public class Playlist : IConvertModel<Playlist, PlaylistApiModel>
     {
-        [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+        public Playlist()
+        {
+            PlaylistTracks = new HashSet<PlaylistTrack>();
+        }
+
         public int PlaylistId { get; set; }
         public string Name { get; set; }
 
-        [NotMapped]
         [JsonIgnore]
-        public ICollection<PlaylistTrack> PlaylistTracks { get; set; } = new HashSet<PlaylistTrack>();
-
+        public virtual ICollection<PlaylistTrack> PlaylistTracks { get; set; }
+        
         public PlaylistApiModel Convert() =>
             new PlaylistApiModel
             {

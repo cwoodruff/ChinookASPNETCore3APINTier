@@ -8,15 +8,9 @@ namespace Chinook.Domain.ApiModels
 {
     public class PlaylistApiModel : IConvertModel<PlaylistApiModel, Playlist>
     {
-
-        [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int PlaylistId { get; set; }
-
         public string Name { get; set; }
-        [NotMapped]
         public IList<TrackApiModel> Tracks { get; set; }
-        [NotMapped]
         public IList<PlaylistTrackApiModel> PlaylistTracks { get; set; }
 
         public Playlist Convert() =>

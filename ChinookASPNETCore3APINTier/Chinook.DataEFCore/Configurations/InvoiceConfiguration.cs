@@ -11,6 +11,9 @@ namespace Chinook.DataEFCore.Configurations
             entity.HasIndex(e => e.CustomerId)
                 .HasName("IFK_Customer_Invoice");
 
+            entity.HasIndex(e => e.InvoiceId)
+                .HasName("IPK_Invoice");
+
             entity.Property(e => e.BillingAddress).HasMaxLength(70);
 
             entity.Property(e => e.BillingCity).HasMaxLength(40);
@@ -23,12 +26,12 @@ namespace Chinook.DataEFCore.Configurations
 
             entity.Property(e => e.InvoiceDate).HasColumnType("datetime");
 
-            entity.Property(e => e.Total).HasColumnType("numeric");
+            entity.Property(e => e.Total).HasColumnType("numeric(10, 2)");
 
             entity.HasOne(d => d.Customer)
                 .WithMany(p => p.Invoices)
                 .HasForeignKey(d => d.CustomerId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Invoice__Custome__2D27B809");
         }
     }

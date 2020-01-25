@@ -10,12 +10,10 @@ namespace Chinook.Domain.Entities
         public int PlaylistId { get; set; }
         public int TrackId { get; set; }
 
-        [NotMapped]
         [JsonIgnore]
-        public Playlist Playlist { get; set; }
-        [NotMapped]
+        public virtual Playlist Playlist { get; set; }
         [JsonIgnore]
-        public Track Track { get; set; }
+        public virtual Track Track { get; set; }
 
         public PlaylistTrackApiModel Convert() =>
             new PlaylistTrackApiModel

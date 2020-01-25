@@ -30,15 +30,8 @@ namespace Chinook.DataEFCore.Repositories
 
         public List<Track> GetTrackByPlaylistId(int id)
         {
-            IList<Track> list = new List<Track>();
-            var playlistTracks = _context.PlaylistTrack.Where(p => p.PlaylistId == id);
-            foreach (var playlistTrack in playlistTracks)
-            {
-                var track = _context.Track.Find(playlistTrack.TrackId);
-                list.Add(track);
-            }
-
-            return list.ToList();
+            var tracks = _context.PlaylistTrack.Where(p => p.PlaylistId == id).Select(p => p.Track);
+            return tracks.ToList();
         }
 
         public Playlist Add(Playlist newPlaylist)

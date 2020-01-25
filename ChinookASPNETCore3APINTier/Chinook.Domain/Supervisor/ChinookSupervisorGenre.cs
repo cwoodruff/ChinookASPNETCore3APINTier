@@ -32,7 +32,9 @@ namespace Chinook.Domain.Supervisor
             }
             else
             {
-                var genreApiModel = (_genreRepository.GetById(id)).Convert();
+                var genre = _genreRepository.GetById(id);
+                if (genre != null) return null;
+                var genreApiModel = genre.Convert();
                 genreApiModel.Tracks = (GetTrackByGenreId(genreApiModel.GenreId)).ToList();
                 
                 var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));

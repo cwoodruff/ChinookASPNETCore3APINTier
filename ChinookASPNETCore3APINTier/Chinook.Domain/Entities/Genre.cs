@@ -9,17 +9,17 @@ namespace Chinook.Domain.Entities
 {
     public class Genre : IConvertModel<Genre, GenreApiModel>
     {
+        public Genre()
+        {
+            Tracks = new HashSet<Track>();
+        }
 
-        [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int GenreId { get; set; }
-
         public string Name { get; set; }
 
-        [NotMapped]
         [JsonIgnore]
-        public ICollection<Track> Tracks { get; set; } = new HashSet<Track>();
-
+        public virtual ICollection<Track> Tracks { get; set; }
+        
         public GenreApiModel Convert() =>
             new GenreApiModel
             {

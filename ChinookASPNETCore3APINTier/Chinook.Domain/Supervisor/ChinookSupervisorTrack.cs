@@ -31,11 +31,17 @@ namespace Chinook.Domain.Supervisor
             {
                 var trackApiModel = (_trackRepository.GetById(id)).Convert();
                 trackApiModel.Genre = GetGenreById(trackApiModel.GenreId.GetValueOrDefault());
-                trackApiModel.Album = GetAlbumById(trackApiModel.TrackId);
+                trackApiModel.Album = GetAlbumById(trackApiModel.AlbumId);
                 trackApiModel.MediaType = GetMediaTypeById(trackApiModel.MediaTypeId);
-                trackApiModel.AlbumName = trackApiModel.Album.Title;
+                if (trackApiModel.Album != null)
+                {
+                    trackApiModel.AlbumName = trackApiModel.Album.Title;
+                }
                 trackApiModel.MediaTypeName = trackApiModel.MediaType.Name;
-                trackApiModel.GenreName = trackApiModel.Genre.Name;
+                if (trackApiModel.Genre != null)
+                {
+                    trackApiModel.GenreName = trackApiModel.Genre.Name;   
+                }
 
                 var cacheEntryOptions =
                     new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));

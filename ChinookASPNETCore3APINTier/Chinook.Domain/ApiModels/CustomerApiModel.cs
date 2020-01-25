@@ -8,13 +8,8 @@ namespace Chinook.Domain.ApiModels
 {
     public class CustomerApiModel : IConvertModel<CustomerApiModel, Customer>
     {
-
-        [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int CustomerId { get; set; }
-
         public string FirstName { get; set; }
-
         public string LastName { get; set; }
         public string Company { get; set; }
         public string Address { get; set; }
@@ -27,10 +22,7 @@ namespace Chinook.Domain.ApiModels
         public string Email { get; set; }
         public int? SupportRepId { get; set; }
         public string SupportRepName { get; set; }
-
-        [NotMapped]
         public IList<InvoiceApiModel> Invoices { get; set; }
-        [NotMapped]
         public EmployeeApiModel SupportRep { get; set; }
 
 

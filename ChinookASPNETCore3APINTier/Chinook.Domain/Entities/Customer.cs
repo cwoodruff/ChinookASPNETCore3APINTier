@@ -9,13 +9,13 @@ namespace Chinook.Domain.Entities
 {
     public class Customer : IConvertModel<Customer, CustomerApiModel>
     {
+        public Customer()
+        {
+            Invoices = new HashSet<Invoice>();
+        }
 
-        [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int CustomerId { get; set; }
-
         public string FirstName { get; set; }
-
         public string LastName { get; set; }
         public string Company { get; set; }
         public string Address { get; set; }
@@ -28,14 +28,11 @@ namespace Chinook.Domain.Entities
         public string Email { get; set; }
         public int? SupportRepId { get; set; }
 
-        [NotMapped]
         [JsonIgnore]
-        public ICollection<Invoice> Invoices { get; set; } = new HashSet<Invoice>();
+        public virtual Employee SupportRep { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<Invoice> Invoices { get; set; }
         
-        [NotMapped]
-        [JsonIgnore]
-        public Employee SupportRep { get; set; }
-
         public CustomerApiModel Convert() =>
             new CustomerApiModel
             {

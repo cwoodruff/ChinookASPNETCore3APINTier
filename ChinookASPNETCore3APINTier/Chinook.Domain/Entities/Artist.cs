@@ -9,17 +9,16 @@ namespace Chinook.Domain.Entities
 {
     public class Artist : IConvertModel<Artist, ArtistApiModel>
     {
+        public Artist()
+        {
+            Albums = new HashSet<Album>();
+        }
 
-        [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int ArtistId { get; set; }
-        
         public string Name { get; set; }
-
-        [NotMapped]
         [JsonIgnore]
-        public ICollection<Album> Albums { get; set; } = new HashSet<Album>();
-
+        public virtual ICollection<Album> Albums { get; set; }
+        
         public ArtistApiModel Convert() =>
             new ArtistApiModel
             {

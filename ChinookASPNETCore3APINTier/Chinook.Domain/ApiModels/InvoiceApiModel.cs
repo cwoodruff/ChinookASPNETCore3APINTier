@@ -9,26 +9,17 @@ namespace Chinook.Domain.ApiModels
 {
     public sealed class InvoiceApiModel : IConvertModel<InvoiceApiModel, Invoice>
     {
-
-        [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int InvoiceId { get; set; }
-
         public int CustomerId { get; set; }
         public string CustomerName { get; set; }
-
         public DateTime InvoiceDate { get; set; }
         public string BillingAddress { get; set; }
         public string BillingCity { get; set; }
         public string BillingState { get; set; }
         public string BillingCountry { get; set; }
         public string BillingPostalCode { get; set; }
-
         public decimal Total { get; set; }
-
-        [NotMapped]
         public IList<InvoiceLineApiModel> InvoiceLines { get; set; }
-        [NotMapped]
         public CustomerApiModel Customer { get; set; }
 
         public Invoice Convert() =>

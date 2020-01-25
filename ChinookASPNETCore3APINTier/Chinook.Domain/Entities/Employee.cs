@@ -10,12 +10,14 @@ namespace Chinook.Domain.Entities
 {
     public class Employee : IConvertModel<Employee, EmployeeApiModel>
     {
-        [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+        public Employee()
+        {
+            Customers = new HashSet<Customer>();
+            InverseReportsToNavigation = new HashSet<Employee>();
+        }
+
         public int EmployeeId { get; set; }
-
         public string LastName { get; set; }
-
         public string FirstName { get; set; }
         public string Title { get; set; }
         public int? ReportsTo { get; set; }
@@ -30,16 +32,13 @@ namespace Chinook.Domain.Entities
         public string Fax { get; set; }
         public string Email { get; set; }
 
-        [NotMapped]
         [JsonIgnore]
-        public ICollection<Customer> Customers { get; set; } = new HashSet<Customer>();
-        [NotMapped]
+        public virtual Employee ReportsToNavigation { get; set; }
         [JsonIgnore]
-        public Employee Manager { get; set; }
-        [NotMapped]
+        public virtual ICollection<Customer> Customers { get; set; }
         [JsonIgnore]
-        public ICollection<Employee> DirectReports { get; set; } = new HashSet<Employee>();
-
+        public virtual ICollection<Employee> InverseReportsToNavigation { get; set; }
+        
         public EmployeeApiModel Convert() =>
             new EmployeeApiModel
             {

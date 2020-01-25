@@ -8,14 +8,8 @@ namespace Chinook.Domain.ApiModels
 {
     public class ArtistApiModel : IConvertModel<ArtistApiModel, Artist>
     {
-
-        [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int ArtistId { get; set; }
-
         public string Name { get; set; }
-
-        [NotMapped]
         public IList<AlbumApiModel> Albums { get; set; }
 
         public Artist Convert() =>

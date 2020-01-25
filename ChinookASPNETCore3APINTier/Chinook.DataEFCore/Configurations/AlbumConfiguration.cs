@@ -8,6 +8,9 @@ namespace Chinook.DataEFCore.Configurations
     {
         public AlbumConfiguration(EntityTypeBuilder<Album> entity)
         {
+            entity.HasIndex(e => e.AlbumId)
+                .HasName("IPK_ProductItem");
+
             entity.HasIndex(e => e.ArtistId)
                 .HasName("IFK_Artist_Album");
 
@@ -18,7 +21,7 @@ namespace Chinook.DataEFCore.Configurations
             entity.HasOne(d => d.Artist)
                 .WithMany(p => p.Albums)
                 .HasForeignKey(d => d.ArtistId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Album__ArtistId__276EDEB3");
         }
     }

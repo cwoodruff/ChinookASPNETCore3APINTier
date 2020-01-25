@@ -17,13 +17,16 @@ namespace Chinook.DataEFCore.Configurations
             entity.HasIndex(e => e.MediaTypeId)
                 .HasName("IFK_MediaType_Track");
 
+            entity.HasIndex(e => e.TrackId)
+                .HasName("IPK_Track");
+
             entity.Property(e => e.Composer).HasMaxLength(220);
 
             entity.Property(e => e.Name)
                 .IsRequired()
                 .HasMaxLength(200);
 
-            entity.Property(e => e.UnitPrice).HasColumnType("numeric");
+            entity.Property(e => e.UnitPrice).HasColumnType("numeric(10, 2)");
 
             entity.HasOne(d => d.Album)
                 .WithMany(p => p.Tracks)
@@ -38,7 +41,7 @@ namespace Chinook.DataEFCore.Configurations
             entity.HasOne(d => d.MediaType)
                 .WithMany(p => p.Tracks)
                 .HasForeignKey(d => d.MediaTypeId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Track__MediaType__29572725");
         }
     }

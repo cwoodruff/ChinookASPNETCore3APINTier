@@ -28,7 +28,7 @@ namespace Chinook.DataEFCoreCmpldQry.Repositories
         public MediaType GetById(int id)
         {
             var mediaType = _context.GetMediaType(id);
-            return mediaType.First();
+            return mediaType;
         }
 
         public MediaType Add(MediaType newMediaType)

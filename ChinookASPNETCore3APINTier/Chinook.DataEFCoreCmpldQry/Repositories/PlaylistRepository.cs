@@ -28,7 +28,7 @@ namespace Chinook.DataEFCoreCmpldQry.Repositories
         public Playlist GetById(int id)
         {
             var playlist = _context.GetPlaylist(id);
-            return playlist.First();
+            return playlist;
         }
 
         public List<Track> GetTrackByPlaylistId(int id)

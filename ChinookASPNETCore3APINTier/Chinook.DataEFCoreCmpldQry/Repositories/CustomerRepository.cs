@@ -28,7 +28,7 @@ namespace Chinook.DataEFCoreCmpldQry.Repositories
         public Customer GetById(int id)
         {
             var customer = _context.GetCustomer(id);
-            return customer.First();
+            return customer;
         }
 
         public Customer Add(Customer newCustomer)

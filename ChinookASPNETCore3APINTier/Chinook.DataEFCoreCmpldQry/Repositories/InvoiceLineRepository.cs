@@ -28,7 +28,7 @@ namespace Chinook.DataEFCoreCmpldQry.Repositories
         public InvoiceLine GetById(int id)
         {
             var invoiceLine = _context.GetInvoiceLine(id);
-            return invoiceLine.First();
+            return invoiceLine;
         }
 
         public InvoiceLine Add(InvoiceLine newInvoiceLine)

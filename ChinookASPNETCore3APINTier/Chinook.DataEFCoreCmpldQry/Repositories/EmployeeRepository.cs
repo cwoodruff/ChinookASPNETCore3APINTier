@@ -28,7 +28,7 @@ namespace Chinook.DataEFCoreCmpldQry.Repositories
         public Employee GetById(int id)
         {
             var employee = _context.GetEmployee(id);
-            return employee.First();
+            return employee;
         }
 
         public Employee Add(Employee newEmployee)
@@ -60,7 +60,7 @@ namespace Chinook.DataEFCoreCmpldQry.Repositories
         public Employee GetReportsTo(int id)
         {
             var employee = _context.GetEmployeeGetReportsTo(id);
-            return employee.First();
+            return employee.FirstOrDefault();
         }
 
         public List<Employee> GetDirectReports(int id) => _context.GetEmployeeDirectReports(id);

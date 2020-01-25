@@ -28,7 +28,7 @@ namespace Chinook.DataEFCoreCmpldQry.Repositories
         public Genre GetById(int id)
         {
             var genres = _context.GetGenre(id);
-            return genres.FirstOrDefault();
+            return genres;
         }
 
         public Genre Add(Genre newGenre)

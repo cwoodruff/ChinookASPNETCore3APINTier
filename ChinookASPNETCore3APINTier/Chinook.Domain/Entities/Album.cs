@@ -14,6 +14,7 @@ namespace Chinook.Domain.Entities
             Tracks = new HashSet<Track>();
         }
 
+        [Key]
         public int AlbumId { get; set; }
         public string Title { get; set; }
         public int ArtistId { get; set; }

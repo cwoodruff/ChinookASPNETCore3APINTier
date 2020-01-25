@@ -16,9 +16,8 @@ namespace Chinook.DataEFCoreCmpldQry
             EF.CompileQuery((ChinookContext db) =>
                 db.Album.AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, List<Album>> _queryGetAlbum =
-            EF.CompileQuery((ChinookContext db, int id) =>
-                db.Album.Where(a => a.AlbumId == id).AsNoTracking().ToList());
+        private static readonly Func<ChinookContext, int, Album> _queryGetAlbum =
+            EF.CompileQuery((ChinookContext db, int id) => db.Album.Find(id));
 
         private static readonly Func<ChinookContext, int, List<Album>> _queryGetAlbumsByArtistId =
             EF.CompileQuery((ChinookContext db, int id) => db.Album.Where(a => a.ArtistId == id).AsNoTracking()
@@ -28,17 +27,17 @@ namespace Chinook.DataEFCoreCmpldQry
             EF.CompileQuery((ChinookContext db) =>
                 db.Artist.AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, List<Artist>> _queryGetArtist =
+        private static readonly Func<ChinookContext, int, Artist> _queryGetArtist =
             EF.CompileQuery((ChinookContext db, int id) =>
-                db.Artist.Where(a => a.ArtistId == id).AsNoTracking().ToList());
+                db.Artist.Find(id));
 
         private static readonly Func<ChinookContext, List<Customer>> _queryGetAllCustomers =
             EF.CompileQuery((ChinookContext db) =>
                 db.Customer.AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, List<Customer>> _queryGetCustomer =
+        private static readonly Func<ChinookContext, int, Customer> _queryGetCustomer =
             EF.CompileQuery((ChinookContext db, int id) =>
-                db.Customer.Where(c => c.CustomerId == id).AsNoTracking().ToList());
+                db.Customer.Find(id));
 
         private static readonly Func<ChinookContext, int, List<Customer>> _queryGetCustomerBySupportRepId =
             EF.CompileQuery((ChinookContext db, int id) =>
@@ -48,9 +47,9 @@ namespace Chinook.DataEFCoreCmpldQry
             EF.CompileQuery((ChinookContext db) =>
                 db.Employee.AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, List<Employee>> _queryGetEmployee =
+        private static readonly Func<ChinookContext, int, Employee> _queryGetEmployee =
             EF.CompileQuery((ChinookContext db, int id) =>
-                db.Employee.Where(e => e.EmployeeId == id).AsNoTracking().ToList());
+                db.Employee.Find(id));
 
         private static readonly Func<ChinookContext, int, List<Employee>> _queryGetDirectReports =
             EF.CompileQuery((ChinookContext db, int id) =>
@@ -64,17 +63,17 @@ namespace Chinook.DataEFCoreCmpldQry
             EF.CompileQuery((ChinookContext db) =>
                 db.Genre.AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, List<Genre>> _queryGetGenre =
+        private static readonly Func<ChinookContext, int, Genre> _queryGetGenre =
             EF.CompileQuery((ChinookContext db, int id) =>
-                db.Genre.Where(g => g.GenreId == id).AsNoTracking().ToList());
+                db.Genre.Find(id));
 
         private static readonly Func<ChinookContext, List<InvoiceLine>> _queryGetAllInvoiceLines =
             EF.CompileQuery((ChinookContext db) =>
                 db.InvoiceLine.AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, List<InvoiceLine>> _queryGetInvoiceLine =
+        private static readonly Func<ChinookContext, int, InvoiceLine> _queryGetInvoiceLine =
             EF.CompileQuery((ChinookContext db, int id) =>
-                db.InvoiceLine.Where(i => i.InvoiceLineId == id).AsNoTracking().ToList());
+                db.InvoiceLine.Find(id));
 
         private static readonly Func<ChinookContext, int, List<InvoiceLine>> _queryGetInvoiceLinesByInvoiceId
             = EF.CompileQuery((ChinookContext db, int id) =>
@@ -88,9 +87,9 @@ namespace Chinook.DataEFCoreCmpldQry
             EF.CompileQuery((ChinookContext db) =>
                 db.Invoice.AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, List<Invoice>> _queryGetInvoice =
+        private static readonly Func<ChinookContext, int, Invoice> _queryGetInvoice =
             EF.CompileQuery((ChinookContext db, int id) =>
-                db.Invoice.Where(i => i.InvoiceId == id).AsNoTracking().ToList());
+                db.Invoice.Find(id));
 
         private static readonly Func<ChinookContext, int, List<Invoice>> _queryGetInvoicesByCustomerId =
             EF.CompileQuery((ChinookContext db, int id) =>
@@ -100,17 +99,17 @@ namespace Chinook.DataEFCoreCmpldQry
             EF.CompileQuery((ChinookContext db) =>
                 db.MediaType.AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, List<MediaType>> _queryGetMediaType =
+        private static readonly Func<ChinookContext, int, MediaType> _queryGetMediaType =
             EF.CompileQuery((ChinookContext db, int id) =>
-                db.MediaType.Where(m => m.MediaTypeId == id).AsNoTracking().ToList());
+                db.MediaType.Find(id));
 
         private static readonly Func<ChinookContext, List<Playlist>> _queryGetAllPlaylists =
             EF.CompileQuery((ChinookContext db) =>
                 db.Playlist.AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, List<Playlist>> _queryGetPlaylist =
+        private static readonly Func<ChinookContext, int, Playlist> _queryGetPlaylist =
             EF.CompileQuery((ChinookContext db, int id) =>
-                db.Playlist.Where(p => p.PlaylistId == id).AsNoTracking().ToList());
+                db.Playlist.Find(id));
 
         private static readonly Func<ChinookContext, List<PlaylistTrack>> _queryGetAllPlaylistTracks =
             EF.CompileQuery((ChinookContext db) =>
@@ -128,9 +127,9 @@ namespace Chinook.DataEFCoreCmpldQry
             EF.CompileQuery((ChinookContext db) =>
                 db.Track.AsNoTracking().ToList());
 
-        private static readonly Func<ChinookContext, int, List<Track>> _queryGetTrack =
+        private static readonly Func<ChinookContext, int, Track> _queryGetTrack =
             EF.CompileQuery((ChinookContext db, int id) =>
-                db.Track.Where(t => t.TrackId == id).AsNoTracking().ToList());
+                db.Track.Find(id));
 
         private static readonly Func<ChinookContext, int, List<Track>> _queryGetTracksByAlbumId =
             EF.CompileQuery((ChinookContext db, int id) =>
@@ -178,25 +177,25 @@ namespace Chinook.DataEFCoreCmpldQry
 
         public List<Album> GetAllAlbums() => _queryGetAllAlbums(this);
 
-        public List<Album> GetAlbum(int id) => _queryGetAlbum(this, id);
+        public Album GetAlbum(int id) => _queryGetAlbum(this, id);
 
         public List<Album> GetAlbumsByArtistId(int id) =>
             _queryGetAlbumsByArtistId(this, id);
 
         public List<Artist> GetAllArtists() => _queryGetAllArtists(this);
 
-        public List<Artist> GetArtist(int id) => _queryGetArtist(this, id);
+        public Artist GetArtist(int id) => _queryGetArtist(this, id);
 
         public List<Customer> GetAllCustomers() => _queryGetAllCustomers(this);
 
-        public List<Customer> GetCustomer(int id) => _queryGetCustomer(this, id);
+        public Customer GetCustomer(int id) => _queryGetCustomer(this, id);
 
         public List<Customer> GetCustomerBySupportRepId(int id) =>
             _queryGetCustomerBySupportRepId(this, id);
 
         public List<Employee> GetAllEmployees() => _queryGetAllEmployees(this);
 
-        public List<Employee> GetEmployee(int id) => _queryGetEmployee(this, id);
+        public Employee GetEmployee(int id) => _queryGetEmployee(this, id);
 
         public List<Employee> GetEmployeeDirectReports(int id) =>
             _queryGetDirectReports(this, id);
@@ -206,12 +205,12 @@ namespace Chinook.DataEFCoreCmpldQry
 
         public List<Genre> GetAllGenres() => _queryGetAllGenres(this);
 
-        public List<Genre> GetGenre(int id) => _queryGetGenre(this, id);
+        public Genre GetGenre(int id) => _queryGetGenre(this, id);
 
         public List<InvoiceLine> GetAllInvoiceLines() =>
             _queryGetAllInvoiceLines(this);
 
-        public List<InvoiceLine> GetInvoiceLine(int id) =>
+        public InvoiceLine GetInvoiceLine(int id) =>
             _queryGetInvoiceLine(this, id);
 
         public List<InvoiceLine> GetInvoiceLinesByInvoiceId(int id) =>
@@ -222,19 +221,19 @@ namespace Chinook.DataEFCoreCmpldQry
 
         public List<Invoice> GetAllInvoices() => _queryGetAllInvoices(this);
 
-        public List<Invoice> GetInvoice(int id) => _queryGetInvoice(this, id);
+        public Invoice GetInvoice(int id) => _queryGetInvoice(this, id);
 
         public List<Invoice> GetInvoicesByCustomerId(int id) =>
             _queryGetInvoicesByCustomerId(this, id);
 
         public List<MediaType> GetAllMediaTypes() => _queryGetAllMediaTypes(this);
 
-        public List<MediaType> GetMediaType(int id) =>
+        public MediaType GetMediaType(int id) =>
             _queryGetMediaType(this, id);
 
         public List<Playlist> GetAllPlaylists() => _queryGetAllPlaylists(this);
 
-        public List<Playlist> GetPlaylist(int id) => _queryGetPlaylist(this, id);
+        public Playlist GetPlaylist(int id) => _queryGetPlaylist(this, id);
 
         public List<PlaylistTrack> GetAllPlaylistTracks() =>
             _queryGetAllPlaylistTracks(this);
@@ -247,7 +246,7 @@ namespace Chinook.DataEFCoreCmpldQry
 
         public List<Track> GetAllTracks() => _queryGetAllTracks(this);
 
-        public List<Track> GetTrack(int id) => _queryGetTrack(this, id);
+        public Track GetTrack(int id) => _queryGetTrack(this, id);
 
         public List<Track> GetTracksByAlbumId(int id) =>
             _queryGetTracksByAlbumId(this, id);

@@ -28,7 +28,7 @@ namespace Chinook.DataEFCoreCmpldQry.Repositories
         public Artist GetById(int id)
         {
             var artist = _context.GetArtist(id);
-            return artist.First();
+            return artist;
         }
 
         public Artist Add(Artist newArtist)

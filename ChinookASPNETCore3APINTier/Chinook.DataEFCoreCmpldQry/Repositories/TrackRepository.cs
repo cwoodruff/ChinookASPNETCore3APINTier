@@ -28,7 +28,7 @@ namespace Chinook.DataEFCoreCmpldQry.Repositories
         public Track GetById(int id)
         {
             var track = _context.GetTrack(id);
-            return track.First();
+            return track;
         }
 
         public Track Add(Track newTrack)

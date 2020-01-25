@@ -28,7 +28,7 @@ namespace Chinook.DataEFCoreCmpldQry.Repositories
         public Album GetById(int id)
         {
             var album = _context.GetAlbum(id);
-            return album.First();
+            return album;
         }
 
         public Album Add(Album newAlbum)

@@ -1,10 +1,7 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
-using System.Threading;
 using System.Collections.Generic;
 using Chinook.Domain.Repositories;
 using Chinook.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace Chinook.DataEFCoreCmpldQry.Repositories
 {

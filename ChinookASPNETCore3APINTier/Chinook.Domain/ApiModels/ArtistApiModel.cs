@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Chinook.Domain.Converters;
 using Chinook.Domain.Entities;
 

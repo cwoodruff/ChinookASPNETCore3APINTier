@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 using Chinook.Domain.Supervisor;
 using Chinook.Domain.ApiModels;
 using Microsoft.AspNetCore.Cors;

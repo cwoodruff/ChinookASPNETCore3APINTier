@@ -23,7 +23,7 @@ namespace Chinook.API.Configurations
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 connection = configuration.GetConnectionString("ChinookDbDocker") ??
-                                 "Server=localhost,1433;Database=Chinook;User=sa;Password=Pa55w0rd;Trusted_Connection=False;Application Name=ChinookASPNETCoreAPINTier";
+                                 "Server=localhost,1433;Database=Chinook;User=sa;Password=P@55w0rd;Trusted_Connection=False;Application Name=ChinookASPNETCoreAPINTier";
             }
             
             services.AddDbContextPool<ChinookContext>(options => options.UseSqlServer(connection));

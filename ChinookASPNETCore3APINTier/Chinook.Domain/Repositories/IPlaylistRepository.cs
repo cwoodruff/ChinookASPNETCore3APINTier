@@ -9,8 +9,8 @@ namespace Chinook.Domain.Repositories
         List<Playlist> GetAll();
         Playlist GetById(int id);
         Playlist Add(Playlist newPlaylist);
-        List<Track> GetTrackByPlaylistId(int id);
         bool Update(Playlist playlist);
         bool Delete(int id);
+        List<Playlist> GetByTrackId(int id);
     }
 }

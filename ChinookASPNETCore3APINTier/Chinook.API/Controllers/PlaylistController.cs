@@ -121,5 +121,19 @@ namespace Chinook.API.Controllers
                 return StatusCode(500, ex);
             }
         }
+        
+        [HttpGet("track/{id}")]
+        [Produces(typeof(List<TrackApiModel>))]
+        public ActionResult<TrackApiModel> GetByTrackId(int id)
+        {
+            try
+            {
+                return Ok(_chinookSupervisor.GetPlaylistByTrackId(id));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
+            }
+        }
     }
 }

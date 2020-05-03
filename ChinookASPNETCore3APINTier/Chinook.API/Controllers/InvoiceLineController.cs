@@ -59,13 +59,13 @@ namespace Chinook.API.Controllers
         {
             try
             {
-                var invoice = _chinookSupervisor.GetInvoiceById(id);
-                if ( invoice == null)
+                var invoiceLines = _chinookSupervisor.GetInvoiceLineByInvoiceId(id);
+                if ( invoiceLines == null)
                 {
                     return NotFound();
                 }
 
-                return Ok(invoice);
+                return Ok(invoiceLines);
             }
             catch (Exception ex)
             {
@@ -75,17 +75,17 @@ namespace Chinook.API.Controllers
 
         [HttpGet("track/{id}")]
         [Produces(typeof(List<InvoiceLineApiModel>))]
-        public ActionResult<InvoiceLineApiModel> GetByArtistId(int id)
+        public ActionResult<InvoiceLineApiModel> GetByTrackId(int id)
         {
             try
             {
-                var track = _chinookSupervisor.GetTrackById(id);
-                if (track == null)
+                var invoiceLines = _chinookSupervisor.GetInvoiceLineByTrackId(id);
+                if (invoiceLines == null)
                 {
                     return NotFound();
                 }
 
-                return Ok(track);
+                return Ok(invoiceLines);
             }
             catch (Exception ex)
             {

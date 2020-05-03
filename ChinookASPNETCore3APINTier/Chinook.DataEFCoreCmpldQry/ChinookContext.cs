@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using Chinook.DataEFCoreCmpldQry.Configurations;
@@ -143,6 +144,26 @@ namespace Chinook.DataEFCoreCmpldQry
             EF.CompileQuery((ChinookContext db, int id) =>
                 db.Track.Where(a => a.MediaTypeId == id).AsNoTracking().ToList());
 
+        private static readonly Func<ChinookContext, int, List<Track>> _queryGetTracksByArtistId =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.Album.Where(a => a.ArtistId == 5).SelectMany(t => t.Tracks).ToList());
+
+        private static readonly Func<ChinookContext, int, List<Track>> _queryGetTracksByInvoiceId =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.Track
+                    .Where(c => c.InvoiceLines.Any(o => o.InvoiceId == id))
+                    .ToList());
+
+        private static readonly Func<ChinookContext, int, List<Invoice>> _queryGetInvoicesByEmployeeId =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.Customer.Where(a => a.SupportRepId == 5).SelectMany(t => t.Invoices).ToList());
+        
+        private static readonly Func<ChinookContext, int, List<Playlist>> _queryGetPlaylistByTrackId =
+            EF.CompileQuery((ChinookContext db, int id) =>
+                db.Playlist
+                    .Where(c => c.PlaylistTracks.Any(o => o.TrackId == id))
+                    .ToList());
+
         public ChinookContext(DbContextOptions options) : base(options)
         {
             Interlocked.Increment(ref InstanceCount);
@@ -256,5 +277,17 @@ namespace Chinook.DataEFCoreCmpldQry
 
         public List<Track> GetTracksByMediaTypeId(int id) =>
             _queryGetTracksByMediaTypeId(this, id);
+        
+        public List<Track> GetTracksByArtistId(int id) =>
+            _queryGetTracksByArtistId(this, id);
+
+        public List<Track> GetTracksByInvoiceId(int id) =>
+            _queryGetTracksByInvoiceId(this, id);
+        
+        public List<Invoice> GetInvoicesByEmployeeId(int id) =>
+            _queryGetInvoicesByEmployeeId(this, id);
+        
+        public List<Playlist> GetPlaylistByTrackId(int id) =>
+            _queryGetPlaylistByTrackId(this, id);
     }
 }

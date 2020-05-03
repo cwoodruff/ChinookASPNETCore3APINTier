@@ -79,5 +79,12 @@ namespace Chinook.Domain.Supervisor
 
         public bool DeleteInvoice(int id) 
             => _invoiceRepository.Delete(id);
+        
+        
+        public IEnumerable<InvoiceApiModel> GetInvoiceByEmployeeId(int id)
+        {
+            var invoices = _invoiceRepository.GetByEmployeeId(id);
+            return invoices.ConvertAll();
+        }
     }
 }

@@ -45,5 +45,9 @@ namespace Chinook.MockData.Repositories
         public bool Update(Playlist playlist) => true;
 
         public bool Delete(int id) => true;
+        public List<Playlist> GetByTrackId(int id)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

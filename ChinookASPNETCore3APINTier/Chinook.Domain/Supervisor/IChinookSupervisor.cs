@@ -73,6 +73,9 @@ namespace Chinook.Domain.Supervisor
         bool UpdateInvoice(InvoiceApiModel invoiceApiModel);
 
         bool DeleteInvoice(int id);
+        
+        IEnumerable<InvoiceApiModel> GetInvoiceByEmployeeId(int id);
+        
         IEnumerable<MediaTypeApiModel> GetAllMediaType();
         MediaTypeApiModel GetMediaTypeById(int id);
 
@@ -89,6 +92,9 @@ namespace Chinook.Domain.Supervisor
         bool UpdatePlaylist(PlaylistApiModel playlistApiModel);
 
         bool DeletePlaylist(int id);
+        
+        IEnumerable<PlaylistApiModel> GetPlaylistByTrackId(int id);
+        
         IEnumerable<TrackApiModel> GetAllTrack();
         TrackApiModel GetTrackById(int id);
         IEnumerable<TrackApiModel> GetTrackByAlbumId(int id);
@@ -103,5 +109,8 @@ namespace Chinook.Domain.Supervisor
 
         bool UpdateTrack(TrackApiModel trackApiModel);
         bool DeleteTrack(int id);
+        
+        IEnumerable<TrackApiModel> GetTrackByArtistId(int id);
+        IEnumerable<TrackApiModel> GetTrackByInvoiceId(int id);
     }
 }

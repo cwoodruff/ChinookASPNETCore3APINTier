@@ -28,6 +28,10 @@ namespace Chinook.MockData.Repositories
         public bool Update(Invoice invoice) => true;
 
         public bool Delete(int id) => true;
+        public List<Invoice> GetByEmployeeId(int id)
+        {
+            throw new System.NotImplementedException();
+        }
 
         public List<Invoice> GetByCustomerId(int id)
             => new List<Invoice>

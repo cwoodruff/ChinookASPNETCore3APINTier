@@ -29,6 +29,20 @@ namespace Chinook.MockData.Repositories
         public bool Update(Track track) => true;
 
         public bool Delete(int id) => true;
+        public List<Track> GetByInvoiceId(int id)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public List<Track> GetByPlaylistId(int id)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public List<Track> GetByArtistId(int id)
+        {
+            throw new System.NotImplementedException();
+        }
 
         public List<Track> GetByAlbumId(int id)
             => new List<Track>

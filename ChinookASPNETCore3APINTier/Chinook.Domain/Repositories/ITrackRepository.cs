@@ -14,5 +14,8 @@ namespace Chinook.Domain.Repositories
         Track Add(Track newTrack);
         bool Update(Track track);
         bool Delete(int id);
+        List<Track> GetByInvoiceId(int id);
+        List<Track> GetByPlaylistId(int id);
+        List<Track> GetByArtistId(int id);
     }
 }

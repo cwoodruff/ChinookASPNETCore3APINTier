@@ -41,5 +41,10 @@ namespace Chinook.MockData.Repositories
             {
                 EmployeeId = id
             }};
+
+        public Employee GetToReports(int id)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -28,12 +28,6 @@ namespace Chinook.DataEFCoreCmpldQry.Repositories
             return playlist;
         }
 
-        public List<Track> GetTrackByPlaylistId(int id)
-        {
-            var tracks = _context.PlaylistTrack.Where(p => p.PlaylistId == id).Select(p => p.Track);
-            return tracks.ToList();
-        }
-
         public Playlist Add(Playlist newPlaylist)
         {
             _context.Playlist.Add(newPlaylist);
@@ -59,5 +53,7 @@ namespace Chinook.DataEFCoreCmpldQry.Repositories
             _context.SaveChanges();
             return true;
         }
+
+        public List<Playlist> GetByTrackId(int id) => _context.GetPlaylistByTrackId(id);
     }
 }

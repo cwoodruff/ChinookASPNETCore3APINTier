@@ -62,5 +62,15 @@ namespace Chinook.DataEFCoreCmpldQry.Repositories
 
         public List<Track> GetByMediaTypeId(int id) 
             => _context.GetTracksByMediaTypeId(id);
+        
+        public List<Track> GetByPlaylistId(int id)
+        {
+            var tracks = _context.PlaylistTrack.Where(p => p.PlaylistId == id).Select(p => p.Track);
+            return tracks.ToList();
+        }
+
+        public List<Track> GetByArtistId(int id) => _context.GetTracksByArtistId(id);
+
+        public List<Track> GetByInvoiceId(int id) => _context.GetTracksByInvoiceId(id);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Microsoft.EntityFrameworkCore;
 using Chinook.Domain.Repositories;
 using Chinook.Domain.Entities;
@@ -60,5 +61,15 @@ namespace Chinook.DataEFCore.Repositories
 
         public List<Track> GetByMediaTypeId(int id) =>
             _context.Track.Where(a => a.MediaTypeId == id).ToList();
-    }
+        
+        public List<Track> GetByPlaylistId(int id) =>
+            _context.PlaylistTrack.Where(p => p.PlaylistId == id).Select(p => p.Track).ToList();
+
+        public List<Track> GetByArtistId(int id) => 
+            _context.Album.Where(a => a.ArtistId == 5).SelectMany(t => t.Tracks).ToList();
+
+            public List<Track> GetByInvoiceId(int id) =>_context.Track
+                .Where(c => c.InvoiceLines.Any(o => o.InvoiceId == id))
+                .ToList();
+        }
 }

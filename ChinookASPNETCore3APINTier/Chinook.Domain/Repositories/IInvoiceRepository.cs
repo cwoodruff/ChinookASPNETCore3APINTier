@@ -12,5 +12,6 @@ namespace Chinook.Domain.Repositories
         Invoice Add(Invoice newInvoice);
         bool Update(Invoice invoice);
         bool Delete(int id);
+        List<Invoice> GetByEmployeeId(int id);
     }
 }

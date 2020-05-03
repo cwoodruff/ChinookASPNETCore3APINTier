@@ -59,13 +59,7 @@ namespace Chinook.API.Controllers
         {
             try
             {
-                var album = _chinookSupervisor.GetAlbumById(id);
-                if ( album == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(album);
+                return Ok(_chinookSupervisor.GetTrackByAlbumId(id));
             }
             catch (Exception ex)
             {
@@ -79,13 +73,7 @@ namespace Chinook.API.Controllers
         {
             try
             {
-                var mediaType = _chinookSupervisor.GetMediaTypeById(id);
-                if ( mediaType == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(mediaType);
+                return Ok(_chinookSupervisor.GetTrackByMediaTypeId(id));
             }
             catch (Exception ex)
             {
@@ -99,13 +87,7 @@ namespace Chinook.API.Controllers
         {
             try
             {
-                var genre = _chinookSupervisor.GetGenreById(id);
-                if (genre == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(genre);
+                return Ok(_chinookSupervisor.GetTrackByGenreId(id));
             }
             catch (Exception ex)
             {
@@ -175,6 +157,34 @@ namespace Chinook.API.Controllers
                 }
 
                 return StatusCode(500);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
+            }
+        }
+        
+        [HttpGet("artist/{id}")]
+        [Produces(typeof(List<TrackApiModel>))]
+        public ActionResult<TrackApiModel> GetByArtistId(int id)
+        {
+            try
+            {
+                return Ok(_chinookSupervisor.GetTrackByArtistId(id));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
+            }
+        }
+        
+        [HttpGet("invoice/{id}")]
+        [Produces(typeof(List<TrackApiModel>))]
+        public ActionResult<TrackApiModel> GetByInvoiceId(int id)
+        {
+            try
+            {
+                return Ok(_chinookSupervisor.GetTrackByInvoiceId(id));
             }
             catch (Exception ex)
             {

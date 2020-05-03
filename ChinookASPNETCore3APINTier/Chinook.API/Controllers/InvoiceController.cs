@@ -140,5 +140,24 @@ namespace Chinook.API.Controllers
                 return StatusCode(500, ex);
             }
         }
+        
+        [HttpGet("employee/{id}")]
+        [Produces(typeof(List<InvoiceApiModel>))]
+        public ActionResult<InvoiceApiModel> GetByEmployeeId(int id)
+        {
+            try
+            {
+                if (_chinookSupervisor.GetCustomerById(id) == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(_chinookSupervisor.GetInvoiceByEmployeeId(id));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
+            }
+        }
     }
 }

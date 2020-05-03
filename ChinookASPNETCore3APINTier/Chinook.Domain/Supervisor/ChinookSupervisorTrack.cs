@@ -71,7 +71,7 @@ namespace Chinook.Domain.Supervisor
 
         public IEnumerable<TrackApiModel> GetTrackByPlaylistIdId(int id)
         {
-            var tracks = _playlistRepository.GetTrackByPlaylistId(id);
+            var tracks = _trackRepository.GetByPlaylistId(id);
             return tracks.ConvertAll();
         }
 
@@ -104,5 +104,17 @@ namespace Chinook.Domain.Supervisor
 
         public bool DeleteTrack(int id) 
             => _trackRepository.Delete(id);
+        
+        public IEnumerable<TrackApiModel> GetTrackByArtistId(int id)
+        {
+            var tracks = _trackRepository.GetByArtistId(id);
+            return tracks.ConvertAll();
+        }
+
+        public IEnumerable<TrackApiModel> GetTrackByInvoiceId(int id)
+        {
+            var tracks = _trackRepository.GetByInvoiceId(id);
+            return tracks.ConvertAll();
+        }
     }
 }

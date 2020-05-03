@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Chinook.Domain.Entities;
@@ -58,7 +59,10 @@ namespace Chinook.DataEFCore.Repositories
             return true;
         }
 
+        public List<Invoice> GetByEmployeeId(int id) =>
+            _context.Customer.Where(a => a.SupportRepId == 5).SelectMany(t => t.Invoices).ToList();
+
         public List<Invoice> GetByCustomerId(int id) =>
-            _context.Invoice.Where(a => a.InvoiceId == id).ToList();
+            _context.Invoice.Where(i => i.CustomerId == id).ToList();
     }
 }

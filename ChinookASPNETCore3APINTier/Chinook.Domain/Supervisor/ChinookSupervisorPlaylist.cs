@@ -63,5 +63,11 @@ namespace Chinook.Domain.Supervisor
 
         public bool DeletePlaylist(int id) 
             => _playlistRepository.Delete(id);
+        
+        public IEnumerable<PlaylistApiModel> GetPlaylistByTrackId(int id)
+        {
+            var playlists = _playlistRepository.GetByTrackId(id);
+            return playlists.ConvertAll();
+        }
     }
 }

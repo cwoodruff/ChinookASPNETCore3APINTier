@@ -32,14 +32,14 @@ namespace Chinook.Domain.Supervisor
             {
                 var employeeApiModel = (_employeeRepository.GetById(id)).Convert();
                 employeeApiModel.Customers = (GetCustomerBySupportRepId(employeeApiModel.EmployeeId)).ToList();
-                employeeApiModel.DirectReports = (GetEmployeeDirectReports(employeeApiModel.EmployeeId)).ToList();
-                employeeApiModel.Manager = employeeApiModel.ReportsTo.HasValue
-                    ? GetEmployeeReportsTo(employeeApiModel.ReportsTo.GetValueOrDefault())
-                    : null;
-                if (employeeApiModel.Manager != null)
-                    employeeApiModel.ReportsToName = employeeApiModel.ReportsTo.HasValue
-                        ? $"{employeeApiModel.Manager.LastName}, {employeeApiModel.Manager.FirstName}"
-                        : string.Empty;
+                //employeeApiModel.DirectReports = (GetEmployeeDirectReports(employeeApiModel.EmployeeId)).ToList();
+                // employeeApiModel.Manager = employeeApiModel.ReportsTo.HasValue
+                //     ? GetEmployeeReportsTo(id)
+                //     : null;
+                // if (employeeApiModel.Manager != null)
+                //     employeeApiModel.ReportsToName = employeeApiModel.ReportsTo.HasValue
+                //         ? $"{employeeApiModel.Manager.LastName}, {employeeApiModel.Manager.FirstName}"
+                //         : string.Empty;
 
                 var cacheEntryOptions =
                     new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));

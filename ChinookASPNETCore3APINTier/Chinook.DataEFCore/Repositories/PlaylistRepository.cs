@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Microsoft.EntityFrameworkCore;
 using Chinook.Domain.Repositories;
 using Chinook.Domain.Entities;
@@ -26,12 +27,6 @@ namespace Chinook.DataEFCore.Repositories
         public Playlist GetById(int id) =>
             _context.Playlist.Find(id);
 
-        public List<Track> GetTrackByPlaylistId(int id)
-        {
-            var tracks = _context.PlaylistTrack.Where(p => p.PlaylistId == id).Select(p => p.Track);
-            return tracks.ToList();
-        }
-
         public Playlist Add(Playlist newPlaylist)
         {
             _context.Playlist.Add(newPlaylist);
@@ -56,6 +51,13 @@ namespace Chinook.DataEFCore.Repositories
             _context.Playlist.Remove(toRemove);
             _context.SaveChanges();
             return true;
+        }
+
+        public List<Playlist> GetByTrackId(int id)
+        {
+            return _context.Playlist
+                .Where(c => c.PlaylistTracks.Any(o => o.TrackId == id))
+                .ToList();
         }
     }
 }

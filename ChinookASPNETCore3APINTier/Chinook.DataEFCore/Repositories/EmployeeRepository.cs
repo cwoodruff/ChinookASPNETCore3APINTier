@@ -56,5 +56,12 @@ namespace Chinook.DataEFCore.Repositories
             _context.Employee.Find(id);
 
         public List<Employee> GetDirectReports(int id) => _context.Employee.Where(e => e.ReportsTo == id).ToList();
+        
+        public Employee GetToReports(int id) => 
+            _context.Employee
+                .Find(_context.Employee.
+                    Where(e => e.EmployeeId == id)
+                    .Select(p => new {p.ReportsTo})
+                    .First());
     }
 }

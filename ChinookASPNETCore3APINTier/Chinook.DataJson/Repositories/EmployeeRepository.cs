@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text.Json;
 using Chinook.Domain.DbInfo;
 using Chinook.Domain.Repositories;
 using Chinook.Domain.Entities;
+using Microsoft.Data.SqlClient;
 
 namespace Chinook.DataJson.Repositories
 {
     public class EmployeeRepository : IEmployeeRepository
     {
-        private readonly DbInfo _dbInfo;
+        private readonly SqlConnection _sqlconn;
 
-        public EmployeeRepository(DbInfo dbInfo)
+        public EmployeeRepository(SqlConnection sqlconn)
         {
-            _dbInfo = dbInfo;
+            _sqlconn = sqlconn;
         }
 
         public void Dispose()
@@ -21,22 +25,62 @@ namespace Chinook.DataJson.Repositories
 
         private bool EmployeeExists(int id)
         {
-            return true;
+            var sqlcomm = new SqlCommand("dbo.sproc_CheckEmployee", _sqlconn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+            sqlcomm.Parameters.Add(new SqlParameter("EmployeeId", id));
+            var dset = new DataSet();
+            var adap = new SqlDataAdapter(sqlcomm);
+            adap.Fill(dset);
+
+            return Convert.ToBoolean(dset.Tables[0].Rows[0][0]);
         }
 
         public List<Employee> GetAll()
         {
-            return null;
+            var sqlcomm = new SqlCommand("dbo.sproc_GetEmployee", _sqlconn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+            var dset = new DataSet();
+            var adap = new SqlDataAdapter(sqlcomm);
+            adap.Fill(dset);
+            var converted =
+                JsonSerializer.Deserialize(dset.Tables[0].Rows[0][0].ToString(), typeof(List<Employee>)) as List<Employee>;
+            return converted;
         }
 
         public Employee GetById(int id)
         {
-            return null;
+            var sqlcomm = new SqlCommand("dbo.sproc_GetEmployeeDetails", _sqlconn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+            sqlcomm.Parameters.Add(new SqlParameter("EmployeeId", id));
+            var dset = new DataSet();
+            var adap = new SqlDataAdapter(sqlcomm);
+            adap.Fill(dset);
+            var converted =
+                JsonSerializer.Deserialize(dset.Tables[0].Rows[0][0].ToString(), typeof(List<Employee>)) as List<Employee>;
+
+            return converted.FirstOrDefault();
         }
 
         public Employee GetReportsTo(int id)
         {
-            return null;
+            var sqlcomm = new SqlCommand("dbo.sproc_GetEmployeeReportTo", _sqlconn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+            sqlcomm.Parameters.Add(new SqlParameter("EmployeeId", id));
+            var dset = new DataSet();
+            var adap = new SqlDataAdapter(sqlcomm);
+            adap.Fill(dset);
+            var converted =
+                JsonSerializer.Deserialize(dset.Tables[0].Rows[0][0].ToString(), typeof(List<Employee>)) as List<Employee>;
+
+            return converted.FirstOrDefault();
         }
 
         public Employee Add(Employee newEmployee)
@@ -73,7 +117,16 @@ namespace Chinook.DataJson.Repositories
 
         public List<Employee> GetDirectReports(int id)
         {
-            return null;
+            var sqlcomm = new SqlCommand("dbo.sproc_GetEmployeeDirectReports", _sqlconn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+            var dset = new DataSet();
+            var adap = new SqlDataAdapter(sqlcomm);
+            adap.Fill(dset);
+            var converted =
+                JsonSerializer.Deserialize(dset.Tables[0].Rows[0][0].ToString(), typeof(List<Employee>)) as List<Employee>;
+            return converted;
         }
     }
 }

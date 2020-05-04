@@ -3,7 +3,8 @@ using System.Runtime.InteropServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Chinook.DataJson;
+//using Chinook.DataJson;
+using Chinook.DataEFCore;
 using Chinook.Domain.DbInfo;
 using Microsoft.Data.SqlClient;
 
@@ -27,7 +28,7 @@ namespace Chinook.API.Configurations
                              "Server=localhost,1433;Database=Chinook;User=sa;Password=P@55w0rd;Trusted_Connection=False;Application Name=ChinookASPNETCoreAPINTier";
             }
 
-            //services.AddDbContextPool<ChinookContext>(options => options.UseSqlServer(connection));
+            services.AddDbContextPool<ChinookContext>(options => options.UseSqlServer(connection));
 
             services.AddSingleton(new SqlConnection(connection));
 

@@ -73,7 +73,7 @@ namespace Chinook.DataJson.Repositories
             {
                 CommandType = CommandType.StoredProcedure
             };
-            sqlcomm.Parameters.Add(new SqlParameter("ArtistId", id));
+            sqlcomm.Parameters.Add(new SqlParameter("CustomerId", id));
             var dset = new DataSet();
             var adap = new SqlDataAdapter(sqlcomm);
             adap.Fill(dset);

@@ -57,6 +57,8 @@ namespace Chinook.DataEFCoreCmpldQry.Repositories
             return true;
         }
 
+        public List<Invoice> GetByEmployeeId(int id) => _context.GetInvoicesByEmployeeId(id);
+
         public List<Invoice> GetByCustomerId(int id) 
             => _context.GetInvoicesByCustomerId(id);
     }

@@ -3,8 +3,8 @@ using System.Runtime.InteropServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-//using Chinook.DataJson;
 using Chinook.DataEFCore;
+//using Chinook.DataEFCoreCmpldQry;
 using Chinook.Domain.DbInfo;
 using Microsoft.Data.SqlClient;
 
@@ -31,6 +31,8 @@ namespace Chinook.API.Configurations
             services.AddDbContextPool<ChinookContext>(options => options.UseSqlServer(connection));
 
             services.AddSingleton(new SqlConnection(connection));
+            
+            services.AddSingleton(new DbInfo(connection));
 
             return services;
         }

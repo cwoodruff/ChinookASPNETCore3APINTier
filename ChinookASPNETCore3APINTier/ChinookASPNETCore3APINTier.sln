@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.UnitTest", "Chinook
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.DataJson", "Chinook.DataJson\Chinook.DataJson.csproj", "{328CF41A-C3A2-471E-9465-4BAE4ADC1AD3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.DataDapper", "Chinook.DataDapper\Chinook.DataDapper.csproj", "{C67BC203-09A6-425C-BB13-73C7A7696564}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,5 +56,9 @@ Global
 		{328CF41A-C3A2-471E-9465-4BAE4ADC1AD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{328CF41A-C3A2-471E-9465-4BAE4ADC1AD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{328CF41A-C3A2-471E-9465-4BAE4ADC1AD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C67BC203-09A6-425C-BB13-73C7A7696564}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C67BC203-09A6-425C-BB13-73C7A7696564}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C67BC203-09A6-425C-BB13-73C7A7696564}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C67BC203-09A6-425C-BB13-73C7A7696564}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,18 +1,27 @@
 ﻿using System;
-using Chinook.MockData.Repositories;
+using Chinook.DataEFCore.Repositories;
 using Chinook.Domain.Entities;
+using Chinook.Domain.Repositories;
 using JetBrains.dotMemoryUnit;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Chinook.UnitTest.Repository
 {
     public class AlbumRepositoryTest
     {
-        private readonly AlbumRepository _repo;
+        private readonly IAlbumRepository _repo;
 
         public AlbumRepositoryTest()
         {
-            _repo = new AlbumRepository();
+            //_repo = new AlbumRepository();
+            
+            var services = new ServiceCollection();
+            services.AddTransient<IAlbumRepository, AlbumRepository>();
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            _repo = serviceProvider.GetService<IAlbumRepository>();
         }
 
         [DotMemoryUnit(FailIfRunWithoutSupport = false)]
@@ -25,7 +34,7 @@ namespace Chinook.UnitTest.Repository
             var albums = _repo.GetAll();
 
             // Assert
-            Assert.Single(albums);
+            Assert.True(albums.Count > 1, "The number of albums was not greater than 1");
         }
 
         [DotMemoryUnit(FailIfRunWithoutSupport = false)]
@@ -42,18 +51,18 @@ namespace Chinook.UnitTest.Repository
             Assert.Equal(id, album.AlbumId);
         }
 
-        [AssertTraffic(AllocatedSizeInBytes = 1000, Types = new[] {typeof(Album)})]
+        [AssertTraffic(AllocatedSizeInBytes = 16656, Types = new[] {typeof(Album)})]
         [Fact]
         public void DotMemoryUnitTest()
         {
-            var repo = new AlbumRepository();
+            //var repo = new AlbumRepository();
 
-            repo.GetAll();
+            _repo.GetAll();
 
             dotMemory.Check(memory =>
-                Assert.Equal(1, memory.GetObjects(where => where.Type.Is<Album>()).ObjectsCount));
+                Assert.Equal(347, memory.GetObjects(where => where.Type.Is<Album>()).ObjectsCount));
 
-            GC.KeepAlive(repo); // prevent objects from GC if this is implied by test logic
+            GC.KeepAlive(_repo); // prevent objects from GC if this is implied by test logic
         }
     }
 }

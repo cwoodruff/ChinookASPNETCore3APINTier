@@ -1,18 +1,25 @@
 ﻿using System;
-using Chinook.MockData.Repositories;
+using Chinook.DataEFCore.Repositories;
 using Chinook.Domain.Entities;
+using Chinook.Domain.Repositories;
 using JetBrains.dotMemoryUnit;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Chinook.UnitTest.Repository
 {
     public class MediaTypeRepositoryTest
     {
-        private readonly MediaTypeRepository _repo;
+        private readonly IMediaTypeRepository _repo;
 
         public MediaTypeRepositoryTest()
         {
-            _repo = new MediaTypeRepository();
+            var services = new ServiceCollection();
+            services.AddTransient<IMediaTypeRepository, MediaTypeRepository>();
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            _repo = serviceProvider.GetService<IMediaTypeRepository>();
         }
 
         [DotMemoryUnit(FailIfRunWithoutSupport = false)]
@@ -23,7 +30,7 @@ namespace Chinook.UnitTest.Repository
             var mediaTypes = _repo.GetAll();
 
             // Assert
-            Assert.Single(mediaTypes);
+            Assert.True(mediaTypes.Count > 1, "The number of media types was not greater than 1");
         }
 
         [AssertTraffic(AllocatedSizeInBytes = 1000, Types = new[] {typeof(MediaType)})]
@@ -35,7 +42,7 @@ namespace Chinook.UnitTest.Repository
             repo.GetAll();
 
             dotMemory.Check(memory =>
-                Assert.Equal(1, memory.GetObjects(where => where.Type.Is<MediaType>()).ObjectsCount));
+                Assert.Equal(5, memory.GetObjects(where => where.Type.Is<MediaType>()).ObjectsCount));
 
             GC.KeepAlive(repo); // prevent objects from GC if this is implied by test logic
         }

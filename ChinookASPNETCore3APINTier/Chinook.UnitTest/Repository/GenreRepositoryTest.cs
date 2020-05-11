@@ -1,18 +1,25 @@
 ﻿using System;
-using Chinook.MockData.Repositories;
+using Chinook.DataEFCore.Repositories;
 using Chinook.Domain.Entities;
+using Chinook.Domain.Repositories;
 using JetBrains.dotMemoryUnit;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Chinook.UnitTest.Repository
 {
     public class GenreRepositoryTest
     {
-        private readonly GenreRepository _repo;
+        private readonly IGenreRepository _repo;
 
         public GenreRepositoryTest()
         {
-            _repo = new GenreRepository();
+            var services = new ServiceCollection();
+            services.AddTransient<IGenreRepository, GenreRepository>();
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            _repo = serviceProvider.GetService<IGenreRepository>();
         }
 
         [DotMemoryUnit(FailIfRunWithoutSupport = false)]
@@ -23,7 +30,7 @@ namespace Chinook.UnitTest.Repository
             var genres = _repo.GetAll();
 
             // Assert
-            Assert.Single(genres);
+            Assert.True(genres.Count > 1, "The number of genres was not greater than 1");
         }
 
         [AssertTraffic(AllocatedSizeInBytes = 1000, Types = new[] {typeof(Genre)})]
@@ -35,7 +42,7 @@ namespace Chinook.UnitTest.Repository
             repo.GetAll();
 
             dotMemory.Check(memory =>
-                Assert.Equal(1, memory.GetObjects(where => where.Type.Is<Genre>()).ObjectsCount));
+                Assert.Equal(25, memory.GetObjects(where => where.Type.Is<Genre>()).ObjectsCount));
 
             GC.KeepAlive(repo); // prevent objects from GC if this is implied by test logic
         }

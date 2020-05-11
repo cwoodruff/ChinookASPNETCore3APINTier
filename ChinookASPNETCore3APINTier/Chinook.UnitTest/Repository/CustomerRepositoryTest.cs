@@ -1,18 +1,25 @@
 ﻿using System;
-using Chinook.MockData.Repositories;
+using Chinook.DataEFCore.Repositories;
 using Chinook.Domain.Entities;
+using Chinook.Domain.Repositories;
 using JetBrains.dotMemoryUnit;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Chinook.UnitTest.Repository
 {
     public class CustomerRepositoryTest
     {
-        private readonly CustomerRepository _repo;
+        private readonly ICustomerRepository _repo;
 
         public CustomerRepositoryTest()
         {
-            _repo = new CustomerRepository();
+            var services = new ServiceCollection();
+            services.AddTransient<ICustomerRepository, CustomerRepository>();
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            _repo = serviceProvider.GetService<ICustomerRepository>();
         }
 
         [DotMemoryUnit(FailIfRunWithoutSupport = false)]
@@ -23,10 +30,10 @@ namespace Chinook.UnitTest.Repository
             var customers = _repo.GetAll();
 
             // Assert
-            Assert.Single(customers);
+            Assert.True(customers.Count > 1, "The number of customers was not greater than 1");
         }
 
-        [AssertTraffic(AllocatedSizeInBytes = 1000, Types = new[] {typeof(Customer)})]
+        [AssertTraffic(AllocatedSizeInBytes = 8024, Types = new[] {typeof(Customer)})]
         [Fact]
         public void DotMemoryUnitTest()
         {
@@ -35,7 +42,7 @@ namespace Chinook.UnitTest.Repository
             repo.GetAll();
 
             dotMemory.Check(memory =>
-                Assert.Equal(1, memory.GetObjects(where => where.Type.Is<Customer>()).ObjectsCount));
+                Assert.Equal(59, memory.GetObjects(where => where.Type.Is<Customer>()).ObjectsCount));
 
             GC.KeepAlive(repo); // prevent objects from GC if this is implied by test logic
         }

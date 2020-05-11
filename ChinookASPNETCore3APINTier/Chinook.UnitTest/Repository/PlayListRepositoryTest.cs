@@ -1,18 +1,25 @@
 ﻿using System;
-using Chinook.MockData.Repositories;
+using Chinook.DataEFCore.Repositories;
 using Chinook.Domain.Entities;
+using Chinook.Domain.Repositories;
 using JetBrains.dotMemoryUnit;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Chinook.UnitTest.Repository
 {
     public class PlayListRepositoryTest
     {
-        private readonly PlaylistRepository _repo;
+        private readonly IPlaylistRepository _repo;
 
         public PlayListRepositoryTest()
         {
-            _repo = new PlaylistRepository();
+            var services = new ServiceCollection();
+            services.AddTransient<IPlaylistRepository, PlaylistRepository>();
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            _repo = serviceProvider.GetService<IPlaylistRepository>();
         }
 
         [DotMemoryUnit(FailIfRunWithoutSupport = false)]
@@ -23,7 +30,7 @@ namespace Chinook.UnitTest.Repository
             var playLists = _repo.GetAll();
 
             // Assert
-            Assert.Single(playLists);
+            Assert.True(playLists.Count > 1, "The number of play lists was not greater than 1");
         }
 
         [AssertTraffic(AllocatedSizeInBytes = 1000, Types = new[] {typeof(Playlist)})]
@@ -35,7 +42,7 @@ namespace Chinook.UnitTest.Repository
             repo.GetAll();
 
             dotMemory.Check(memory =>
-                Assert.Equal(1, memory.GetObjects(where => where.Type.Is<Playlist>()).ObjectsCount));
+                Assert.Equal(18, memory.GetObjects(where => where.Type.Is<Playlist>()).ObjectsCount));
 
             GC.KeepAlive(repo); // prevent objects from GC if this is implied by test logic
         }

@@ -14,8 +14,6 @@ namespace Chinook.UnitTest.Repository
 
         public AlbumRepositoryTest()
         {
-            //_repo = new AlbumRepository();
-            
             var services = new ServiceCollection();
             services.AddTransient<IAlbumRepository, AlbumRepository>();
 
@@ -60,7 +58,7 @@ namespace Chinook.UnitTest.Repository
             _repo.GetAll();
 
             dotMemory.Check(memory =>
-                Assert.Equal(347, memory.GetObjects(where => where.Type.Is<Album>()).ObjectsCount));
+                Assert.Equal(348, memory.GetObjects(where => where.Type.Is<Album>()).ObjectsCount));
 
             GC.KeepAlive(_repo); // prevent objects from GC if this is implied by test logic
         }

@@ -1,11 +1,11 @@
 ﻿using System;
-using Chinook.DataEFCore.Repositories;
+using Chinook.DataEFCoreCmpldQry.Repositories;
 using Chinook.Domain.Entities;
 using Chinook.Domain.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Chinook.UnitTest.Repository
+namespace Chinook.UnitTest.CmpledQryRepository
 {
     public class EmployeeRepositoryTest
     {

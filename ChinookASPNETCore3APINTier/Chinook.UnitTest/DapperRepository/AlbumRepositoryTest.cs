@@ -5,7 +5,7 @@ using Chinook.Domain.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Chinook.UnitTest.Repository
+namespace Chinook.UnitTest.DapperRepository
 {
     public class AlbumRepositoryTest
     {

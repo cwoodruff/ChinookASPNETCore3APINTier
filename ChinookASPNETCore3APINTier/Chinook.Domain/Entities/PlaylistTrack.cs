@@ -4,7 +4,7 @@ using Chinook.Domain.ApiModels;
 
 namespace Chinook.Domain.Entities
 {
-    public class PlaylistTrack : IConvertModel<PlaylistTrack, PlaylistTrackApiModel>
+    public class PlaylistTrack : BaseEntity, IConvertModel<PlaylistTrack, PlaylistTrackApiModel>
     {
         public int PlaylistId { get; set; }
         public int TrackId { get; set; }

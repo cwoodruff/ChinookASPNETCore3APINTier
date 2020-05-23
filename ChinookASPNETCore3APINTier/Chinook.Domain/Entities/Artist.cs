@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Chinook.Domain.Entities
 {
-    public class Artist : IConvertModel<Artist, ArtistApiModel>
+    public class Artist : BaseEntity, IConvertModel<Artist, ArtistApiModel>
     {
         public Artist()
         {

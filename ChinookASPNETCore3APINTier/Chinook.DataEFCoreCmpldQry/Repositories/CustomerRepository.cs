@@ -9,77 +9,47 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Chinook.DataEFCoreCmpldQry.Repositories
 {
-    public class CustomerRepository : ICustomerRepository
+    public class CustomerRepository : EfRepository<Album>
     {
-        private readonly ChinookContext _context;
-
-        public CustomerRepository(ChinookContext context)
+        public CustomerRepository(ChinookContext context) : base(context)
         {
-            _context = context;
         }
-
-        public CustomerRepository()
-        {
-            var services = new ServiceCollection();
-            
-            var connection = String.Empty;
-            
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                connection = "Server=.;Database=Chinook;Trusted_Connection=True;Application Name=ChinookASPNETCoreAPINTier";
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                connection = "Server=localhost,1433;Database=Chinook;User=sa;Password=P@55w0rd;Trusted_Connection=False;Application Name=ChinookASPNETCoreAPINTier";
-            }
-
-            services.AddDbContextPool<ChinookContext>(options => options.UseSqlServer(connection));
-            
-            var serviceProvider = services.BuildServiceProvider();
-
-            _context = serviceProvider.GetService<ChinookContext>();
-        }
-
-        private bool CustomerExists(int id) =>
-            _context.Customer.Any(c => c.CustomerId == id);
-
-        public void Dispose() => _context.Dispose();
 
         public List<Customer> GetAll() 
-            => _context.GetAllCustomers();
+            => _dbContext.GetAllCustomers();
 
         public Customer GetById(int id)
         {
-            var customer = _context.GetCustomer(id);
+            var customer = _dbContext.GetCustomer(id);
             return customer;
         }
 
         public Customer Add(Customer newCustomer)
         {
-            _context.Customer.Add(newCustomer);
-            _context.SaveChanges();
+            _dbContext.Customer.Add(newCustomer);
+            _dbContext.SaveChanges();
             return newCustomer;
         }
 
         public bool Update(Customer customer)
         {
-            if (!CustomerExists(customer.CustomerId))
+            if (!Exists(customer.CustomerId))
                 return false;
-            _context.Customer.Update(customer);
-            _context.SaveChanges();
+            _dbContext.Customer.Update(customer);
+            _dbContext.SaveChanges();
             return true;
         }
 
         public bool Delete(int id)
         {
-            if (!CustomerExists(id))
+            if (!Exists(id))
                 return false;
-            var toRemove = _context.Customer.Find(id);
-            _context.Customer.Remove(toRemove);
-            _context.SaveChanges();
+            var toRemove = _dbContext.Customer.Find(id);
+            _dbContext.Customer.Remove(toRemove);
+            _dbContext.SaveChanges();
             return true;
         }
 
-        public List<Customer> GetBySupportRepId(int id) => _context.GetCustomerBySupportRepId(id);
+        public List<Customer> GetBySupportRepId(int id) => _dbContext.GetCustomerBySupportRepId(id);
     }
 }

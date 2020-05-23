@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace Chinook.Domain.Entities
 {
-    public class Employee : IConvertModel<Employee, EmployeeApiModel>
+    public class Employee : BaseEntity, IConvertModel<Employee, EmployeeApiModel>
     {
         public Employee()
         {

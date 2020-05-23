@@ -13,29 +13,22 @@ namespace Chinook.API.Configurations
     {
         public static void ConfigureRepositories(this IServiceCollection services)
         {
-            services.AddScoped<IAlbumRepository, AlbumRepository>()
-                .AddScoped<IArtistRepository, ArtistRepository>()
-                .AddScoped<ICustomerRepository, CustomerRepository>()
-                .AddScoped<IEmployeeRepository, EmployeeRepository>()
-                .AddScoped<IGenreRepository, GenreRepository>()
-                .AddScoped<IInvoiceRepository, InvoiceRepository>()
-                .AddScoped<IInvoiceLineRepository, InvoiceLineRepository>()
-                .AddScoped<IMediaTypeRepository, MediaTypeRepository>()
-                .AddScoped<IPlaylistRepository, PlaylistRepository>()
-                .AddScoped<ITrackRepository, TrackRepository>();
+            services.AddScoped(typeof(EfRepository<>));
+            services.AddScoped<AlbumRepository>();
+            services.AddScoped<ArtistRepository>();
+            services.AddScoped<CustomerRepository>();
+            services.AddScoped<EmployeeRepository>();
+            services.AddScoped<GenreRepository>();
+            services.AddScoped<InvoiceRepository>();
+            services.AddScoped<InvoiceLineRepository>();
+            services.AddScoped<MediaTypeRepository>();
+            services.AddScoped<PlaylistRepository>();
+            services.AddScoped<TrackRepository>();
         }
 
         public static void ConfigureSupervisor(this IServiceCollection services)
         {
             services.AddScoped<IChinookSupervisor, ChinookSupervisor>();
-        }
-
-        public static void AddMiddleware(this IServiceCollection services)
-        {
-            // services.AddMvc().AddNewtonsoftJson(options =>
-            // {
-            //     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-            // });
         }
 
         public static void AddLogging(this IServiceCollection services)

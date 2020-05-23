@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Chinook.Domain.Entities
 {
-    public class Playlist : IConvertModel<Playlist, PlaylistApiModel>
+    public class Playlist : BaseEntity, IConvertModel<Playlist, PlaylistApiModel>
     {
         public Playlist()
         {

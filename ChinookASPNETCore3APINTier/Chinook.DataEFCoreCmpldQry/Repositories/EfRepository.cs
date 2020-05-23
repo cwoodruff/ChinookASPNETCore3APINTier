@@ -4,7 +4,7 @@ using Chinook.Domain.Entities;
 using Chinook.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace Chinook.DataEFCore.Repositories
+namespace Chinook.DataEFCoreCmpldQry.Repositories
 {
     public class EfRepository<T> : IRepository<T> where T : BaseEntity
     {
@@ -21,7 +21,7 @@ namespace Chinook.DataEFCore.Repositories
                 .Select(x => x.Name).Single();
         }
 
-        private bool Exists(int id) =>
+        protected bool Exists(int id) =>
             _dbContext.Set<T>().Any(e => id.Equals((T)e.GetType().GetProperty(GetKeyName(e)).GetValue(e, null)));
 
         public T GetById(int id) =>

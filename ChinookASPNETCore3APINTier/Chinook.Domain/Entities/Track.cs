@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Chinook.Domain.Entities
 {
-    public class Track : IConvertModel<Track, TrackApiModel>
+    public class Track : BaseEntity, IConvertModel<Track, TrackApiModel>
     {
         public Track()
         {

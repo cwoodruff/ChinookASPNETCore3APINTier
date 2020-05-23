@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Chinook.Domain.Entities
 {
-    public class Customer : IConvertModel<Customer, CustomerApiModel>
+    public class Customer : BaseEntity, IConvertModel<Customer, CustomerApiModel>
     {
         public Customer()
         {

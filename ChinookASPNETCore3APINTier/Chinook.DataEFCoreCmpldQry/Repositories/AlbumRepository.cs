@@ -9,80 +9,50 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Chinook.DataEFCoreCmpldQry.Repositories
 {
-    public class AlbumRepository : IAlbumRepository
+    public class AlbumRepository : EfRepository<Album>
     {
-        private readonly ChinookContext _context;
-
-        public AlbumRepository(ChinookContext context)
+        public AlbumRepository(ChinookContext context) : base(context)
         {
-            _context = context;
         }
-
-        public AlbumRepository()
-        {
-            var services = new ServiceCollection();
-            
-            var connection = String.Empty;
-            
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                connection = "Server=.;Database=Chinook;Trusted_Connection=True;Application Name=ChinookASPNETCoreAPINTier";
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                connection = "Server=localhost,1433;Database=Chinook;User=sa;Password=P@55w0rd;Trusted_Connection=False;Application Name=ChinookASPNETCoreAPINTier";
-            }
-
-            services.AddDbContextPool<ChinookContext>(options => options.UseSqlServer(connection));
-            
-            var serviceProvider = services.BuildServiceProvider();
-
-            _context = serviceProvider.GetService<ChinookContext>();
-        }
-
-        private bool AlbumExists(int id) =>
-            _context.Album.Any(a => a.AlbumId == id);
-
-        public void Dispose() => _context.Dispose();
 
         public List<Album> GetAll() 
-            => _context.GetAllAlbums();
+            => _dbContext.GetAllAlbums();
 
         public Album GetById(int id)
         {
-            var album = _context.GetAlbum(id);
+            var album = _dbContext.GetAlbum(id);
             return album;
         }
 
         public Album Add(Album newAlbum)
         {
-            _context.Album.Add(newAlbum);
-            _context.SaveChanges();
+            _dbContext.Album.Add(newAlbum);
+            _dbContext.SaveChanges();
             return newAlbum;
         }
 
         public bool Update(Album album)
         {
-            if (!AlbumExists(album.AlbumId))
+            if (!Exists(album.AlbumId))
                 return false;
-            _context.Album.Update(album);
+            _dbContext.Album.Update(album);
 
-            _context.Update(album);
-            _context.SaveChanges();
+            _dbContext.Update(album);
+            _dbContext.SaveChanges();
             return true;
         }
 
         public bool Delete(int id)
         {
-            if (!AlbumExists(id))
+            if (!Exists(id))
                 return false;
-            var toRemove = _context.Album.Find(id);
-            _context.Album.Remove(toRemove);
-            _context.SaveChanges();
+            var toRemove = _dbContext.Album.Find(id);
+            _dbContext.Album.Remove(toRemove);
+            _dbContext.SaveChanges();
             return true;
         }
 
         public List<Album> GetByArtistId(int id) 
-            => _context.GetAlbumsByArtistId(id);
+            => _dbContext.GetAlbumsByArtistId(id);
     }
 }

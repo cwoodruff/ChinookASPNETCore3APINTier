@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace Chinook.Domain.Entities
 {
-    public class Album : IConvertModel<Album, AlbumApiModel>
+    public class Album : BaseEntity, IConvertModel<Album, AlbumApiModel>
     {
         public Album()
         {

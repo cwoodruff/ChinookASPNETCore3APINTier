@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Chinook.Domain.Entities
 {
-    public class Genre : IConvertModel<Genre, GenreApiModel>
+    public class Genre : BaseEntity, IConvertModel<Genre, GenreApiModel>
     {
         public Genre()
         {

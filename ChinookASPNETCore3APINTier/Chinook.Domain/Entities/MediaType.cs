@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Chinook.Domain.Entities
 {
-    public class MediaType : IConvertModel<MediaType, MediaTypeApiModel>
+    public class MediaType : BaseEntity, IConvertModel<MediaType, MediaTypeApiModel>
     {
         public MediaType()
         {

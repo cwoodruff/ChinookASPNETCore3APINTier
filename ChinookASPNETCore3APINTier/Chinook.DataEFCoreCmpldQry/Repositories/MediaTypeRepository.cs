@@ -9,74 +9,44 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Chinook.DataEFCoreCmpldQry.Repositories
 {
-    public class MediaTypeRepository : IMediaTypeRepository
+    public class MediaTypeRepository : EfRepository<Album>
     {
-        private readonly ChinookContext _context;
-
-        public MediaTypeRepository(ChinookContext context)
+        public MediaTypeRepository(ChinookContext context) : base(context)
         {
-            _context = context;
         }
-
-        public MediaTypeRepository()
-        {
-            var services = new ServiceCollection();
-            
-            var connection = String.Empty;
-            
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                connection = "Server=.;Database=Chinook;Trusted_Connection=True;Application Name=ChinookASPNETCoreAPINTier";
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                connection = "Server=localhost,1433;Database=Chinook;User=sa;Password=P@55w0rd;Trusted_Connection=False;Application Name=ChinookASPNETCoreAPINTier";
-            }
-
-            services.AddDbContextPool<ChinookContext>(options => options.UseSqlServer(connection));
-            
-            var serviceProvider = services.BuildServiceProvider();
-
-            _context = serviceProvider.GetService<ChinookContext>();
-        }
-
-        private bool MediaTypeExists(int id) =>
-            _context.MediaType.Any(i => i.MediaTypeId == id);
-
-        public void Dispose() => _context.Dispose();
 
         public List<MediaType> GetAll() 
-            => _context.GetAllMediaTypes();
+            => _dbContext.GetAllMediaTypes();
 
         public MediaType GetById(int id)
         {
-            var mediaType = _context.GetMediaType(id);
+            var mediaType = _dbContext.GetMediaType(id);
             return mediaType;
         }
 
         public MediaType Add(MediaType newMediaType)
         {
-            _context.MediaType.Add(newMediaType);
-            _context.SaveChanges();
+            _dbContext.MediaType.Add(newMediaType);
+            _dbContext.SaveChanges();
             return newMediaType;
         }
 
         public bool Update(MediaType mediaType)
         {
-            if (!MediaTypeExists(mediaType.MediaTypeId))
+            if (!Exists(mediaType.MediaTypeId))
                 return false;
-            _context.MediaType.Update(mediaType);
-            _context.SaveChanges();
+            _dbContext.MediaType.Update(mediaType);
+            _dbContext.SaveChanges();
             return true;
         }
 
         public bool Delete(int id)
         {
-            if (!MediaTypeExists(id))
+            if (!Exists(id))
                 return false;
-            var toRemove = _context.MediaType.Find(id);
-            _context.MediaType.Remove(toRemove);
-            _context.SaveChanges();
+            var toRemove = _dbContext.MediaType.Find(id);
+            _dbContext.MediaType.Remove(toRemove);
+            _dbContext.SaveChanges();
             return true;
         }
     }

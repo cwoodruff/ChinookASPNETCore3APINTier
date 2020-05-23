@@ -4,7 +4,7 @@ using Chinook.Domain.ApiModels;
 
 namespace Chinook.Domain.Entities
 {
-    public class InvoiceLine : IConvertModel<InvoiceLine, InvoiceLineApiModel>
+    public class InvoiceLine : BaseEntity, IConvertModel<InvoiceLine, InvoiceLineApiModel>
     {
         public int InvoiceLineId { get; set; }
         public int InvoiceId { get; set; }

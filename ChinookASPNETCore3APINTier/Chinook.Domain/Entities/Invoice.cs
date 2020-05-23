@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace Chinook.Domain.Entities
 {
-    public class Invoice : IConvertModel<Invoice, InvoiceApiModel>
+    public class Invoice : BaseEntity, IConvertModel<Invoice, InvoiceApiModel>
     {
         public Invoice()
         {

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text.Json;
-using Chinook.Domain.DbInfo;
 using Chinook.Domain.Repositories;
 using Chinook.Domain.Entities;
 using Microsoft.Data.SqlClient;

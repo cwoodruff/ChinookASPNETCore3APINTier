@@ -1,6 +1,4 @@
-﻿using System;
-using Chinook.DataEFCoreCmpldQry.Repositories;
-using Chinook.Domain.Entities;
+﻿using Chinook.DataEFCoreCmpldQry.Repositories;
 using Chinook.Domain.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;

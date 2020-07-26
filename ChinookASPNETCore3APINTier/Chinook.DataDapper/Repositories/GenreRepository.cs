@@ -45,7 +45,7 @@ namespace Chinook.DataDapper.Repositories
             using (var cn = Connection)
             {
                 cn.Open();
-                return cn.QueryFirstOrDefault<Genre>("Select * From Genre WHERE Id = @Id", new {id});
+                return cn.QueryFirstOrDefault<Genre>("Select * From Genre WHERE GenreId = @Id", new {id});
             }
         }
 

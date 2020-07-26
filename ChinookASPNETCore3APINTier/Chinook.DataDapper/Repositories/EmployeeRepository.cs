@@ -45,7 +45,7 @@ namespace Chinook.DataDapper.Repositories
             using (var cn = Connection)
             {
                 cn.Open();
-                return cn.QueryFirstOrDefault<Employee>("Select * From Employee WHERE Id = @Id", new {id});
+                return cn.QueryFirstOrDefault<Employee>("Select * From Employee WHERE EmployeeId = @Id", new {id});
             }
         }
 
@@ -54,7 +54,7 @@ namespace Chinook.DataDapper.Repositories
             using (var cn = Connection)
             {
                 cn.Open();
-                return cn.QueryFirstOrDefault<Employee>("Select * From Employee WHERE Id = @Id", new {id});
+                return cn.QueryFirstOrDefault<Employee>("Select * From Employee WHERE ReportsTo = @Id", new {id});
             }
         }
 

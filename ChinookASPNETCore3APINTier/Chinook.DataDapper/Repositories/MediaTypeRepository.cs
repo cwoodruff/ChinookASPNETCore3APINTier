@@ -45,7 +45,7 @@ namespace Chinook.DataDapper.Repositories
             using (var cn = Connection)
             {
                 cn.Open();
-                return cn.QueryFirstOrDefault<MediaType>("Select * From MediaType WHERE Id = @Id", new {id});
+                return cn.QueryFirstOrDefault<MediaType>("Select * From MediaType WHERE MediaTypeId = @Id", new {id});
             }
         }
 

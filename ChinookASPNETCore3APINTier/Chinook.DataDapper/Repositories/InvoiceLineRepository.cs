@@ -45,7 +45,7 @@ namespace Chinook.DataDapper.Repositories
             using (var cn = Connection)
             {
                 cn.Open();
-                return cn.QueryFirstOrDefault<InvoiceLine>("Select * From InvoiceLine WHERE Id = @Id", new {id});
+                return cn.QueryFirstOrDefault<InvoiceLine>("Select * From InvoiceLine WHERE InvoiceLineId = @Id", new {id});
             }
         }
 

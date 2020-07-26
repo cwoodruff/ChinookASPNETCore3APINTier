@@ -45,7 +45,7 @@ namespace Chinook.DataDapper.Repositories
             using (var cn = Connection)
             {
                 cn.Open();
-                return cn.QueryFirstOrDefault<Playlist>("Select * From Playlist WHERE Id = @Id", new {id});
+                return cn.QueryFirstOrDefault<Playlist>("Select * From Playlist WHERE PlaylistId = @Id", new {id});
             }
         }
 

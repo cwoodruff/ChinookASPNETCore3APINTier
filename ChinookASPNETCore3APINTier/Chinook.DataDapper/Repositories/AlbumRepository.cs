@@ -65,7 +65,7 @@ namespace Chinook.DataDapper.Repositories
             using (var cn = Connection)
             {
                 cn.Open();
-                var albumId = cn.Insert(new Album {Title = newAlbum.Title, ArtistId = newAlbum.ArtistId});
+                var albumId = cn.Insert(newAlbum);
                 newAlbum.AlbumId = (int) albumId;
             }
 

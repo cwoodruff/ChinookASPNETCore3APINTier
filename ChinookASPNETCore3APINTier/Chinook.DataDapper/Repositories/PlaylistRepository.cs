@@ -109,7 +109,14 @@ namespace Chinook.DataDapper.Repositories
 
         public List<Playlist> GetByTrackId(int id)
         {
-            throw new NotImplementedException();
+            //SELECT PL.PlaylistId, PL.Name FROM Playlist AS PL INNER JOIN PlaylistTrack PLT ON PL.PlaylistId = PLT.PlaylistId WHERE PLT.TrackID = 5
+             using (var cn = Connection)
+            {
+                cn.Open();
+                var playlists = cn.Query<Playlist>(
+                    "SELECT PL.PlaylistId, PL.Name FROM Playlist AS PL INNER JOIN PlaylistTrack PLT ON PL.PlaylistId = PLT.PlaylistId WHERE PLT.TrackID = @Id", new { id });
+                return playlists.ToList();
+            }
         }
     }
 }

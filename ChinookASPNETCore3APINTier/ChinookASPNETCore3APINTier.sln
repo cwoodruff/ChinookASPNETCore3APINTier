@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.DataEFCoreCmpldQry"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.Domain", "Chinook.Domain\Chinook.Domain.csproj", "{920E772F-A81B-49FB-846F-32D4B192FBCB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.MockData", "Chinook.MockData\Chinook.MockData.csproj", "{0BC8DA66-7AF2-4623-A197-3A7DB07315D0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.DataMock", "Chinook.DataMock\Chinook.DataMock.csproj", "{0BC8DA66-7AF2-4623-A197-3A7DB07315D0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.IntegrationTest", "Chinook.IntegrationTest\Chinook.IntegrationTest.csproj", "{56321F1C-B24E-40BB-A089-4C914F56480C}"
 EndProject
@@ -17,6 +17,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.DataJson", "Chinook.DataJson\Chinook.DataJson.csproj", "{328CF41A-C3A2-471E-9465-4BAE4ADC1AD3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.DataDapper", "Chinook.DataDapper\Chinook.DataDapper.csproj", "{C67BC203-09A6-425C-BB13-73C7A7696564}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.DataLinq2Db", "Chinook.DataLinq2Db\Chinook.DataLinq2Db.csproj", "{56D110EE-AE62-4667-BC58-B276333ADB0A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.DataMartendb", "Chinook.DataMartendb\Chinook.DataMartendb.csproj", "{2B8511C4-B066-440B-8BA2-141E54A1F171}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.DataRepoDb", "Chinook.DataRepoDb\Chinook.DataRepoDb.csproj", "{F6D0DCAD-87EC-4BFA-8EE9-12C3FC474145}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,5 +66,17 @@ Global
 		{C67BC203-09A6-425C-BB13-73C7A7696564}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C67BC203-09A6-425C-BB13-73C7A7696564}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C67BC203-09A6-425C-BB13-73C7A7696564}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56D110EE-AE62-4667-BC58-B276333ADB0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56D110EE-AE62-4667-BC58-B276333ADB0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56D110EE-AE62-4667-BC58-B276333ADB0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56D110EE-AE62-4667-BC58-B276333ADB0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B8511C4-B066-440B-8BA2-141E54A1F171}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B8511C4-B066-440B-8BA2-141E54A1F171}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B8511C4-B066-440B-8BA2-141E54A1F171}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B8511C4-B066-440B-8BA2-141E54A1F171}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6D0DCAD-87EC-4BFA-8EE9-12C3FC474145}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6D0DCAD-87EC-4BFA-8EE9-12C3FC474145}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6D0DCAD-87EC-4BFA-8EE9-12C3FC474145}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6D0DCAD-87EC-4BFA-8EE9-12C3FC474145}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

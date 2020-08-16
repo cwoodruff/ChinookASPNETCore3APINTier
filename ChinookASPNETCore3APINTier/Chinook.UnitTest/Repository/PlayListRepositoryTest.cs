@@ -11,12 +11,6 @@ namespace Chinook.UnitTest.Repository
 
         public PlayListRepositoryTest()
         {
-            var services = new ServiceCollection();
-            services.AddTransient<IPlaylistRepository, PlaylistRepository>();
-
-            var serviceProvider = services.BuildServiceProvider();
-
-            _repo = serviceProvider.GetService<IPlaylistRepository>();
         }
 
         [Fact]

@@ -109,17 +109,32 @@ namespace Chinook.DataDapper.Repositories
 
         public List<Track> GetByInvoiceId(int id)
         {
-            throw new NotImplementedException();
+             using (var cn = Connection)
+                                     {
+                                         cn.Open();
+                                         var tracks = cn.Query<Track>("SELECT T.TrackId, T.Name, T.AlbumId, T.MediaTypeId, T.GenreId, T.Composer, T.Milliseconds, T.Bytes, T.UnitPrice FROM Track AS T INNER JOIN InvoiceLine AS IL ON T.TrackId = IL.TrackId WHERE IL.InvoiceID = @Id", new { id });
+                                         return tracks.ToList();
+                                     }
         }
 
         public List<Track> GetByPlaylistId(int id)
         {
-            throw new NotImplementedException();
+             using (var cn = Connection)
+                        {
+                            cn.Open();
+                            var tracks = cn.Query<Track>("SELECT T.TrackId, T.Name, T.AlbumId, T.MediaTypeId, T.GenreId, T.Composer, T.Milliseconds, T.Bytes, T.UnitPrice FROM Track AS T INNER JOIN PlaylistTrack AS PLT ON T.TrackId = PLT.TrackId WHERE PLT.PlatListId = @Id", new { id });
+                            return tracks.ToList();
+                        }
         }
 
         public List<Track> GetByArtistId(int id)
         {
-            throw new NotImplementedException();
+             using (var cn = Connection)
+                                     {
+                                         cn.Open();
+                                         var tracks = cn.Query<Track>("SELECT T.TrackId, T.Name, T.AlbumId, T.MediaTypeId, T.GenreId, T.Composer, T.Milliseconds, T.Bytes, T.UnitPrice FROM Track AS T INNER JOIN Album AS A ON T.AlbumId = A.AlbumId WHERE A.ArtistId = @Id", new { id });
+                                         return tracks.ToList();
+                                     }
         }
 
         public List<Track> GetByAlbumId(int id)

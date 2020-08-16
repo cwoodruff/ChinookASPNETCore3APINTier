@@ -11,12 +11,6 @@ namespace Chinook.UnitTest.Repository
 
         public EmployeeRepositoryTest()
         {
-            var services = new ServiceCollection();
-            services.AddTransient<IEmployeeRepository, EmployeeRepository>();
-
-            var serviceProvider = services.BuildServiceProvider();
-
-            _repo = serviceProvider.GetService<IEmployeeRepository>();
         }
 
         [Fact]

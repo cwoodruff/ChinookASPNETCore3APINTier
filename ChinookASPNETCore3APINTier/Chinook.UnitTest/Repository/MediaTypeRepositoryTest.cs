@@ -11,12 +11,6 @@ namespace Chinook.UnitTest.Repository
 
         public MediaTypeRepositoryTest()
         {
-            var services = new ServiceCollection();
-            services.AddTransient<IMediaTypeRepository, MediaTypeRepository>();
-
-            var serviceProvider = services.BuildServiceProvider();
-
-            _repo = serviceProvider.GetService<IMediaTypeRepository>();
         }
 
         [Fact]

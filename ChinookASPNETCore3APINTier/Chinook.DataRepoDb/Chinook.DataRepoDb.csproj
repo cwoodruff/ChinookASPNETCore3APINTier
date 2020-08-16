@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Chinook.Domain\Chinook.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="RepoDb" Version="1.11.5" />
+      <PackageReference Include="RepoDb.SqlServer" Version="1.0.12" />
+    </ItemGroup>
+
+</Project>

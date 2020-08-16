@@ -11,12 +11,6 @@ namespace Chinook.UnitTest.Repository
 
         public InvoiceLineRepositoryTest()
         {
-            var services = new ServiceCollection();
-            services.AddTransient<IInvoiceLineRepository, InvoiceLineRepository>();
-
-            var serviceProvider = services.BuildServiceProvider();
-
-            _repo = serviceProvider.GetService<IInvoiceLineRepository>();
         }
 
         [Fact]

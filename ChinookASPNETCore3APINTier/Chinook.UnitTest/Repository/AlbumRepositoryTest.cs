@@ -11,12 +11,6 @@ namespace Chinook.UnitTest.Repository
 
         public AlbumRepositoryTest()
         {
-            var services = new ServiceCollection();
-            services.AddTransient<IAlbumRepository, AlbumRepository>();
-
-            var serviceProvider = services.BuildServiceProvider();
-
-            _repo = serviceProvider.GetService<IAlbumRepository>();
         }
 
         [Fact]

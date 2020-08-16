@@ -11,12 +11,6 @@ namespace Chinook.UnitTest.Repository
 
         public GenreRepositoryTest()
         {
-            var services = new ServiceCollection();
-            services.AddTransient<IGenreRepository, GenreRepository>();
-
-            var serviceProvider = services.BuildServiceProvider();
-
-            _repo = serviceProvider.GetService<IGenreRepository>();
         }
 
         [Fact]

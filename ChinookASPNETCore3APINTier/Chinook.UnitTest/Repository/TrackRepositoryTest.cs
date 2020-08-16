@@ -11,12 +11,6 @@ namespace Chinook.UnitTest.Repository
 
         public TrackRepositoryTest()
         {
-            var services = new ServiceCollection();
-            services.AddTransient<ITrackRepository, TrackRepository>();
-
-            var serviceProvider = services.BuildServiceProvider();
-
-            _repo = serviceProvider.GetService<ITrackRepository>();
         }
 
         [Fact]

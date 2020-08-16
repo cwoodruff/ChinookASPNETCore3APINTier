@@ -69,7 +69,7 @@ namespace Chinook.Domain.Supervisor
             return tracks.ConvertAll();
         }
 
-        public IEnumerable<TrackApiModel> GetTrackByPlaylistIdId(int id)
+        public IEnumerable<TrackApiModel> GetTrackByPlaylistId(int id)
         {
             var tracks = _trackRepository.GetByPlaylistId(id);
             return tracks.ConvertAll();

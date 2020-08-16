@@ -103,7 +103,7 @@ namespace Chinook.Domain.Supervisor
         IEnumerable<TrackApiModel>
             GetTrackByMediaTypeId(int id);
 
-        IEnumerable<TrackApiModel> GetTrackByPlaylistIdId(int id);
+        IEnumerable<TrackApiModel> GetTrackByPlaylistId(int id);
 
         TrackApiModel AddTrack(TrackApiModel newTrackApiModel);
 

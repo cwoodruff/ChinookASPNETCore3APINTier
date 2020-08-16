@@ -31,7 +31,7 @@ namespace Chinook.Domain.Supervisor
             else
             {
                 var playlistApiModel = (_playlistRepository.GetById(id)).Convert();
-                playlistApiModel.Tracks = (GetTrackByPlaylistIdId(playlistApiModel.PlaylistId)).ToList();
+                playlistApiModel.Tracks = (GetTrackByPlaylistId(playlistApiModel.PlaylistId)).ToList();
 
                 var cacheEntryOptions =
                     new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800));

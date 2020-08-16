@@ -65,6 +65,8 @@ namespace Chinook.DataRepoDb.Repositories
             using (var cn = Connection)
             {
                 cn.Open();
+                // "SELECT Track.* FROM Playlist INNER JOIN PlaylistTrack ON Playlist.PlaylistId = PlaylistTrack.PlaylistId INNER JOIN Track ON PlaylistTrack.TrackId = Track.TrackId WHERE Playlist.PlaylistId = @Id", new { id });
+
                 var tracks = cn.Query<Track>(t => t.TrackId == id);
                 return tracks.ToList();
             }

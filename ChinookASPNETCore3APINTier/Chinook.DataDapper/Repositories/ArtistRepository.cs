@@ -32,31 +32,25 @@ namespace Chinook.DataDapper.Repositories
 
         public List<Artist> GetAll()
         {
-            using (IDbConnection cn = Connection)
-            {
-                cn.Open();
-                var artists = Connection.Query<Artist>("Select * From Artist");
-                return artists.ToList();
-            }
+            using IDbConnection cn = Connection;
+            cn.Open();
+            var artists = Connection.Query<Artist>("Select * From Artist");
+            return artists.ToList();
         }
 
         public Artist GetById(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                return cn.QueryFirstOrDefault<Artist>("Select * From Artist WHERE Id = @Id", new {id});
-            }
+            using var cn = Connection;
+            cn.Open();
+            return cn.QueryFirstOrDefault<Artist>("Select * From Artist WHERE Id = @Id", new {id});
         }
 
         public Artist Add(Artist newArtist)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
+            using var cn = Connection;
+            cn.Open();
 
-                 newArtist.ArtistId = (int) cn.Insert(new Artist {Name = newArtist.Name});
-            }
+            newArtist.ArtistId = (int) cn.Insert(new Artist {Name = newArtist.Name});
 
             return newArtist;
         }
@@ -68,11 +62,9 @@ namespace Chinook.DataDapper.Repositories
 
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return cn.Update(artist);
-                }
+                using var cn = Connection;
+                cn.Open();
+                return cn.Update(artist);
             }
             catch(Exception)
             {
@@ -84,11 +76,9 @@ namespace Chinook.DataDapper.Repositories
         {
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return cn.Delete(new Artist {ArtistId = id});
-                }  
+                using var cn = Connection;
+                cn.Open();
+                return cn.Delete(new Artist {ArtistId = id});
             }
             catch(Exception)
             {

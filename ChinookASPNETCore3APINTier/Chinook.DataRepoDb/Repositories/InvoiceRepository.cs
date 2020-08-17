@@ -31,53 +31,45 @@ namespace Chinook.DataRepoDb.Repositories
 
         public List<Invoice> GetAll()
         {
-            using (IDbConnection cn = Connection)
-            {
-                cn.Open();
-                var invoices =  Connection.QueryAll<Invoice>();
-                return invoices.ToList();
-            }
+            using IDbConnection cn = Connection;
+            cn.Open();
+            var invoices =  Connection.QueryAll<Invoice>();
+            return invoices.ToList();
         }
 
         public Invoice GetById(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                return cn.Query<Invoice>(i => i.InvoiceId == id).FirstOrDefault();
-            }
+            using var cn = Connection;
+            cn.Open();
+            return cn.Query<Invoice>(i => i.InvoiceId == id).FirstOrDefault();
         }
 
         public List<Invoice> GetByCustomerId(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var invoices = cn.Query<Invoice>(i => i.CustomerId == id);
-                return invoices.ToList();
-            }
+            using var cn = Connection;
+            cn.Open();
+            var invoices = cn.Query<Invoice>(i => i.CustomerId == id);
+            return invoices.ToList();
         }
 
         public Invoice Add(Invoice newInvoice)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
+            using var cn = Connection;
+            cn.Open();
 
-                newInvoice.InvoiceId = (int) cn.Insert(
-                    new Invoice
-                    {
-                        InvoiceId = newInvoice.InvoiceId,
-                        CustomerId = newInvoice.CustomerId,
-                        InvoiceDate = newInvoice.InvoiceDate,
-                        BillingAddress = newInvoice.BillingAddress,
-                        BillingCity = newInvoice.BillingCity,
-                        BillingState = newInvoice.BillingState,
-                        BillingCountry = newInvoice.BillingCountry,
-                        BillingPostalCode = newInvoice.BillingPostalCode,
-                        Total = newInvoice.Total
-                    });
-            }
+            newInvoice.InvoiceId = (int) cn.Insert(
+                new Invoice
+                {
+                    InvoiceId = newInvoice.InvoiceId,
+                    CustomerId = newInvoice.CustomerId,
+                    InvoiceDate = newInvoice.InvoiceDate,
+                    BillingAddress = newInvoice.BillingAddress,
+                    BillingCity = newInvoice.BillingCity,
+                    BillingState = newInvoice.BillingState,
+                    BillingCountry = newInvoice.BillingCountry,
+                    BillingPostalCode = newInvoice.BillingPostalCode,
+                    Total = newInvoice.Total
+                });
 
             return newInvoice;
         }
@@ -89,11 +81,9 @@ namespace Chinook.DataRepoDb.Repositories
 
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return (cn.Update(invoice) > 0);
-                }
+                using var cn = Connection;
+                cn.Open();
+                return (cn.Update(invoice) > 0);
             }
             catch(Exception)
             {
@@ -105,11 +95,9 @@ namespace Chinook.DataRepoDb.Repositories
         {
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return cn.Delete(new Invoice {InvoiceId = id}) > 0;
-                }  
+                using var cn = Connection;
+                cn.Open();
+                return cn.Delete(new Invoice {InvoiceId = id}) > 0;
             }
             catch(Exception)
             {

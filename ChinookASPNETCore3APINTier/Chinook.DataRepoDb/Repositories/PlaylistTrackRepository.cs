@@ -28,42 +28,34 @@ namespace Chinook.DataRepoDb.Repositories
 
         public List<PlaylistTrack> GetAll()
         {
-            using (IDbConnection cn = Connection)
-            {
-                cn.Open();
-                var playListTracks = Connection.QueryAll<PlaylistTrack>();
-                return playListTracks.ToList();
-            }
+            using IDbConnection cn = Connection;
+            cn.Open();
+            var playListTracks = Connection.QueryAll<PlaylistTrack>();
+            return playListTracks.ToList();
         }
 
         public List<PlaylistTrack> GetByPlaylistId(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var playListTracks = cn.Query<PlaylistTrack>(p => p.PlaylistId == id);
-                return playListTracks.ToList();
-            }
+            using var cn = Connection;
+            cn.Open();
+            var playListTracks = cn.Query<PlaylistTrack>(p => p.PlaylistId == id);
+            return playListTracks.ToList();
         }
 
         public List<PlaylistTrack> GetByTrackId(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var playListTracks = cn.Query<PlaylistTrack>(p => p.TrackId == id);
-                return playListTracks.ToList();
-            }
+            using var cn = Connection;
+            cn.Open();
+            var playListTracks = cn.Query<PlaylistTrack>(p => p.TrackId == id);
+            return playListTracks.ToList();
         }
 
         public PlaylistTrack Add(PlaylistTrack newPlaylistTrack)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
+            using var cn = Connection;
+            cn.Open();
 
-                cn.Insert(new PlaylistTrack {PlaylistId = newPlaylistTrack.PlaylistId, TrackId = newPlaylistTrack.TrackId});
-            }
+            cn.Insert(new PlaylistTrack {PlaylistId = newPlaylistTrack.PlaylistId, TrackId = newPlaylistTrack.TrackId});
 
             return newPlaylistTrack;
         }
@@ -72,11 +64,9 @@ namespace Chinook.DataRepoDb.Repositories
         {
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return (cn.Update(playlistTrack) > 0);
-                }
+                using var cn = Connection;
+                cn.Open();
+                return (cn.Update(playlistTrack) > 0);
             }
             catch(Exception)
             {
@@ -88,11 +78,9 @@ namespace Chinook.DataRepoDb.Repositories
         {
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return cn.Delete(new PlaylistTrack {PlaylistId = id}) > 0;
-                }  
+                using var cn = Connection;
+                cn.Open();
+                return cn.Delete(new PlaylistTrack {PlaylistId = id}) > 0;
             }
             catch(Exception)
             {

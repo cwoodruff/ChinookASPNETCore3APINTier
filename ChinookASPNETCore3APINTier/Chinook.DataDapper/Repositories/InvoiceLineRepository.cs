@@ -32,59 +32,49 @@ namespace Chinook.DataDapper.Repositories
 
         public List<InvoiceLine> GetAll()
         {
-            using (IDbConnection cn = Connection)
-            {
-                cn.Open();
-                var invoiceLines = Connection.Query<InvoiceLine>("Select * From InvoiceLine");
-                return invoiceLines.ToList();
-            }
+            using IDbConnection cn = Connection;
+            cn.Open();
+            var invoiceLines = Connection.Query<InvoiceLine>("Select * From InvoiceLine");
+            return invoiceLines.ToList();
         }
 
         public InvoiceLine GetById(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                return cn.QueryFirstOrDefault<InvoiceLine>("Select * From InvoiceLine WHERE InvoiceLineId = @Id", new {id});
-            }
+            using var cn = Connection;
+            cn.Open();
+            return cn.QueryFirstOrDefault<InvoiceLine>("Select * From InvoiceLine WHERE InvoiceLineId = @Id", new {id});
         }
 
         public List<InvoiceLine> GetByInvoiceId(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var invoiceLines = cn.Query<InvoiceLine>("Select * From InvoiceLine WHERE ArtistId = @Id", new { id });
-                return invoiceLines.ToList();
-            }
+            using var cn = Connection;
+            cn.Open();
+            var invoiceLines = cn.Query<InvoiceLine>("Select * From InvoiceLine WHERE ArtistId = @Id", new { id });
+            return invoiceLines.ToList();
         }
 
         public List<InvoiceLine> GetByTrackId(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var invoiceLines =  cn.Query<InvoiceLine>("Select * From InvoiceLine WHERE ArtistId = @Id", new { id });
-                return invoiceLines.ToList();
-            }
+            using var cn = Connection;
+            cn.Open();
+            var invoiceLines =  cn.Query<InvoiceLine>("Select * From InvoiceLine WHERE ArtistId = @Id", new { id });
+            return invoiceLines.ToList();
         }
 
         public InvoiceLine Add(InvoiceLine newInvoiceLine)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
+            using var cn = Connection;
+            cn.Open();
 
-                newInvoiceLine.InvoiceLineId = (int) cn.Insert(
-                    new InvoiceLine
-                    {
-                        InvoiceLineId = newInvoiceLine.InvoiceLineId,
-                        InvoiceId = newInvoiceLine.InvoiceId,
-                        TrackId = newInvoiceLine.TrackId,
-                        UnitPrice = newInvoiceLine.UnitPrice,
-                        Quantity = newInvoiceLine.Quantity
-                    });
-            }
+            newInvoiceLine.InvoiceLineId = (int) cn.Insert(
+                new InvoiceLine
+                {
+                    InvoiceLineId = newInvoiceLine.InvoiceLineId,
+                    InvoiceId = newInvoiceLine.InvoiceId,
+                    TrackId = newInvoiceLine.TrackId,
+                    UnitPrice = newInvoiceLine.UnitPrice,
+                    Quantity = newInvoiceLine.Quantity
+                });
 
             return newInvoiceLine;
         }
@@ -96,11 +86,9 @@ namespace Chinook.DataDapper.Repositories
 
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return cn.Update(invoiceLine);
-                }
+                using var cn = Connection;
+                cn.Open();
+                return cn.Update(invoiceLine);
             }
             catch(Exception)
             {
@@ -112,11 +100,9 @@ namespace Chinook.DataDapper.Repositories
         {
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return cn.Delete(new InvoiceLine {InvoiceLineId = id});
-                }  
+                using var cn = Connection;
+                cn.Open();
+                return cn.Delete(new InvoiceLine {InvoiceLineId = id});
             }
             catch(Exception)
             {

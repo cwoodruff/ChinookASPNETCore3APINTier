@@ -31,57 +31,49 @@ namespace Chinook.DataRepoDb.Repositories
 
         public List<Employee> GetAll()
         {
-            using (IDbConnection cn = Connection)
-            {
-                cn.Open();
-                var employees = Connection.QueryAll<Employee>();
-                return employees.ToList();
-            }
+            using IDbConnection cn = Connection;
+            cn.Open();
+            var employees = Connection.QueryAll<Employee>();
+            return employees.ToList();
         }
 
         public Employee GetById(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                return cn.Query<Employee>(e => e.EmployeeId == id).FirstOrDefault();
-            }
+            using var cn = Connection;
+            cn.Open();
+            return cn.Query<Employee>(e => e.EmployeeId == id).FirstOrDefault();
         }
 
         public Employee GetReportsTo(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                return cn.Query<Employee>(e => e.ReportsTo == id).FirstOrDefault();
-            }
+            using var cn = Connection;
+            cn.Open();
+            return cn.Query<Employee>(e => e.ReportsTo == id).FirstOrDefault();
         }
 
         public Employee Add(Employee newEmployee)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
+            using var cn = Connection;
+            cn.Open();
 
-                newEmployee.EmployeeId = (int) cn.Insert(
-                    new Employee
-                    {
-                        LastName = newEmployee.LastName,
-                        FirstName = newEmployee.FirstName,
-                        Title = newEmployee.Title,
-                        ReportsTo = newEmployee.ReportsTo,
-                        BirthDate = newEmployee.BirthDate,
-                        HireDate = newEmployee.HireDate,
-                        Address = newEmployee.Address,
-                        City = newEmployee.City,
-                        State = newEmployee.State,
-                        Country = newEmployee.Country,
-                        PostalCode = newEmployee.PostalCode,
-                        Phone = newEmployee.Phone,
-                        Fax = newEmployee.Fax,
-                        Email = newEmployee.Email
-                    });
-            }
+            newEmployee.EmployeeId = (int) cn.Insert(
+                new Employee
+                {
+                    LastName = newEmployee.LastName,
+                    FirstName = newEmployee.FirstName,
+                    Title = newEmployee.Title,
+                    ReportsTo = newEmployee.ReportsTo,
+                    BirthDate = newEmployee.BirthDate,
+                    HireDate = newEmployee.HireDate,
+                    Address = newEmployee.Address,
+                    City = newEmployee.City,
+                    State = newEmployee.State,
+                    Country = newEmployee.Country,
+                    PostalCode = newEmployee.PostalCode,
+                    Phone = newEmployee.Phone,
+                    Fax = newEmployee.Fax,
+                    Email = newEmployee.Email
+                });
 
             return newEmployee;
         }
@@ -93,11 +85,9 @@ namespace Chinook.DataRepoDb.Repositories
 
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return (cn.Update(employee) > 0);
-                }
+                using var cn = Connection;
+                cn.Open();
+                return (cn.Update(employee) > 0);
             }
             catch(Exception)
             {
@@ -109,11 +99,9 @@ namespace Chinook.DataRepoDb.Repositories
         {
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return (cn.Delete(new Employee {EmployeeId = id}) > 0);
-                }  
+                using var cn = Connection;
+                cn.Open();
+                return (cn.Delete(new Employee {EmployeeId = id}) > 0);
             }
             catch(Exception)
             {
@@ -123,12 +111,10 @@ namespace Chinook.DataRepoDb.Repositories
 
         public List<Employee> GetDirectReports(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var employees = cn.Query<Employee>(e => e.ReportsTo == id);
-                return employees.ToList();
-            }
+            using var cn = Connection;
+            cn.Open();
+            var employees = cn.Query<Employee>(e => e.ReportsTo == id);
+            return employees.ToList();
         }
     }
 }

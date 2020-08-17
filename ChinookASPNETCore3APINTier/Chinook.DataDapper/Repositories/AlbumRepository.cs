@@ -31,43 +31,35 @@ namespace Chinook.DataDapper.Repositories
             Connection.ExecuteScalar<bool>("select count(1) from Album where AlbumId = @id", new {id});
 
         public List<Album> GetAll()
-        { 
-            using (IDbConnection cn = Connection)
-            {
-                cn.Open();
-                var albums = Connection.Query<Album>("Select * From Album");
-                return albums.ToList();
-            }
+        {
+            using IDbConnection cn = Connection;
+            cn.Open();
+            var albums = Connection.Query<Album>("Select * From Album");
+            return albums.ToList();
         }
 
         public Album GetById(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var album = cn.QueryFirstOrDefault<Album>("Select * From Album WHERE Id = @Id", new {id});
-                return album;
-            }
+            using var cn = Connection;
+            cn.Open();
+            var album = cn.QueryFirstOrDefault<Album>("Select * From Album WHERE Id = @Id", new {id});
+            return album;
         }
 
         public List<Album> GetByArtistId(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var albums = cn.Query<Album>("Select * From Album WHERE ArtistId = @Id", new {id});
-                return albums.ToList();
-            }
+            using var cn = Connection;
+            cn.Open();
+            var albums = cn.Query<Album>("Select * From Album WHERE ArtistId = @Id", new {id});
+            return albums.ToList();
         }
 
         public Album Add(Album newAlbum)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var albumId = cn.Insert(newAlbum);
-                newAlbum.AlbumId = (int) albumId;
-            }
+            using var cn = Connection;
+            cn.Open();
+            var albumId = cn.Insert(newAlbum);
+            newAlbum.AlbumId = (int) albumId;
 
             return newAlbum;
         }
@@ -79,11 +71,9 @@ namespace Chinook.DataDapper.Repositories
 
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return cn.Update(album);
-                }
+                using var cn = Connection;
+                cn.Open();
+                return cn.Update(album);
             }
             catch(Exception)
             {
@@ -95,11 +85,9 @@ namespace Chinook.DataDapper.Repositories
         {
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return cn.Delete(new Album {AlbumId = id});
-                }  
+                using var cn = Connection;
+                cn.Open();
+                return cn.Delete(new Album {AlbumId = id});
             }
             catch(Exception)
             {

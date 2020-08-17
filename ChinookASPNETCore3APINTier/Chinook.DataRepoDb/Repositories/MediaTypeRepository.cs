@@ -31,31 +31,25 @@ namespace Chinook.DataRepoDb.Repositories
 
         public List<MediaType> GetAll()
         {
-            using (IDbConnection cn = Connection)
-            {
-                cn.Open();
-                var mediaTypes = Connection.QueryAll<MediaType>();
-                return mediaTypes.ToList();
-            }
+            using IDbConnection cn = Connection;
+            cn.Open();
+            var mediaTypes = Connection.QueryAll<MediaType>();
+            return mediaTypes.ToList();
         }
 
         public MediaType GetById(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                return cn.Query<MediaType>(m => m.MediaTypeId == id).FirstOrDefault();
-            }
+            using var cn = Connection;
+            cn.Open();
+            return cn.Query<MediaType>(m => m.MediaTypeId == id).FirstOrDefault();
         }
 
         public MediaType Add(MediaType newMediaType)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
+            using var cn = Connection;
+            cn.Open();
 
-                newMediaType.MediaTypeId = (int) cn.Insert(new MediaType {Name = newMediaType.Name});
-            }
+            newMediaType.MediaTypeId = (int) cn.Insert(new MediaType {Name = newMediaType.Name});
 
             return newMediaType;
         }
@@ -67,11 +61,9 @@ namespace Chinook.DataRepoDb.Repositories
 
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return (cn.Update(mediaType) > 0);
-                }
+                using var cn = Connection;
+                cn.Open();
+                return (cn.Update(mediaType) > 0);
             }
             catch(Exception)
             {
@@ -83,11 +75,9 @@ namespace Chinook.DataRepoDb.Repositories
         {
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return cn.Delete(new MediaType {MediaTypeId = id}) > 0;
-                }  
+                using var cn = Connection;
+                cn.Open();
+                return cn.Delete(new MediaType {MediaTypeId = id}) > 0;
             }
             catch(Exception)
             {

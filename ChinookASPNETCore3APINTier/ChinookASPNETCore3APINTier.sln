@@ -18,8 +18,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.DataJson", "Chinook
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.DataDapper", "Chinook.DataDapper\Chinook.DataDapper.csproj", "{C67BC203-09A6-425C-BB13-73C7A7696564}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.DataLinq2Db", "Chinook.DataLinq2Db\Chinook.DataLinq2Db.csproj", "{56D110EE-AE62-4667-BC58-B276333ADB0A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.DataMartendb", "Chinook.DataMartendb\Chinook.DataMartendb.csproj", "{2B8511C4-B066-440B-8BA2-141E54A1F171}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.DataRepoDb", "Chinook.DataRepoDb\Chinook.DataRepoDb.csproj", "{F6D0DCAD-87EC-4BFA-8EE9-12C3FC474145}"
@@ -66,10 +64,6 @@ Global
 		{C67BC203-09A6-425C-BB13-73C7A7696564}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C67BC203-09A6-425C-BB13-73C7A7696564}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C67BC203-09A6-425C-BB13-73C7A7696564}.Release|Any CPU.Build.0 = Release|Any CPU
-		{56D110EE-AE62-4667-BC58-B276333ADB0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{56D110EE-AE62-4667-BC58-B276333ADB0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{56D110EE-AE62-4667-BC58-B276333ADB0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{56D110EE-AE62-4667-BC58-B276333ADB0A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2B8511C4-B066-440B-8BA2-141E54A1F171}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2B8511C4-B066-440B-8BA2-141E54A1F171}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B8511C4-B066-440B-8BA2-141E54A1F171}.Release|Any CPU.ActiveCfg = Release|Any CPU

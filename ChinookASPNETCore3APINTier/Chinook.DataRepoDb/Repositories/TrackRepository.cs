@@ -31,42 +31,36 @@ namespace Chinook.DataRepoDb.Repositories
 
         public List<Track> GetAll()
         {
-            using (IDbConnection cn = Connection)
-            {
-                cn.Open();
-                var tracks = Connection.QueryAll<Track>();
-                return tracks.ToList();
-            }
+            using IDbConnection cn = Connection;
+            cn.Open();
+            var tracks = Connection.QueryAll<Track>();
+            return tracks.ToList();
         }
 
         public Track GetById(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                return cn.Query<Track>(t => t.TrackId == id).FirstOrDefault();
-            }
+            using var cn = Connection;
+            cn.Open();
+            return cn.Query<Track>(t => t.TrackId == id).FirstOrDefault();
         }
 
         public Track Add(Track newTrack)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
+            using var cn = Connection;
+            cn.Open();
 
-                newTrack.TrackId = (int) cn.Insert(
-                    new Track
-                    {
-                        Name = newTrack.Name,
-                        AlbumId = newTrack.AlbumId,
-                        MediaTypeId = newTrack.MediaTypeId,
-                        GenreId = newTrack.GenreId,
-                        Composer = newTrack.Composer,
-                        Milliseconds = newTrack.Milliseconds,
-                        Bytes = newTrack.Bytes,
-                        UnitPrice = newTrack.UnitPrice
-                    });
-            }
+            newTrack.TrackId = (int) cn.Insert(
+                new Track
+                {
+                    Name = newTrack.Name,
+                    AlbumId = newTrack.AlbumId,
+                    MediaTypeId = newTrack.MediaTypeId,
+                    GenreId = newTrack.GenreId,
+                    Composer = newTrack.Composer,
+                    Milliseconds = newTrack.Milliseconds,
+                    Bytes = newTrack.Bytes,
+                    UnitPrice = newTrack.UnitPrice
+                });
 
             return newTrack;
         }
@@ -78,11 +72,9 @@ namespace Chinook.DataRepoDb.Repositories
 
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return (cn.Update(track) > 0);
-                }
+                using var cn = Connection;
+                cn.Open();
+                return (cn.Update(track) > 0);
             }
             catch(Exception)
             {
@@ -94,11 +86,9 @@ namespace Chinook.DataRepoDb.Repositories
         {
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return cn.Delete(new Track {TrackId = id}) > 0;
-                }  
+                using var cn = Connection;
+                cn.Open();
+                return cn.Delete(new Track {TrackId = id}) > 0;
             }
             catch(Exception)
             {
@@ -108,62 +98,50 @@ namespace Chinook.DataRepoDb.Repositories
 
         public List<Track> GetByInvoiceId(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var tracks = cn.Query<Track>(t => t.AlbumId == id);
-                return tracks.ToList();
-            }
+            using var cn = Connection;
+            cn.Open();
+            var tracks = cn.ExecuteQuery<Track>("SELECT T.TrackId, T.Name, T.AlbumId, T.MediaTypeId, T.GenreId, T.Composer, T.Milliseconds, T.Bytes, T.UnitPrice FROM Track AS T INNER JOIN InvoiceLine AS IL ON T.TrackId = IL.TrackId WHERE IL.InvoiceID = @Id", new {id});
+            return tracks.ToList();
         }
 
         public List<Track> GetByPlaylistId(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var tracks = cn.Query<Track>(t => t.AlbumId == id);
-                return tracks.ToList();
-            }
+            using var cn = Connection;
+            cn.Open();
+            var tracks = cn.ExecuteQuery<Track>("SELECT T.TrackId, T.Name, T.AlbumId, T.MediaTypeId, T.GenreId, T.Composer, T.Milliseconds, T.Bytes, T.UnitPrice FROM Track AS T INNER JOIN PlaylistTrack AS PLT ON T.TrackId = PLT.TrackId WHERE PLT.PlatListId = @Id", new {id});
+            return tracks.ToList();
         }
 
         public List<Track> GetByArtistId(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var tracks = cn.Query<Track>(t => t.AlbumId == id);
-                return tracks.ToList();
-            }
+            using var cn = Connection;
+            cn.Open();
+            var tracks = cn.ExecuteQuery<Track>("SELECT T.TrackId, T.Name, T.AlbumId, T.MediaTypeId, T.GenreId, T.Composer, T.Milliseconds, T.Bytes, T.UnitPrice FROM Track AS T INNER JOIN Album AS A ON T.AlbumId = A.AlbumId WHERE A.ArtistId = @Id", new {id});
+            return tracks.ToList();
         }
 
         public List<Track> GetByAlbumId(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var tracks = cn.Query<Track>(t => t.AlbumId == id);
-                return tracks.ToList();
-            }
+            using var cn = Connection;
+            cn.Open();
+            var tracks = cn.Query<Track>(t => t.AlbumId == id);
+            return tracks.ToList();
         }
 
         public List<Track> GetByGenreId(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var tracks = cn.Query<Track>(t => t.GenreId == id);
-                return tracks.ToList();
-            }
+            using var cn = Connection;
+            cn.Open();
+            var tracks = cn.Query<Track>(t => t.GenreId == id);
+            return tracks.ToList();
         }
 
         public List<Track> GetByMediaTypeId(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var tracks = cn.Query<Track>(t => t.MediaTypeId == id);
-                return tracks.ToList();
-            }
+            using var cn = Connection;
+            cn.Open();
+            var tracks = cn.Query<Track>(t => t.MediaTypeId == id);
+            return tracks.ToList();
         }
     }
 }

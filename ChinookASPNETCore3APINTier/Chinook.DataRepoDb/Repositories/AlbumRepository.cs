@@ -30,43 +30,35 @@ namespace Chinook.DataRepoDb.Repositories
             Connection.ExecuteScalar<bool>("select count(1) from Album where AlbumId = @id", new {id});
 
         public List<Album> GetAll()
-        { 
-            using (IDbConnection cn = Connection)
-            {
-                cn.Open();
-                var albums = Connection.QueryAll<Album>();
-                return albums.ToList();
-            }
+        {
+            using IDbConnection cn = Connection;
+            cn.Open();
+            var albums = Connection.QueryAll<Album>();
+            return albums.ToList();
         }
 
         public Album GetById(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var album = cn.Query<Album>(a => a.AlbumId < id);
-                return album.FirstOrDefault();
-            }
+            using var cn = Connection;
+            cn.Open();
+            var album = cn.Query<Album>(a => a.AlbumId < id);
+            return album.FirstOrDefault();
         }
 
         public List<Album> GetByArtistId(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var albums = cn.Query<Album>(a => a.ArtistId < id);
-                return albums.ToList();
-            }
+            using var cn = Connection;
+            cn.Open();
+            var albums = cn.Query<Album>(a => a.ArtistId < id);
+            return albums.ToList();
         }
 
         public Album Add(Album newAlbum)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var albumId = cn.Insert(newAlbum);
-                newAlbum.AlbumId = (int) albumId;
-            }
+            using var cn = Connection;
+            cn.Open();
+            var albumId = cn.Insert(newAlbum);
+            newAlbum.AlbumId = (int) albumId;
 
             return newAlbum;
         }
@@ -78,11 +70,9 @@ namespace Chinook.DataRepoDb.Repositories
 
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return (cn.Update(album) > 0);
-                }
+                using var cn = Connection;
+                cn.Open();
+                return (cn.Update(album) > 0);
             }
             catch(Exception)
             {
@@ -94,11 +84,9 @@ namespace Chinook.DataRepoDb.Repositories
         {
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return (cn.Delete(new Album {AlbumId = id}) > 0);
-                }  
+                using var cn = Connection;
+                cn.Open();
+                return (cn.Delete(new Album {AlbumId = id}) > 0);
             }
             catch(Exception)
             {

@@ -31,57 +31,49 @@ namespace Chinook.DataRepoDb.Repositories
 
         public List<Customer> GetAll()
         {
-            using (IDbConnection cn = Connection)
-            {
-                cn.Open();
-                var customers = Connection.QueryAll<Customer>();
-                return customers.ToList();
-            }
+            using IDbConnection cn = Connection;
+            cn.Open();
+            var customers = Connection.QueryAll<Customer>();
+            return customers.ToList();
         }
 
         public Customer GetById(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                return cn.Query<Customer>(c => c.CustomerId == id).FirstOrDefault();
-            }
+            using var cn = Connection;
+            cn.Open();
+            return cn.Query<Customer>(c => c.CustomerId == id).FirstOrDefault();
         }
 
         public List<Customer> GetBySupportRepId(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var customers = cn.Query<Customer>(c => c.SupportRepId == id);
-                return customers.ToList();
-            }
+            using var cn = Connection;
+            cn.Open();
+            var customers = cn.Query<Customer>(c => c.SupportRepId == id);
+            return customers.ToList();
         }
 
         public Customer Add(Customer newCustomer)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
+            using var cn = Connection;
+            cn.Open();
 
-                newCustomer.CustomerId = (int) cn.Insert(
-                    new Customer
-                    {
-                        CustomerId = newCustomer.CustomerId,
-                        FirstName = newCustomer.FirstName,
-                        LastName = newCustomer.LastName,
-                        Company = newCustomer.Company,
-                        Address = newCustomer.Address,
-                        City = newCustomer.City,
-                        State = newCustomer.State,
-                        Country = newCustomer.Country,
-                        PostalCode = newCustomer.PostalCode,
-                        Phone = newCustomer.Phone,
-                        Fax = newCustomer.Fax,
-                        Email = newCustomer.Email,
-                        SupportRepId = newCustomer.SupportRepId
-                    });
-            }
+            newCustomer.CustomerId = (int) cn.Insert(
+                new Customer
+                {
+                    CustomerId = newCustomer.CustomerId,
+                    FirstName = newCustomer.FirstName,
+                    LastName = newCustomer.LastName,
+                    Company = newCustomer.Company,
+                    Address = newCustomer.Address,
+                    City = newCustomer.City,
+                    State = newCustomer.State,
+                    Country = newCustomer.Country,
+                    PostalCode = newCustomer.PostalCode,
+                    Phone = newCustomer.Phone,
+                    Fax = newCustomer.Fax,
+                    Email = newCustomer.Email,
+                    SupportRepId = newCustomer.SupportRepId
+                });
 
             return newCustomer;
         }
@@ -93,11 +85,9 @@ namespace Chinook.DataRepoDb.Repositories
 
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return (cn.Update(customer) > 0);
-                }
+                using var cn = Connection;
+                cn.Open();
+                return (cn.Update(customer) > 0);
             }
             catch(Exception)
             {
@@ -109,11 +99,9 @@ namespace Chinook.DataRepoDb.Repositories
         {
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return (cn.Delete(new Customer {CustomerId = id}) > 0);
-                }  
+                using var cn = Connection;
+                cn.Open();
+                return (cn.Delete(new Customer {CustomerId = id}) > 0);
             }
             catch(Exception)
             {

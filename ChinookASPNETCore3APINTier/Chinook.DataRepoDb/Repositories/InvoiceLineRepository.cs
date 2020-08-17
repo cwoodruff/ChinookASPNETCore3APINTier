@@ -31,59 +31,49 @@ namespace Chinook.DataRepoDb.Repositories
 
         public List<InvoiceLine> GetAll()
         {
-            using (IDbConnection cn = Connection)
-            {
-                cn.Open();
-                var invoiceLines = Connection.QueryAll<InvoiceLine>();
-                return invoiceLines.ToList();
-            }
+            using IDbConnection cn = Connection;
+            cn.Open();
+            var invoiceLines = Connection.QueryAll<InvoiceLine>();
+            return invoiceLines.ToList();
         }
 
         public InvoiceLine GetById(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                return cn.Query<InvoiceLine>(i => i.InvoiceLineId == id).FirstOrDefault();
-            }
+            using var cn = Connection;
+            cn.Open();
+            return cn.Query<InvoiceLine>(i => i.InvoiceLineId == id).FirstOrDefault();
         }
 
         public List<InvoiceLine> GetByInvoiceId(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var invoiceLines = cn.Query<InvoiceLine>(i => i.InvoiceId == id);
-                return invoiceLines.ToList();
-            }
+            using var cn = Connection;
+            cn.Open();
+            var invoiceLines = cn.Query<InvoiceLine>(i => i.InvoiceId == id);
+            return invoiceLines.ToList();
         }
 
         public List<InvoiceLine> GetByTrackId(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var invoiceLines =  cn.Query<InvoiceLine>(i => i.TrackId == id);
-                return invoiceLines.ToList();
-            }
+            using var cn = Connection;
+            cn.Open();
+            var invoiceLines =  cn.Query<InvoiceLine>(i => i.TrackId == id);
+            return invoiceLines.ToList();
         }
 
         public InvoiceLine Add(InvoiceLine newInvoiceLine)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
+            using var cn = Connection;
+            cn.Open();
 
-                newInvoiceLine.InvoiceLineId = (int) cn.Insert(
-                    new InvoiceLine
-                    {
-                        InvoiceLineId = newInvoiceLine.InvoiceLineId,
-                        InvoiceId = newInvoiceLine.InvoiceId,
-                        TrackId = newInvoiceLine.TrackId,
-                        UnitPrice = newInvoiceLine.UnitPrice,
-                        Quantity = newInvoiceLine.Quantity
-                    });
-            }
+            newInvoiceLine.InvoiceLineId = (int) cn.Insert(
+                new InvoiceLine
+                {
+                    InvoiceLineId = newInvoiceLine.InvoiceLineId,
+                    InvoiceId = newInvoiceLine.InvoiceId,
+                    TrackId = newInvoiceLine.TrackId,
+                    UnitPrice = newInvoiceLine.UnitPrice,
+                    Quantity = newInvoiceLine.Quantity
+                });
 
             return newInvoiceLine;
         }
@@ -95,11 +85,9 @@ namespace Chinook.DataRepoDb.Repositories
 
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return (cn.Update(invoiceLine) > 0);
-                }
+                using var cn = Connection;
+                cn.Open();
+                return (cn.Update(invoiceLine) > 0);
             }
             catch(Exception)
             {
@@ -111,11 +99,9 @@ namespace Chinook.DataRepoDb.Repositories
         {
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return cn.Delete(new InvoiceLine {InvoiceLineId = id}) > 0;
-                }  
+                using var cn = Connection;
+                cn.Open();
+                return cn.Delete(new InvoiceLine {InvoiceLineId = id}) > 0;
             }
             catch(Exception)
             {

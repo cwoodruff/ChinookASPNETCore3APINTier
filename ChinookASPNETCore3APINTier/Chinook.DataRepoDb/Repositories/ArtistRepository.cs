@@ -31,31 +31,25 @@ namespace Chinook.DataRepoDb.Repositories
 
         public List<Artist> GetAll()
         {
-            using (IDbConnection cn = Connection)
-            {
-                cn.Open();
-                var artists = Connection.QueryAll<Artist>();
-                return artists.ToList();
-            }
+            using IDbConnection cn = Connection;
+            cn.Open();
+            var artists = Connection.QueryAll<Artist>();
+            return artists.ToList();
         }
 
         public Artist GetById(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                return cn.Query<Artist>(a => a.ArtistId == id).FirstOrDefault();
-            }
+            using var cn = Connection;
+            cn.Open();
+            return cn.Query<Artist>(a => a.ArtistId == id).FirstOrDefault();
         }
 
         public Artist Add(Artist newArtist)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
+            using var cn = Connection;
+            cn.Open();
 
-                 newArtist.ArtistId = (int) cn.Insert(new Artist {Name = newArtist.Name});
-            }
+            newArtist.ArtistId = (int) cn.Insert(new Artist {Name = newArtist.Name});
 
             return newArtist;
         }
@@ -67,11 +61,9 @@ namespace Chinook.DataRepoDb.Repositories
 
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return (cn.Update(artist) > 0);
-                }
+                using var cn = Connection;
+                cn.Open();
+                return (cn.Update(artist) > 0);
             }
             catch(Exception)
             {
@@ -83,11 +75,9 @@ namespace Chinook.DataRepoDb.Repositories
         {
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return (cn.Delete(new Artist {ArtistId = id}) > 0);
-                }  
+                using var cn = Connection;
+                cn.Open();
+                return (cn.Delete(new Artist {ArtistId = id}) > 0);
             }
             catch(Exception)
             {

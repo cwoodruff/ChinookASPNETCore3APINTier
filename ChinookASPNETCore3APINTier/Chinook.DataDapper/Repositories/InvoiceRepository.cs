@@ -32,53 +32,45 @@ namespace Chinook.DataDapper.Repositories
 
         public List<Invoice> GetAll()
         {
-            using (IDbConnection cn = Connection)
-            {
-                cn.Open();
-                var invoices =  Connection.Query<Invoice>("Select * From Invoice");
-                return invoices.ToList();
-            }
+            using IDbConnection cn = Connection;
+            cn.Open();
+            var invoices =  Connection.Query<Invoice>("Select * From Invoice");
+            return invoices.ToList();
         }
 
         public Invoice GetById(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                return cn.QueryFirstOrDefault<Invoice>("Select * From Invoice WHERE InvoiceId = @Id", new {id});
-            }
+            using var cn = Connection;
+            cn.Open();
+            return cn.QueryFirstOrDefault<Invoice>("Select * From Invoice WHERE InvoiceId = @Id", new {id});
         }
 
         public List<Invoice> GetByCustomerId(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var invoices = cn.Query<Invoice>("Select * From Invoice WHERE ArtistId = @Id", new { id });
-                return invoices.ToList();
-            }
+            using var cn = Connection;
+            cn.Open();
+            var invoices = cn.Query<Invoice>("Select * From Invoice WHERE ArtistId = @Id", new { id });
+            return invoices.ToList();
         }
 
         public Invoice Add(Invoice newInvoice)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
+            using var cn = Connection;
+            cn.Open();
 
-                newInvoice.InvoiceId = (int) cn.Insert(
-                    new Invoice
-                    {
-                        InvoiceId = newInvoice.InvoiceId,
-                        CustomerId = newInvoice.CustomerId,
-                        InvoiceDate = newInvoice.InvoiceDate,
-                        BillingAddress = newInvoice.BillingAddress,
-                        BillingCity = newInvoice.BillingCity,
-                        BillingState = newInvoice.BillingState,
-                        BillingCountry = newInvoice.BillingCountry,
-                        BillingPostalCode = newInvoice.BillingPostalCode,
-                        Total = newInvoice.Total
-                    });
-            }
+            newInvoice.InvoiceId = (int) cn.Insert(
+                new Invoice
+                {
+                    InvoiceId = newInvoice.InvoiceId,
+                    CustomerId = newInvoice.CustomerId,
+                    InvoiceDate = newInvoice.InvoiceDate,
+                    BillingAddress = newInvoice.BillingAddress,
+                    BillingCity = newInvoice.BillingCity,
+                    BillingState = newInvoice.BillingState,
+                    BillingCountry = newInvoice.BillingCountry,
+                    BillingPostalCode = newInvoice.BillingPostalCode,
+                    Total = newInvoice.Total
+                });
 
             return newInvoice;
         }
@@ -90,11 +82,9 @@ namespace Chinook.DataDapper.Repositories
 
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return cn.Update(invoice);
-                }
+                using var cn = Connection;
+                cn.Open();
+                return cn.Update(invoice);
             }
             catch(Exception)
             {
@@ -106,11 +96,9 @@ namespace Chinook.DataDapper.Repositories
         {
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return cn.Delete(new Invoice {InvoiceId = id});
-                }  
+                using var cn = Connection;
+                cn.Open();
+                return cn.Delete(new Invoice {InvoiceId = id});
             }
             catch(Exception)
             {

@@ -32,44 +32,36 @@ namespace Chinook.DataDapper.Repositories
 
         public List<Playlist> GetAll()
         {
-            using (IDbConnection cn = Connection)
-            {
-                cn.Open();
-                var playlists = Connection.Query<Playlist>("Select * From Playlist");
-                return playlists.ToList();
-            }
+            using IDbConnection cn = Connection;
+            cn.Open();
+            var playlists = Connection.Query<Playlist>("Select * From Playlist");
+            return playlists.ToList();
         }
 
         public Playlist GetById(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                return cn.QueryFirstOrDefault<Playlist>("Select * From Playlist WHERE PlaylistId = @Id", new {id});
-            }
+            using var cn = Connection;
+            cn.Open();
+            return cn.QueryFirstOrDefault<Playlist>("Select * From Playlist WHERE PlaylistId = @Id", new {id});
         }
 
         public Playlist Add(Playlist newPlaylist)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
+            using var cn = Connection;
+            cn.Open();
 
-                newPlaylist.PlaylistId = (int) cn.Insert(new Playlist {Name = newPlaylist.Name});
-            }
+            newPlaylist.PlaylistId = (int) cn.Insert(new Playlist {Name = newPlaylist.Name});
 
             return newPlaylist;
         }
 
         public List<Track> GetTrackByPlaylistId(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                var tracks = cn.Query<Track>(
-                    "SELECT Track.* FROM Playlist INNER JOIN PlaylistTrack ON Playlist.PlaylistId = PlaylistTrack.PlaylistId INNER JOIN Track ON PlaylistTrack.TrackId = Track.TrackId WHERE Playlist.PlaylistId = @Id", new { id });
-                return tracks.ToList();
-            }
+            using var cn = Connection;
+            cn.Open();
+            var tracks = cn.Query<Track>(
+                "SELECT Track.* FROM Playlist INNER JOIN PlaylistTrack ON Playlist.PlaylistId = PlaylistTrack.PlaylistId INNER JOIN Track ON PlaylistTrack.TrackId = Track.TrackId WHERE Playlist.PlaylistId = @Id", new { id });
+            return tracks.ToList();
         }
 
         public bool Update(Playlist playlist)
@@ -79,11 +71,9 @@ namespace Chinook.DataDapper.Repositories
 
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return cn.Update(playlist);
-                }
+                using var cn = Connection;
+                cn.Open();
+                return cn.Update(playlist);
             }
             catch(Exception)
             {
@@ -95,11 +85,9 @@ namespace Chinook.DataDapper.Repositories
         {
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return cn.Delete(new Playlist {PlaylistId = id});
-                }  
+                using var cn = Connection;
+                cn.Open();
+                return cn.Delete(new Playlist {PlaylistId = id});
             }
             catch(Exception)
             {
@@ -110,13 +98,11 @@ namespace Chinook.DataDapper.Repositories
         public List<Playlist> GetByTrackId(int id)
         {
             //SELECT PL.PlaylistId, PL.Name FROM Playlist AS PL INNER JOIN PlaylistTrack PLT ON PL.PlaylistId = PLT.PlaylistId WHERE PLT.TrackID = 5
-             using (var cn = Connection)
-            {
-                cn.Open();
-                var playlists = cn.Query<Playlist>(
-                    "SELECT PL.PlaylistId, PL.Name FROM Playlist AS PL INNER JOIN PlaylistTrack PLT ON PL.PlaylistId = PLT.PlaylistId WHERE PLT.TrackID = @Id", new { id });
-                return playlists.ToList();
-            }
+            using var cn = Connection;
+            cn.Open();
+            var playlists = cn.Query<Playlist>(
+                "SELECT PL.PlaylistId, PL.Name FROM Playlist AS PL INNER JOIN PlaylistTrack PLT ON PL.PlaylistId = PLT.PlaylistId WHERE PLT.TrackID = @Id", new { id });
+            return playlists.ToList();
         }
     }
 }

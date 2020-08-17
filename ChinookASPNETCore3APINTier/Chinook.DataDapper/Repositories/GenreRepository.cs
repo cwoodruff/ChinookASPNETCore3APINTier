@@ -32,31 +32,25 @@ namespace Chinook.DataDapper.Repositories
 
         public List<Genre> GetAll()
         {
-            using (IDbConnection cn = Connection)
-            {
-                cn.Open();
-                var genres = Connection.Query<Genre>("Select * From Genre");
-                return genres.ToList();
-            }
+            using IDbConnection cn = Connection;
+            cn.Open();
+            var genres = Connection.Query<Genre>("Select * From Genre");
+            return genres.ToList();
         }
 
         public Genre GetById(int id)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
-                return cn.QueryFirstOrDefault<Genre>("Select * From Genre WHERE GenreId = @Id", new {id});
-            }
+            using var cn = Connection;
+            cn.Open();
+            return cn.QueryFirstOrDefault<Genre>("Select * From Genre WHERE GenreId = @Id", new {id});
         }
 
         public Genre Add(Genre newGenre)
         {
-            using (var cn = Connection)
-            {
-                cn.Open();
+            using var cn = Connection;
+            cn.Open();
 
-                newGenre.GenreId = (int) cn.Insert(new Genre {Name = newGenre.Name});
-            }
+            newGenre.GenreId = (int) cn.Insert(new Genre {Name = newGenre.Name});
 
             return newGenre;
         }
@@ -68,11 +62,9 @@ namespace Chinook.DataDapper.Repositories
 
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return cn.Update(genre);
-                }
+                using var cn = Connection;
+                cn.Open();
+                return cn.Update(genre);
             }
             catch(Exception)
             {
@@ -84,11 +76,9 @@ namespace Chinook.DataDapper.Repositories
         {
             try
             {
-                using (var cn = Connection)
-                {
-                    cn.Open();
-                    return cn.Delete(new Genre {GenreId = id});
-                }  
+                using var cn = Connection;
+                cn.Open();
+                return cn.Delete(new Genre {GenreId = id});
             }
             catch(Exception)
             {

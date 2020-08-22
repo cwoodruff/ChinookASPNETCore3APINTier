@@ -27,7 +27,7 @@ namespace Chinook.DataRepoDb.Repositories
         }
 
         private bool InvoiceExists(int id) =>
-            Connection.ExecuteScalar<bool>("select count(1) from Invoice where InvoiceId = @id", new {id});
+            Connection.Exists("select count(1) from Invoice where InvoiceId = @id", new {id});
 
         public List<Invoice> GetAll()
         {
@@ -41,7 +41,7 @@ namespace Chinook.DataRepoDb.Repositories
         {
             using var cn = Connection;
             cn.Open();
-            return cn.Query<Invoice>(i => i.InvoiceId == id).FirstOrDefault();
+            return cn.Query<Invoice>(id).FirstOrDefault();
         }
 
         public List<Invoice> GetByCustomerId(int id)
@@ -56,21 +56,7 @@ namespace Chinook.DataRepoDb.Repositories
         {
             using var cn = Connection;
             cn.Open();
-
-            newInvoice.InvoiceId = (int) cn.Insert(
-                new Invoice
-                {
-                    InvoiceId = newInvoice.InvoiceId,
-                    CustomerId = newInvoice.CustomerId,
-                    InvoiceDate = newInvoice.InvoiceDate,
-                    BillingAddress = newInvoice.BillingAddress,
-                    BillingCity = newInvoice.BillingCity,
-                    BillingState = newInvoice.BillingState,
-                    BillingCountry = newInvoice.BillingCountry,
-                    BillingPostalCode = newInvoice.BillingPostalCode,
-                    Total = newInvoice.Total
-                });
-
+            cn.Insert(newInvoice);
             return newInvoice;
         }
 

@@ -27,7 +27,7 @@ namespace Chinook.DataRepoDb.Repositories
         }
 
         private bool ArtistExists(int id) =>
-            Connection.ExecuteScalar<bool>("select count(1) from Artist where ArtistId = @id", new {id});
+            Connection.Exists("select count(1) from Artist where ArtistId = @id", new {id});
 
         public List<Artist> GetAll()
         {
@@ -41,16 +41,14 @@ namespace Chinook.DataRepoDb.Repositories
         {
             using var cn = Connection;
             cn.Open();
-            return cn.Query<Artist>(a => a.ArtistId == id).FirstOrDefault();
+            return cn.Query<Artist>(id).FirstOrDefault();
         }
 
         public Artist Add(Artist newArtist)
         {
             using var cn = Connection;
             cn.Open();
-
-            newArtist.ArtistId = (int) cn.Insert(new Artist {Name = newArtist.Name});
-
+            cn.Insert(newArtist);
             return newArtist;
         }
 

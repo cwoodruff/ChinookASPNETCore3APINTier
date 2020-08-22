@@ -27,7 +27,7 @@ namespace Chinook.DataRepoDb.Repositories
         }
 
         private bool InvoiceLineExists(int id) =>
-            Connection.ExecuteScalar<bool>("select count(1) from InvoiceLine where InvoiceLineId = @id", new {id});
+            Connection.Exists("select count(1) from InvoiceLine where InvoiceLineId = @id", new {id});
 
         public List<InvoiceLine> GetAll()
         {
@@ -41,7 +41,7 @@ namespace Chinook.DataRepoDb.Repositories
         {
             using var cn = Connection;
             cn.Open();
-            return cn.Query<InvoiceLine>(i => i.InvoiceLineId == id).FirstOrDefault();
+            return cn.Query<InvoiceLine>(id).FirstOrDefault();
         }
 
         public List<InvoiceLine> GetByInvoiceId(int id)
@@ -64,17 +64,7 @@ namespace Chinook.DataRepoDb.Repositories
         {
             using var cn = Connection;
             cn.Open();
-
-            newInvoiceLine.InvoiceLineId = (int) cn.Insert(
-                new InvoiceLine
-                {
-                    InvoiceLineId = newInvoiceLine.InvoiceLineId,
-                    InvoiceId = newInvoiceLine.InvoiceId,
-                    TrackId = newInvoiceLine.TrackId,
-                    UnitPrice = newInvoiceLine.UnitPrice,
-                    Quantity = newInvoiceLine.Quantity
-                });
-
+            cn.Insert(newInvoiceLine);
             return newInvoiceLine;
         }
 

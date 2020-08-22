@@ -27,7 +27,7 @@ namespace Chinook.DataRepoDb.Repositories
         }
 
         private bool AlbumExists(int id) =>
-            Connection.ExecuteScalar<bool>("select count(1) from Album where AlbumId = @id", new {id});
+            Connection.Exists("select count(1) from Album where AlbumId = @id", new {id});
 
         public List<Album> GetAll()
         {
@@ -41,7 +41,8 @@ namespace Chinook.DataRepoDb.Repositories
         {
             using var cn = Connection;
             cn.Open();
-            var album = cn.Query<Album>(a => a.AlbumId < id);
+            //var album = cn.Query<Album>(a => a.AlbumId < id);
+            var album = cn.Query<Album>(id);
             return album.FirstOrDefault();
         }
 
@@ -57,9 +58,7 @@ namespace Chinook.DataRepoDb.Repositories
         {
             using var cn = Connection;
             cn.Open();
-            var albumId = cn.Insert(newAlbum);
-            newAlbum.AlbumId = (int) albumId;
-
+            cn.Insert(newAlbum);
             return newAlbum;
         }
 

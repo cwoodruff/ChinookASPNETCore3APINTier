@@ -27,7 +27,7 @@ namespace Chinook.DataRepoDb.Repositories
         }
 
         private bool EmployeeExists(int id) =>
-            Connection.ExecuteScalar<bool>("select count(1) from Employee where EmployeeId = @id", new {id});
+            Connection.Exists("select count(1) from Employee where EmployeeId = @id", new {id});
 
         public List<Employee> GetAll()
         {
@@ -41,7 +41,7 @@ namespace Chinook.DataRepoDb.Repositories
         {
             using var cn = Connection;
             cn.Open();
-            return cn.Query<Employee>(e => e.EmployeeId == id).FirstOrDefault();
+            return cn.Query<Employee>(id).FirstOrDefault();
         }
 
         public Employee GetReportsTo(int id)
@@ -55,26 +55,7 @@ namespace Chinook.DataRepoDb.Repositories
         {
             using var cn = Connection;
             cn.Open();
-
-            newEmployee.EmployeeId = (int) cn.Insert(
-                new Employee
-                {
-                    LastName = newEmployee.LastName,
-                    FirstName = newEmployee.FirstName,
-                    Title = newEmployee.Title,
-                    ReportsTo = newEmployee.ReportsTo,
-                    BirthDate = newEmployee.BirthDate,
-                    HireDate = newEmployee.HireDate,
-                    Address = newEmployee.Address,
-                    City = newEmployee.City,
-                    State = newEmployee.State,
-                    Country = newEmployee.Country,
-                    PostalCode = newEmployee.PostalCode,
-                    Phone = newEmployee.Phone,
-                    Fax = newEmployee.Fax,
-                    Email = newEmployee.Email
-                });
-
+            cn.Insert(newEmployee);
             return newEmployee;
         }
 

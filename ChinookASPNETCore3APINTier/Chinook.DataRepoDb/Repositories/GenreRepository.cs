@@ -27,7 +27,7 @@ namespace Chinook.DataRepoDb.Repositories
         }
 
         private bool GenreExists(int id) =>
-            Connection.ExecuteScalar<bool>("select count(1) from Genre where GenreId = @id", new {id});
+            Connection.Exists("select count(1) from Genre where GenreId = @id", new {id});
 
         public List<Genre> GetAll()
         {
@@ -41,16 +41,14 @@ namespace Chinook.DataRepoDb.Repositories
         {
             using var cn = Connection;
             cn.Open();
-            return cn.Query<Genre>(@where: g => g.GenreId == id).FirstOrDefault();
+            return cn.Query<Genre>(id).FirstOrDefault();
         }
 
         public Genre Add(Genre newGenre)
         {
             using var cn = Connection;
             cn.Open();
-
-            newGenre.GenreId = (int) cn.Insert(new Genre {Name = newGenre.Name});
-
+            cn.Insert(newGenre);
             return newGenre;
         }
 

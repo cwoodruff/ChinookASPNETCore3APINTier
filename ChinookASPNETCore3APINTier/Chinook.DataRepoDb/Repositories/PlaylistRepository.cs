@@ -27,7 +27,7 @@ namespace Chinook.DataRepoDb.Repositories
         }
 
         private bool PlaylistExists(int id) =>
-            Connection.ExecuteScalar<bool>("select count(1) from Playlist where PlaylistId = @id", new {id});
+            Connection.Exists("select count(1) from Playlist where PlaylistId = @id", new {id});
 
         public List<Playlist> GetAll()
         {
@@ -41,16 +41,14 @@ namespace Chinook.DataRepoDb.Repositories
         {
             using var cn = Connection;
             cn.Open();
-            return cn.Query<Playlist>(p => p.PlaylistId == id).FirstOrDefault();
+            return cn.Query<Playlist>(id).FirstOrDefault();
         }
 
         public Playlist Add(Playlist newPlaylist)
         {
             using var cn = Connection;
             cn.Open();
-
-            newPlaylist.PlaylistId = (int) cn.Insert(new Playlist {Name = newPlaylist.Name});
-
+            cn.Insert(newPlaylist);
             return newPlaylist;
         }
 

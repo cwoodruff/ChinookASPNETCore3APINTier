@@ -27,7 +27,7 @@ namespace Chinook.DataRepoDb.Repositories
         }
 
         private bool MediaTypeExists(int id) =>
-            Connection.ExecuteScalar<bool>("select count(1) from MediaType where MediaTypeId = @id", new {id});
+            Connection.Exists("select count(1) from MediaType where MediaTypeId = @id", new {id});
 
         public List<MediaType> GetAll()
         {
@@ -41,16 +41,14 @@ namespace Chinook.DataRepoDb.Repositories
         {
             using var cn = Connection;
             cn.Open();
-            return cn.Query<MediaType>(m => m.MediaTypeId == id).FirstOrDefault();
+            return cn.Query<MediaType>(id).FirstOrDefault();
         }
 
         public MediaType Add(MediaType newMediaType)
         {
             using var cn = Connection;
             cn.Open();
-
-            newMediaType.MediaTypeId = (int) cn.Insert(new MediaType {Name = newMediaType.Name});
-
+            cn.Insert(newMediaType);
             return newMediaType;
         }
 

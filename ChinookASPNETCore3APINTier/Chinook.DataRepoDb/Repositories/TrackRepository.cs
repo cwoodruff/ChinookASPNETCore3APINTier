@@ -27,7 +27,7 @@ namespace Chinook.DataRepoDb.Repositories
         }
 
         private bool TrackExists(int id) =>
-            Connection.ExecuteScalar<bool>("select count(1) from Track where TrackId = @id", new {id});
+            Connection.Exists("select count(1) from Track where TrackId = @id", new {id});
 
         public List<Track> GetAll()
         {
@@ -41,27 +41,14 @@ namespace Chinook.DataRepoDb.Repositories
         {
             using var cn = Connection;
             cn.Open();
-            return cn.Query<Track>(t => t.TrackId == id).FirstOrDefault();
+            return cn.Query<Track>(id).FirstOrDefault();
         }
 
         public Track Add(Track newTrack)
         {
             using var cn = Connection;
             cn.Open();
-
-            newTrack.TrackId = (int) cn.Insert(
-                new Track
-                {
-                    Name = newTrack.Name,
-                    AlbumId = newTrack.AlbumId,
-                    MediaTypeId = newTrack.MediaTypeId,
-                    GenreId = newTrack.GenreId,
-                    Composer = newTrack.Composer,
-                    Milliseconds = newTrack.Milliseconds,
-                    Bytes = newTrack.Bytes,
-                    UnitPrice = newTrack.UnitPrice
-                });
-
+            cn.Insert(newTrack);
             return newTrack;
         }
 

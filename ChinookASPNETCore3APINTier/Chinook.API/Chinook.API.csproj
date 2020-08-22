@@ -19,6 +19,7 @@
       <ProjectReference Include="..\Chinook.DataEFCoreCmpldQry\Chinook.DataEFCoreCmpldQry.csproj" />
       <ProjectReference Include="..\Chinook.DataEFCore\Chinook.DataEFCore.csproj" />
       <ProjectReference Include="..\Chinook.DataJson\Chinook.DataJson.csproj" />
+      <ProjectReference Include="..\Chinook.DataRepoDb\Chinook.DataRepoDb.csproj" />
       <ProjectReference Include="..\Chinook.Domain\Chinook.Domain.csproj" />
     </ItemGroup>
 

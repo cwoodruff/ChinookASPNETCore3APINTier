@@ -27,7 +27,7 @@ namespace Chinook.DataRepoDb.Repositories
         }
 
         private bool CustomerExists(int id) => 
-            Connection.ExecuteScalar<bool>("select count(1) from Customer where CustomerId = @id", new {id});
+            Connection.Exists("select count(1) from Customer where CustomerId = @id", new {id});
 
         public List<Customer> GetAll()
         {
@@ -41,7 +41,7 @@ namespace Chinook.DataRepoDb.Repositories
         {
             using var cn = Connection;
             cn.Open();
-            return cn.Query<Customer>(c => c.CustomerId == id).FirstOrDefault();
+            return cn.Query<Customer>(id).FirstOrDefault();
         }
 
         public List<Customer> GetBySupportRepId(int id)
@@ -56,25 +56,7 @@ namespace Chinook.DataRepoDb.Repositories
         {
             using var cn = Connection;
             cn.Open();
-
-            newCustomer.CustomerId = (int) cn.Insert(
-                new Customer
-                {
-                    CustomerId = newCustomer.CustomerId,
-                    FirstName = newCustomer.FirstName,
-                    LastName = newCustomer.LastName,
-                    Company = newCustomer.Company,
-                    Address = newCustomer.Address,
-                    City = newCustomer.City,
-                    State = newCustomer.State,
-                    Country = newCustomer.Country,
-                    PostalCode = newCustomer.PostalCode,
-                    Phone = newCustomer.Phone,
-                    Fax = newCustomer.Fax,
-                    Email = newCustomer.Email,
-                    SupportRepId = newCustomer.SupportRepId
-                });
-
+            cn.Insert(newCustomer);
             return newCustomer;
         }
 

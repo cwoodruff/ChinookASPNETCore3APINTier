@@ -17,6 +17,7 @@ namespace Chinook.DataRepoDb.Repositories
         public ArtistRepository(DbInfo dbInfo)
         {
             _dbInfo = dbInfo;
+            RepoDb.SqlServerBootstrap.Initialize();
         }
 
         private IDbConnection Connection => new SqlConnection(_dbInfo.ConnectionStrings);
@@ -33,7 +34,7 @@ namespace Chinook.DataRepoDb.Repositories
         {
             using IDbConnection cn = Connection;
             cn.Open();
-            var artists = Connection.QueryAll<Artist>();
+            var artists = cn.QueryAll<Artist>();
             return artists.ToList();
         }
 

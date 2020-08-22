@@ -17,6 +17,7 @@ namespace Chinook.DataRepoDb.Repositories
         public PlaylistRepository(DbInfo dbInfo)
         {
             _dbInfo = dbInfo;
+            RepoDb.SqlServerBootstrap.Initialize();
         }
 
         private IDbConnection Connection => new SqlConnection(_dbInfo.ConnectionStrings);
@@ -33,7 +34,7 @@ namespace Chinook.DataRepoDb.Repositories
         {
             using IDbConnection cn = Connection;
             cn.Open();
-            var playlists = Connection.QueryAll<Playlist>();
+            var playlists = cn.QueryAll<Playlist>();
             return playlists.ToList();
         }
 

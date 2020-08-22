@@ -17,6 +17,7 @@ namespace Chinook.DataRepoDb.Repositories
         public TrackRepository(DbInfo dbInfo)
         {
             _dbInfo = dbInfo;
+            RepoDb.SqlServerBootstrap.Initialize();
         }
 
         private IDbConnection Connection => new SqlConnection(_dbInfo.ConnectionStrings);
@@ -33,7 +34,7 @@ namespace Chinook.DataRepoDb.Repositories
         {
             using IDbConnection cn = Connection;
             cn.Open();
-            var tracks = Connection.QueryAll<Track>();
+            var tracks = cn.QueryAll<Track>();
             return tracks.ToList();
         }
 

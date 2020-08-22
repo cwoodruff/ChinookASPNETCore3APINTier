@@ -17,6 +17,7 @@ namespace Chinook.DataRepoDb.Repositories
         public CustomerRepository(DbInfo dbInfo)
         {
             _dbInfo = dbInfo;
+            RepoDb.SqlServerBootstrap.Initialize();
         }
 
         private IDbConnection Connection => new SqlConnection(_dbInfo.ConnectionStrings);
@@ -33,7 +34,7 @@ namespace Chinook.DataRepoDb.Repositories
         {
             using IDbConnection cn = Connection;
             cn.Open();
-            var customers = Connection.QueryAll<Customer>();
+            var customers = cn.QueryAll<Customer>();
             return customers.ToList();
         }
 

@@ -15,6 +15,9 @@ namespace Chinook.Domain.Entities
 
         [Key]
         public int AlbumId { get; set; }
+        
+        [StringLength(160, MinimumLength = 3)]
+        [Required]
         public string Title { get; set; }
         public int ArtistId { get; set; }
 

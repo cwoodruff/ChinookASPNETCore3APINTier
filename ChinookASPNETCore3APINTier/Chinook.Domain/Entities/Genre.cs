@@ -1,6 +1,7 @@
 ﻿using Chinook.Domain.Converters;
 using Chinook.Domain.ApiModels;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Chinook.Domain.Entities
@@ -13,6 +14,8 @@ namespace Chinook.Domain.Entities
         }
 
         public int GenreId { get; set; }
+        
+        [RegularExpression(@"^[A-Z]+[a-zA-Z]*$")]
         public string Name { get; set; }
 
         [JsonIgnore]

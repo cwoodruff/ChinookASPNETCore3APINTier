@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Chinook.API.Configurations;
+using Chinook.API.Middleware;
 using Microsoft.OpenApi.Models;
 
 namespace Chinook.API
@@ -58,6 +59,8 @@ namespace Chinook.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            //app.ApplyEntityValidation();
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
